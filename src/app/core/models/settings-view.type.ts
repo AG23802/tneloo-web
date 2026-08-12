@@ -1,0 +1,18 @@
+export type SettingsView =
+  | 'main'
+  | 'account'
+  | 'personal-details'
+  | 'change-password'
+  | 'verification'
+  | 'bookmark'
+  | 'archive'
+  | 'notifications'
+  | 'privacy'
+  | 'blocked'
+  | 'language'
+  | 'billing-cards'
+  | 'tokens'
+  | 'help'
+  | 'delete-account'
+  | 'accessibility'
+  | 'appearance';

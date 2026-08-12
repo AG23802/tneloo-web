@@ -1,0 +1,136 @@
+<div class="settings-container">
+  @if (activeView() === 'main') {
+    <!-- MAIN SETTINGS VIEW -->
+    <app-main-settings-view (navigateTo)="navigateTo($event)" (close)="onClose()" />
+  } @else if (activeView() === 'account') {
+    <!-- ACCOUNT SUB-MENU -->
+    <app-account (saveChanges)="navigateTo($event)" />
+  } @else if (activeView() === 'personal-details') {
+    <!-- PERSONAL DETAILS SUB-MENU -->
+    <app-personal-details (navigateBack)="navigateTo('account')" />
+  } @else if (activeView() === 'change-password') {
+    <!-- CHANGE PASSWORD SUB-MENU -->
+    <app-change-password (navigateBack)="navigateTo('account')" />
+  } @else if (activeView() === 'verification') {
+    <!-- VERIFICATION SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('account')" name="back" />
+      <h3>Identitätsprüfung</h3>
+      <div></div>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Drittanbieter Verifizierungs-Flow...</div>
+    </div>
+  } @else if (activeView() === 'billing-cards') {
+    <!-- BILLING CARDS SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('account')" name="back" />
+      <h3>Karten & Zahlung</h3>
+      <div></div>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Karten verwalten...</div>
+    </div>
+  } @else if (activeView() === 'tokens') {
+    <!-- TOKENS SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('account')" name="back" />
+      <h3>Token-Guthaben & Verlauf</h3>
+      <div></div>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Token kaufen und Verlauf anzeigen...</div>
+    </div>
+  } @else if (activeView() === 'delete-account') {
+    <!-- DELETE ACCOUNT SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('account')" name="back" />
+      <h3>Konto löschen</h3>
+      <button class="btn-primary-danger">Delete</button>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Konto unwiderruflich löschen...</div>
+    </div>
+  } @else if (activeView() === 'bookmark') {
+    <!-- GESPEICHERT SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Gespeichert</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Deine gespeicherten Beiträge...</div>
+    </div>
+  } @else if (activeView() === 'archive') {
+    <!-- ARCHIV SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Archiv</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Deine archivierten Inhalte...</div>
+    </div>
+  } @else if (activeView() === 'notifications') {
+    <!-- BENACHRICHTIGUNGEN SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Benachrichtigungen</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Push-Benachrichtigungen Einstellungen...</div>
+    </div>
+  } @else if (activeView() === 'privacy') {
+    <!-- PRIVATSPHÄRE SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Privatsphäre</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Konto-Privatsphäre Optionen...</div>
+    </div>
+  } @else if (activeView() === 'blocked') {
+    <!-- BLOCKIERT SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Blockiert</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Liste der blockierten Konten...</div>
+    </div>
+  } @else if (activeView() === 'language') {
+    <!-- SPRACHE SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Sprache</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Sprachauswahl Optionen...</div>
+    </div>
+  } @else if (activeView() === 'appearance') {
+    <!-- APPEARANCE SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Theme & Erscheinungsbild</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Dark Mode, Light Mode oder Systemeinstellungen...</div>
+    </div>
+  } @else if (activeView() === 'accessibility') {
+    <!-- ACCESSIBILITY SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Barrierefreiheit</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Optionen für Barrierefreiheit...</div>
+    </div>
+  } @else if (activeView() === 'help') {
+    <!-- HILFE & SUPPORT SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>Hilfe & Support</h3>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">Hilfe-Center und Support kontaktieren...</div>
+    </div>
+  }
+</div>

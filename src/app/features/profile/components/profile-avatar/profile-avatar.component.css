@@ -1,0 +1,106 @@
+.avatar-container {
+
+  position: relative;
+
+  width: 120px;
+  height: 120px;
+
+  border-radius: 50%;
+
+}
+
+
+.profile-avatar,
+.avatar-placeholder {
+
+  width: 120px;
+  height: 120px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+}
+
+
+.avatar-placeholder {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #ddd;
+
+  font-size: 40px;
+
+}
+
+
+.avatar-upload {
+
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, .45);
+
+  color: white;
+
+  opacity: 0;
+
+  cursor: pointer;
+
+  transition: .2s;
+
+}
+
+
+.avatar-container:hover .avatar-upload {
+
+  opacity: 1;
+
+}
+
+
+.upload-icon {
+
+  width: 40px;
+  height: 40px;
+
+}
+
+
+.upload-button {
+
+  position: absolute;
+
+  bottom: -45px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+
+  border: none;
+
+  background: #111;
+
+  color: white;
+
+  padding: 8px 20px;
+
+  border-radius: 20px;
+
+  cursor: pointer;
+
+}

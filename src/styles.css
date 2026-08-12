@@ -1,1 +1,190 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --color-white: #fff;
+  --color-black: #000;
+  --color-border: #dbdbdb;
+  --color-border-focus: #a8a8a8;
+  --color-text-main: #333;
+  --color-text-dark: #262626;
+  --color-bg-secondary: #fafafa;
+  --color-primary: #0095f6;
+  --color-primary-hover: #00376b;
+  --color-danger: #ed4956;
+  --color-secondary-bg: #f1f5f9;
+  --color-secondary-text: #334155;
+
+  --color-border-light: #efefef;
+  --color-text-muted: #8e8e8e;
+  --color-text-placeholder: #737373;
+
+  /*nav comp*/
+  --color-nav-border: #e2e8f0;
+  --color-nav-text: #64748b;
+  --shadow-nav: 0 -2px 10px rgba(0, 0, 0, 0.03);
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  src: url("/assets/fonts/AvenirNext-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  src: url("/assets/fonts/AvenirNext-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Avenir Next', Verdana, "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 14px;
+  max-width: 500px;
+  margin: auto;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+.btn-primary {
+  background: none;
+  color: var(--color-primary);
+
+  &:hover {
+    color: var(--color-primary-hover);
+  }
+}
+
+.btn-primary-danger {
+  color: var(--color-danger);
+  justify-content: center;
+  background: none;
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary-bg);
+  color: var(--color-secondary-text);
+  padding: 10px 14px;
+}
+
+.btn-secondary.btn-secondary-danger,
+.btn-secondary-danger {
+  color: var(--color-danger);
+}
+
+/* --- Global Elements: All Inputs and Buttons --- */
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  background-color: var(--color-bg-secondary);
+  transition: border-color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--color-border-focus);
+    background-color: var(--color-white);
+  }
+}
+
+button,
+input[type="submit"],
+input[type="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* --- Form Utilities --- */
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--color-white);
+  border-radius: 8px;
+}
+
+.settings-body {
+  padding: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-main);
+  }
+}
+
+.error-message {
+  color: var(--color-danger);
+  font-size: 14px;
+  margin: 0;
+  text-align: left;
+}
+
+.success-message {
+  color: var(--color-primary);
+  font-size: 14px;
+  margin: 0 0 16px 0;
+  text-align: left;
+  font-weight: 500;
+}
+
+.error-banner {
+  color: red;
+  padding: 16px 0;
+  font-size: 14px;
+}
+
+/* --- Settings --- */
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-secondary);
+  padding: 0 16px;
+}

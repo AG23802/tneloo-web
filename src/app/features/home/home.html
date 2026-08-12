@@ -1,0 +1,29 @@
+<div class="feed">
+
+  @if (isLoading()) {
+    <div class="loading">
+      Loading profiles...
+    </div>
+  }
+
+  @for (user of users(); track user.uid) {
+    <app-card [user]="user" />
+  }
+
+  <!-- Load More Section / End Message -->
+  <div class="feed-footer" style="text-align: center; padding: 2rem;">
+    @if (hasMorePhotos()) {
+      <button class="load-more-btn" (click)="loadMorePhotos()" [disabled]="isLoadingMore()">
+        @if (isLoadingMore()) {
+          Loading...
+        } @else {
+          Load More
+        }
+      </button>
+    } @else {
+      <p class="end-message" style="color: gray; font-weight: 500;">
+        You've seen all files </p>
+    }
+  </div>
+
+</div>

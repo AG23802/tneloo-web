@@ -1,0 +1,18 @@
+<div class="chat-messages" #scrollContainer>
+  @for (msg of messages(); track msg.id) {
+    <div class="message-row" [class.outgoing]="msg.uid === currentUid()" [class.incoming]="msg.uid !== currentUid()">
+      <div class="message-bubble">
+        <p>{{ msg.text }}</p>
+      </div>
+    </div>
+  }
+</div>
+
+<form class="chat-input-form"
+      (submit)="$event.preventDefault(); messageEmitter.emit(newMessageText); newMessageText = ''">
+  <input type="text" [(ngModel)]="newMessageText" name="newMessageText" placeholder="Type a message..."
+         autocomplete="off" />
+  <button type="submit" [disabled]="!newMessageText.trim()">
+    <app-icon name="share" />
+  </button>
+</form>

@@ -1,0 +1,13 @@
+<div class="profile-card">
+  <div class="profile-header" (click)="openProfile()">
+    <app-avatar [user]="user()" />
+    <div class="user-info">
+      <div>
+        {{ user().displayName }}
+      </div>
+      <p>AG</p>
+    </div>
+  </div>
+  <app-photo-slider [photos]="user().photos ?? []" [user]="user()" />
+  <app-card-actions />
+</div>

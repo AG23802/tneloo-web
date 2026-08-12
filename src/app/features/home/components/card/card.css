@@ -1,0 +1,29 @@
+.profile-card {
+  background: white;
+  margin-bottom: 30px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, .15);
+}
+
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px;
+}
+
+
+.user-info h2 {
+  margin: 0;
+}
+
+
+.user-info p {
+  margin: 5px 0 0;
+  color: #777;
+}
+
+.profile-header {
+  cursor: pointer;
+}

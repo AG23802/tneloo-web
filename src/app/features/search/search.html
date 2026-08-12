@@ -1,0 +1,55 @@
+<div class="search-page">
+
+  <!-- Sticky container that hides/shows based on scroll -->
+  <div class="search-container" [class.hidden]="!isSearchVisible()">
+    <input type="text" class="search-bar" placeholder="Search..." [(ngModel)]="searchQuery" />
+
+    @if (searchQuery().trim().length > 0) {
+      <div class="search-results-list">
+        @for (user of searchResults(); track user.uid) {
+          <a [routerLink]="['/', user.username]" class="search-user-item">
+            <img [src]="user.profilePictureURL || 'assets/default-profile-avatar.png'" alt="" class="search-avatar" />
+            <span>{{ user.displayName }}</span>
+          </a>
+        } @empty {
+          <div class="search-user-item no-results">
+            <span>No users found</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (searchQuery().trim().length === 0) {
+    <div class="photo-grid">
+      @for (photo of photos(); track photo.id) {
+        <div class="photo-card" (click)="openPhoto(photo)" (keydown.enter)="openPhoto(photo)"
+             (keydown.space)="openPhoto(photo)" tabindex="0" role="button">
+          <img [src]="photo.url" [alt]="'Photo ' + photo.id" loading="lazy" />
+        </div>
+      }
+    </div>
+
+    <!-- Load More Section / End Message -->
+    <div class="feed-footer" style="text-align: center; padding: 2rem;">
+      @if (hasMorePhotos()) {
+        <button class="load-more-btn" (click)="loadMorePhotos()" [disabled]="isLoadingMore()">
+          @if (isLoadingMore()) {
+            Loading...
+          } @else {
+            Load More
+          }
+        </button>
+      } @else {
+        <p class="end-message" style="color: gray; font-weight: 500;">
+          You've seen all files </p>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Reusable Full-Screen Modal Component -->
+@if (selectedPhoto(); as photo) {
+  <app-photo-viewer-modal [photo]="photo" (close)="closePhoto()" />
+}

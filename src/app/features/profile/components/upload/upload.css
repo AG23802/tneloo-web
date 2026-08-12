@@ -1,0 +1,21 @@
+@import "../../../../../styles.css";
+
+.upload-container {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-icon-btn {
+  background: none;
+  color: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.nav-icon-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}

@@ -1,0 +1,80 @@
+<app-settings-header [title]="'Einstellungen und Aktivitäten'" icon="close" (back)="close.emit()" />
+
+<div class="settings-section">
+  <button class="setting-item" (click)="navigateTo.emit('account')">
+    <div class="setting-item-content">
+      <app-icon name="account" />
+      <span>Account</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('bookmark')">
+    <div class="setting-item-content">
+      <app-icon name="bookmark" />
+      <span>Gespeichert</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('archive')">
+    <div class="setting-item-content">
+      <app-icon name="archive" />
+      <span>Archiv</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('notifications')">
+    <div class="setting-item-content">
+      <app-icon name="notifications" />
+      <span>Benachrichtigungen</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('privacy')">
+    <div class="setting-item-content">
+      <app-icon name="privacy" />
+      <span>Privatsphäre</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('blocked')">
+    <div class="setting-item-content">
+      <app-icon name="blocked" />
+      <span>Blockiert</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('language')">
+    <div class="setting-item-content">
+      <app-icon name="language" />
+      <span>Sprache</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('appearance')">
+    <div class="setting-item-content">
+      <app-icon name="moon" />
+      <span>Theme & Erscheinungsbild</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('accessibility')">
+    <div class="setting-item-content">
+      <app-icon name="accessibility" />
+      <span>Barrierefreiheit</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+  <button class="setting-item" (click)="navigateTo.emit('help')">
+    <div class="setting-item-content">
+      <app-icon name="help" />
+      <span>Hilfe & Support</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+</div>
+
+<div class="settings-section logout-section">
+  <button class="btn-primary-danger" [disabled]="authService.interactionInProgress()" (click)="authService.logout()">
+    Log Out
+  </button>
+</div>

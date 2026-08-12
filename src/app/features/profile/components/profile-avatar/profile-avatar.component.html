@@ -1,0 +1,15 @@
+<div class="avatar-container">
+  @if (profilePictureURL()) {
+    <img class="profile-avatar" [src]="profilePictureURL()" alt="" loading="lazy">
+  } @else {
+    <div class="avatar-placeholder">
+      <app-icon name="ghost" />
+    </div>
+  }
+
+  @if (isOwnProfile()) {
+    <div class="avatar-upload">
+      <app-icon [size]="40" name="camera" />
+    </div>
+  }
+</div>

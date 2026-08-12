@@ -1,0 +1,60 @@
+<div class="chat-container">
+  <header class="chat-header">
+    <app-icon class="back-icon" [class.hidden]="!activeThreadId() && !activeRecipientId()" name="back"
+              (click)="backToThreads()" />
+
+    @let headerMeta = activeThreadId()
+      ? getTargetUserMeta(chatService.threads().find(t => t.id === activeThreadId())?.participants || [])
+      : getPendingTargetMeta();
+
+    @if (activeThreadId() || activeRecipientId()) {
+      <div class="header-user-info">
+        <div class="header-avatar">
+          @if (headerMeta.profilePictureURL) {
+            <img [src]="headerMeta.profilePictureURL" alt="" />
+          } @else {
+            <div class="avatar-placeholder">{{ headerMeta.displayName.charAt(0) }}</div>
+          }
+        </div>
+        <span class="thread-title">{{ headerMeta.displayName }}</span>
+      </div>
+    } @else {
+      <h3>Messages</h3>
+    }
+
+    <div></div>
+  </header>
+
+  @if (!activeThreadId() && !activeRecipientId()) {
+    <div class="threads-list">
+      @if (chatService.threads().length === 0) {
+        <p class="no-threads">No conversations yet.</p>
+      }
+      @for (thread of chatService.threads(); track thread.id) {
+        @let meta = getTargetUserMeta(thread.participants);
+        <div class="thread-item" (click)="selectThread(thread.id)">
+          <div class="thread-avatar">
+            @if (meta.profilePictureURL) {
+              <img [src]="meta.profilePictureURL" alt="" />
+            } @else {
+              <div class="avatar-placeholder">{{ meta.displayName.charAt(0) }}</div>
+            }
+          </div>
+          <div class="thread-info">
+            <div class="thread-top">
+              <span class="thread-title">{{ meta.displayName }}</span>
+              @if (thread.lastMessageTime) {
+                <span class="thread-time">{{ thread.lastMessageTime?.toDate() | date:'shortTime' }}</span>
+              }
+            </div>
+            <p class="thread-preview">{{ thread.lastMessage || 'Started a conversation' }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    @let currentUid = userService.currentUser()?.uid;
+    <app-thread-view (messageEmitter)="handleSendMessage($event)" [messages]="chatService.messages()"
+                     [currentUid]="currentUid" />
+  }
+</div>

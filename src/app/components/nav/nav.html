@@ -1,0 +1,19 @@
+<!-- Bottom Navigation Bar -->
+<nav class="bottom-nav">
+  @let username = userService.currentUser()?.username;
+  <a routerLink="/" routerLinkActive="active" class="nav-item">
+    <app-icon class="nav-icon" name="home" />
+  </a>
+
+  <a routerLink="/search" routerLinkActive="active" class="nav-item">
+    <app-icon class="nav-icon" name="search" />
+  </a>
+
+  <a routerLink="/messages" routerLinkActive="active" class="nav-item">
+    <app-icon class="nav-icon" name="share" />
+  </a>
+
+  <a [routerLink]="['/', username]" [class.disabled]="!username" routerLinkActive="active" class="nav-item">
+    <app-icon class="nav-icon" name="account" />
+  </a>
+</nav>

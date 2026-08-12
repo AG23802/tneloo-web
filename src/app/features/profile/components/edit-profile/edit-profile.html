@@ -1,0 +1,37 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <app-icon (click)="goBack.emit()" name="back" />
+    <h3>Profil bearbeiten</h3>
+    <button class="btn-primary" (click)="onSave()" [disabled]="isSaving()">
+      @if (isSaving()) {
+        Speichert...
+      } @else {
+        Speichern
+      }
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-banner">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="settings-section edit-profile-section">
+    <div class="edit-field">
+      <label>Anzeigename</label>
+      <input type="text" [value]="displayName()" (input)="onNameChange($event)" placeholder="Dein Name" />
+    </div>
+
+    <div class="edit-field">
+      <label>Benutzername</label>
+      <input type="text" [value]="username()" (input)="onUserameChange($event)" placeholder="Dein Benutzername" />
+    </div>
+
+    <div class="edit-field">
+      <label>Bio / Beschreibung</label>
+      <textarea [value]="description()" (input)="onDescriptionChange($event)"
+                placeholder="Schreibe etwas über dich..."></textarea>
+    </div>
+  </div>
+</div>

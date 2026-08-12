@@ -1,0 +1,28 @@
+<div class="settings-header">
+  <app-icon (click)="goBack()" name="back" />
+  <h3>Persönliche Details</h3>
+  <button class="btn-primary" [disabled]="isLoading()" (click)="saveEmail()">Speichern</button>
+</div>
+
+<div class="settings-body">
+  <div class="settings-section edit-profile-section">
+
+    @if (errorMessage()) {
+      <div class="error-banner">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="setting-item email-edit-item">
+      <label for="email-input">Email</label>
+      <input id="email-input" type="email" [(ngModel)]="emailInput" placeholder="Enter your email" />
+    </div>
+
+    @if (requiresReauth()) {
+      <div class="setting-item email-edit-item" style="margin-top: 12px;">
+        <label for="password-input">Aktuelles Passwort</label>
+        <input id="password-input" type="password" [(ngModel)]="currentPasswordInput" placeholder="Passwort eingeben" />
+      </div>
+    }
+  </div>
+</div>

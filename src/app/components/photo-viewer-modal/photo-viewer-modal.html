@@ -1,0 +1,22 @@
+<div class="viewer-modal-overlay">
+  <div class="viewer">
+    <div class="viewer-header">
+      <svg class="back-icon" (click)="close.emit()" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+           stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+
+      <div class="viewer-user" (click)="openProfile(photo().username)" (keydown.enter)="openProfile(photo().username)"
+           (keydown.space)="openProfile(photo().username)" tabindex="0" role="button">
+        <app-avatar [user]="{
+                uid: photo().uid,
+                displayName: photo().username,
+                profilePictureURL: photo().profilePictureURL,
+              }" />
+        <span class="username">{{ photo().username }}</span>
+      </div>
+    </div>
+
+    <img class="main-photo" [src]="photo().url" [alt]="'Photo posted by ' + photo().username" loading="lazy" />
+  </div>
+</div>

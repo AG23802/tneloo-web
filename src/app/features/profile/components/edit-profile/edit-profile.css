@@ -1,0 +1,42 @@
+.edit-profile-section {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #737373;
+}
+
+.edit-field input,
+.edit-field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fafafa;
+  outline: none;
+}
+
+.edit-field input:focus,
+.edit-field textarea:focus {
+  border-color: #a8a8a8;
+  background: #fff;
+}
+
+.edit-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+

@@ -1,0 +1,58 @@
+.viewer-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+.viewer-modal-overlay .viewer {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.viewer-modal-overlay .viewer-header {
+  width: 100%;
+  max-width: 600px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.viewer-modal-overlay .viewer-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.viewer-modal-overlay .back-icon {
+  width: 24px;
+  height: 24px;
+  stroke: #0095f6;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.viewer-modal-overlay .username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.viewer-modal-overlay .main-photo {
+  width: 100%;
+  max-width: 600px;
+  height: calc(100vh - 80px); /* Locks the height to the viewport minus header */
+  object-fit: cover; /* Crops the image to fill the exact dimensions without scrolling */
+  display: block;
+  margin: auto;
+}
