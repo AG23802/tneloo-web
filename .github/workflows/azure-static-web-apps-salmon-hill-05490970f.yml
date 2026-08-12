@@ -15,24 +15,33 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
           submodules: true
           lfs: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.15.0' # Matches your Angular 22 requirement perfectly
+          cache: 'npm'
+
+      - name: Install Dependencies & Build
+        run: |
+          npm ci
+          npm run build -- --configuration production
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_HILL_05490970F }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "dist/tneloo-web" # Built app content directory - optional
-          app_build_properties: "node_version=24.15.0"
-          ###### End of Repository/Build Configurations ######
+          app_location: "dist/tneloo-web/browser" # Point directly to the built output folder
+          output_location: "" # Leave empty since app_location already points to the compiled files
+          skip_app_build: true # Bypass Oryx build engine completely
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
