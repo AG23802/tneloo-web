@@ -1,73 +1,73 @@
-<app-settings-header [title]="'Einstellungen und Aktivitäten'" icon="close" (back)="close.emit()" />
+<app-settings-header [title]="'settings.mainSettings.title' | translate" icon="close" (back)="close.emit()" />
 
 <div class="settings-section">
   <button class="setting-item" (click)="navigateTo.emit('account')">
     <div class="setting-item-content">
       <app-icon name="account" />
-      <span>Account</span>
+      <span>{{ 'settings.mainSettings.account' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('bookmark')">
     <div class="setting-item-content">
       <app-icon name="bookmark" />
-      <span>Gespeichert</span>
+      <span>{{ 'settings.mainSettings.bookmark' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('archive')">
     <div class="setting-item-content">
       <app-icon name="archive" />
-      <span>Archiv</span>
+      <span>{{ 'settings.mainSettings.archive' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('notifications')">
     <div class="setting-item-content">
       <app-icon name="notifications" />
-      <span>Benachrichtigungen</span>
+      <span>{{ 'settings.mainSettings.notifications' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('privacy')">
     <div class="setting-item-content">
       <app-icon name="privacy" />
-      <span>Privatsphäre</span>
+      <span>{{ 'settings.mainSettings.privacy' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('blocked')">
     <div class="setting-item-content">
       <app-icon name="blocked" />
-      <span>Blockiert</span>
+      <span>{{ 'settings.mainSettings.blocked' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('language')">
     <div class="setting-item-content">
       <app-icon name="language" />
-      <span>Sprache</span>
+      <span>{{ 'settings.mainSettings.language' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('appearance')">
     <div class="setting-item-content">
       <app-icon name="moon" />
-      <span>Theme & Erscheinungsbild</span>
+      <span>{{ 'settings.mainSettings.appearance' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('accessibility')">
     <div class="setting-item-content">
       <app-icon name="accessibility" />
-      <span>Barrierefreiheit</span>
+      <span>{{ 'settings.mainSettings.accessibility' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
   <button class="setting-item" (click)="navigateTo.emit('help')">
     <div class="setting-item-content">
       <app-icon name="help" />
-      <span>Hilfe & Support</span>
+      <span>{{ 'settings.mainSettings.help' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
@@ -75,6 +75,6 @@
 
 <div class="settings-section logout-section">
   <button class="btn-primary-danger" [disabled]="authService.interactionInProgress()" (click)="authService.logout()">
-    Log Out
+    {{ 'settings.mainSettings.logout' | translate }}
   </button>
 </div>

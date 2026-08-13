@@ -3,7 +3,7 @@
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-  height: calc(100vh - 47px);
+  height: calc(100vh - var(--nav-height));
 }
 
 .chat-messages {
@@ -35,7 +35,7 @@
 
     .message-bubble {
       background-color: var(--color-border-light);
-      color: var(--color-text-dark);
+      color: var(--color-text-main);
       border-bottom-left-radius: var(--radius-xs);
     }
   }

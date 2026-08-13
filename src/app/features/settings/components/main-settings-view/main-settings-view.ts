@@ -3,10 +3,11 @@ import { IconComponent } from '../../../../components/icon/icon';
 import { SettingsHeader } from '../settings-header/settings-header';
 import { AuthService } from '../../../auth/auth.service';
 import { SettingsView } from '../../../../core/models/settings-view.type';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-main-settings-view',
-  imports: [IconComponent, SettingsHeader],
+  imports: [IconComponent, SettingsHeader, TranslatePipe],
   templateUrl: './main-settings-view.html',
   styleUrl: './main-settings-view.css',
 })

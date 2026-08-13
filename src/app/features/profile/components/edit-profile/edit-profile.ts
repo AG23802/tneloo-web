@@ -2,10 +2,11 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { IconComponent } from '../../../../components/icon/icon';
 import { User } from '../../../../core/models/user.model';
 import { UserService } from '../../../../core/services/user.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-profile',
-  imports: [IconComponent],
+  imports: [IconComponent, TranslatePipe],
   templateUrl: './edit-profile.html',
   styleUrl: './edit-profile.css',
 })
@@ -68,9 +69,7 @@ export class EditProfileComponent {
     } catch (err: any) {
       this.isSaving.set(false);
       console.error('Error updating profile in Firestore:', err);
-      this.errorMessage.set(
-        err.message || 'Failed to update profile. Please try again.',
-      );
+      this.errorMessage.set(err.message || 'Failed to update profile. Please try again.');
     }
   }
 }

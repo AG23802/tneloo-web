@@ -8,10 +8,11 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import app from '../../../../../core/firebase';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-personal-details',
-  imports: [IconComponent, FormsModule],
+  imports: [IconComponent, FormsModule, TranslatePipe],
   templateUrl: './personal-details.html',
   styleUrl: './personal-details.css',
 })
@@ -41,11 +42,7 @@ export class PersonalDetails {
     try {
       // 1. Handle re-authentication if required
       if (this.requiresReauth()) {
-        await signInWithEmailAndPassword(
-          this.auth,
-          currentUser.email,
-          this.currentPasswordInput,
-        );
+        await signInWithEmailAndPassword(this.auth, currentUser.email, this.currentPasswordInput);
         this.requiresReauth.set(false);
         this.currentPasswordInput = '';
       }

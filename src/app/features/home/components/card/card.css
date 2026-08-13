@@ -1,29 +1,28 @@
+@import "../../../../../tokens.css";
+
 .profile-card {
-  background: white;
-  margin-bottom: 30px;
+  background-color: var(--color-bg-primary);
+  margin-bottom: var(--space-lg);
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, .15);
-}
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 
+  .profile-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs);
+    cursor: pointer;
+  }
 
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 8px;
-}
+  .profile-card__name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin: 0;
+    color: var(--color-text-main);
+  }
 
-
-.user-info h2 {
-  margin: 0;
-}
-
-
-.user-info p {
-  margin: 5px 0 0;
-  color: #777;
-}
-
-.profile-header {
-  cursor: pointer;
+  .profile-card__location {
+    margin: var(--space-2xs) 0 0;
+    color: var(--color-text-muted);
+  }
 }

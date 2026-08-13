@@ -1,11 +1,11 @@
 <div class="chat-container">
   <div class="threads-list">
-    @if (chatService.threads().length === 0) {
-      <p class="no-threads">No conversations yet.</p>
+    @if (threads().length === 0) {
+      <p class="no-threads">{{ 'chats.noConversations' | translate }}</p>
     }
-    @for (thread of chatService.threads(); track thread.id) {
-      @let threadMeta = getTargetUserMeta(thread.participants);
-      <div class="thread-item" (click)="selectThread(thread.id)">
+    @for (chat of threads(); track chat.id) {
+      @let threadMeta = chat.targetUser;
+      <div class="thread-item" (click)="selectThread(chat.id)">
         <div class="thread-avatar">
           @if (threadMeta?.profilePictureURL) {
             <img [src]="threadMeta?.profilePictureURL" alt="" />
@@ -15,12 +15,12 @@
         </div>
         <div class="thread-info">
           <div class="thread-top">
-            <span class="thread-title">{{ threadMeta?.displayName || 'Loading...' }}</span>
-            @if (thread.lastMessageTime) {
-              <span class="thread-time">{{ thread.lastMessageTime?.toDate() | date:'shortTime' }}</span>
+            <span class="thread-title">{{ threadMeta?.displayName || ('chats.loading' | translate) }}</span>
+            @if (chat.lastMessageTime) {
+              <span class="thread-time">{{ chat.lastMessageTime?.toDate() | date:'shortTime' }}</span>
             }
           </div>
-          <p class="thread-preview">{{ thread.lastMessage || 'Started a conversation' }}</p>
+          <p class="thread-preview">{{ chat.lastMessage || ('chats.startedConversation' | translate) }}</p>
         </div>
       </div>
     }

@@ -1,12 +1,12 @@
 <div class="settings-container">
   <div class="settings-header">
     <app-icon (click)="goBack.emit()" name="back" />
-    <h3>Profil bearbeiten</h3>
+    <h3>{{ 'profile.editProfile.title' | translate }}</h3>
     <button class="btn-primary" (click)="onSave()" [disabled]="isSaving()">
       @if (isSaving()) {
-        Speichert...
+        {{ 'profile.editProfile.saving' | translate }}
       } @else {
-        Speichern
+        {{ 'profile.editProfile.save' | translate }}
       }
     </button>
   </div>
@@ -19,19 +19,19 @@
 
   <div class="settings-section edit-profile-section">
     <div class="edit-field">
-      <label>Anzeigename</label>
-      <input type="text" [value]="displayName()" (input)="onNameChange($event)" placeholder="Dein Name" />
+      <label>{{ 'profile.editProfile.displayNameLabel' | translate }}</label>
+      <input type="text" [value]="displayName()" (input)="onNameChange($event)" [placeholder]="'profile.editProfile.displayNamePlaceholder' | translate" />
     </div>
 
     <div class="edit-field">
-      <label>Benutzername</label>
-      <input type="text" [value]="username()" (input)="onUserameChange($event)" placeholder="Dein Benutzername" />
+      <label>{{ 'profile.editProfile.usernameLabel' | translate }}</label>
+      <input type="text" [value]="username()" (input)="onUserameChange($event)" [placeholder]="'profile.editProfile.usernamePlaceholder' | translate" />
     </div>
 
     <div class="edit-field">
-      <label>Bio / Beschreibung</label>
+      <label>{{ 'profile.editProfile.bioLabel' | translate }}</label>
       <textarea [value]="description()" (input)="onDescriptionChange($event)"
-                placeholder="Schreibe etwas über dich..."></textarea>
+                [placeholder]="'profile.editProfile.bioPlaceholder' | translate"></textarea>
     </div>
   </div>
 </div>

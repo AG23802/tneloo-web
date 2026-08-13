@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
-import { IconComponent } from '../components/icon/icon';
-import { Avatar } from '../components/avatar/avatar.component';
-import { User } from '../core/models/user.model';
+import { IconComponent } from '../../../../components/icon/icon';
+import { Avatar } from '../../../../components/avatar/avatar.component';
+import { User } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-chat-header',

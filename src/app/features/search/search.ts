@@ -8,12 +8,13 @@ import { User } from '../../core/models/user.model';
 import { FeedPhoto } from '../../core/models/feed-photo';
 import { QueryDocumentSnapshot } from 'firebase/firestore';
 import { PhotoViewerModal } from '../../components/photo-viewer-modal/photo-viewer-modal';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.html',
   styleUrl: './search.css',
-  imports: [FormsModule, RouterLink, PhotoViewerModal],
+  imports: [FormsModule, RouterLink, PhotoViewerModal, TranslatePipe],
 })
 export class Search implements OnInit {
   private userService = inject(UserService);
@@ -37,8 +38,7 @@ export class Search implements OnInit {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
+    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
     if (currentScroll <= 50 || this.searchQuery().trim().length > 0) {
       this.isSearchVisible.set(true);
     } else if (currentScroll > this.lastScrollTop) {
@@ -72,15 +72,13 @@ export class Search implements OnInit {
     const currentUserId = this.userService.currentUser()?.uid;
     if (!currentUserId) return;
 
-    this.userService
-      .getSearchGalleryPaged(currentUserId, this.batchSize)
-      .subscribe({
-        next: ({ photos, lastVisible }) => {
-          this.photos.set(photos);
-          this.lastVisibleDoc = lastVisible;
-          this.hasMorePhotos.set(photos.length === this.batchSize);
-        },
-      });
+    this.userService.getSearchGalleryPaged(currentUserId, this.batchSize).subscribe({
+      next: ({ photos, lastVisible }) => {
+        this.photos.set(photos);
+        this.lastVisibleDoc = lastVisible;
+        this.hasMorePhotos.set(photos.length === this.batchSize);
+      },
+    });
   }
 
   loadMorePhotos() {
@@ -90,11 +88,7 @@ export class Search implements OnInit {
     const currentUserId = this.userService.currentUser()?.uid ?? '';
 
     this.userService
-      .getSearchGalleryPaged(
-        currentUserId,
-        this.batchSize,
-        this.lastVisibleDoc ?? undefined,
-      )
+      .getSearchGalleryPaged(currentUserId, this.batchSize, this.lastVisibleDoc ?? undefined)
       .subscribe({
         next: ({ photos, lastVisible }) => {
           this.photos.update((existing) => [...existing, ...photos]);

@@ -1,13 +1,13 @@
 <div class="settings-header">
   <app-icon (click)="navigateTo('main')" name="back" />
-  <h3>Account</h3>
+  <h3>{{ 'settings.account.title' | translate }}</h3>
   <div></div>
 </div>
 <div class="settings-section">
   <button class="setting-item" (click)="navigateTo('personal-details')">
     <div class="setting-item-content">
       <app-icon name="account" />
-      <span>Persönliche Details</span>
+      <span>{{ 'settings.account.personalDetails' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
@@ -15,7 +15,7 @@
   <button class="setting-item" (click)="navigateTo('change-password')">
     <div class="setting-item-content">
       <app-icon name="lock" />
-      <span>Passwort ändern</span>
+      <span>{{ 'settings.account.changePassword' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
@@ -23,7 +23,7 @@
   <button class="setting-item" (click)="navigateTo('verification')">
     <div class="setting-item-content">
       <app-icon name="verified" />
-      <span>Identitätsprüfung</span>
+      <span>{{ 'settings.account.verification' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
@@ -31,7 +31,7 @@
   <button class="setting-item" (click)="navigateTo('billing-cards')">
     <div class="setting-item-content">
       <app-icon name="card" />
-      <span>Gespeicherte Karten & Zahlung</span>
+      <span>{{ 'settings.account.billingCards' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
@@ -39,7 +39,7 @@
   <button class="setting-item" (click)="navigateTo('tokens')">
     <div class="setting-item-content">
       <app-icon name="token" />
-      <span>Token-Guthaben & Verlauf</span>
+      <span>{{ 'settings.account.tokens' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
@@ -47,7 +47,7 @@
   <button class="setting-item" (click)="navigateTo('delete-account')">
     <div class="setting-item-content">
       <app-icon name="home" />
-      <span>Konto löschen</span>
+      <span>{{ 'settings.account.deleteAccount' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>

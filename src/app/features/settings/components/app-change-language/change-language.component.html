@@ -1,0 +1,18 @@
+<div class="settings-header">
+  <app-icon (click)="navigateTo('main')" name="back" />
+  <h3>Sprache</h3>
+</div>
+
+<div class="settings-section">
+  @for (lang of languages; track lang.code) {
+    <button class="setting-item" (click)="selectLanguage(lang.code)">
+      <div class="setting-item-content">
+        <img [src]="lang.flag" alt="" class="flag-icon" />
+        <span>{{ lang.label }}</span>
+      </div>
+      @if (translate.currentLang() === lang.code) {
+        <app-icon name="home" />
+      }
+    </button>
+  }
+</div>

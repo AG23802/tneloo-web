@@ -1,6 +1,6 @@
 <form class="chat-input-form"
       (submit)="$event.preventDefault(); handleSendMessage(newMessageText); newMessageText = ''">
-  <input type="text" [(ngModel)]="newMessageText" name="newMessageText" placeholder="Type a message..."
+  <input type="text" [(ngModel)]="newMessageText" name="newMessageText" [placeholder]="'chats.typeMessage' | translate"
          autocomplete="off" />
   <button type="submit" [disabled]="!newMessageText.trim()">
     <app-icon name="share" />

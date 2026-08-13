@@ -1,16 +1,16 @@
 <div class="modal-backdrop">
   <div class="preview-modal">
-    <h3>Preview Photo</h3>
+    <h3>{{ 'modals.previewPhoto.title' | translate }}</h3>
     <div class="preview-image-container">
       <img [src]="previewUrlInput()" alt="Preview" />
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" (click)="cancelPreview()" [disabled]="isUploading()">Cancel</button>
+      <button class="btn-cancel" (click)="cancelPreview()" [disabled]="isUploading()">{{ 'modals.previewPhoto.cancel' | translate }}</button>
       <button class="btn-save" (click)="savePhoto()" [disabled]="isUploading()">
         @if (isUploading()) {
-          Uploading...
+          {{ 'modals.previewPhoto.uploading' | translate }}
         } @else {
-          Save
+          {{ 'modals.previewPhoto.save' | translate }}
         }
       </button>
     </div>

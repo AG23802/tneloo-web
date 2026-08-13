@@ -1,0 +1,133 @@
+{
+  "common": {
+    "emailPlaceholder": "E-Mail",
+    "passwordPlaceholder": "Passwort",
+    "delete": "Löschen"
+  },
+  "home": {
+    "loadingProfiles": "Profile werden geladen...",
+    "loading": "Wird geladen...",
+    "loadMore": "Mehr laden",
+    "seenAllFiles": "Du hast alle Dateien gesehen"
+  },
+  "auth": {
+    "welcome": "Willkommen",
+    "shareWhatMatters": "Teile, was zählt",
+    "communitySubtitle": "Veröffentliche Updates, entdecke Leute und bleibe mit deiner Community in Verbindung.",
+    "signingIn": "Anmeldung wird geöffnet…",
+    "logIn": "Anmelden",
+    "createAccount": "Neues Konto erstellen"
+  },
+  "settings": {
+    "verification": "Identitätsprüfung",
+    "verificationFlow": "Drittanbieter-Verifizierungsablauf...",
+    "billingCards": "Gespeicherte Karten & Zahlung",
+    "manageCards": "Karten verwalten...",
+    "tokens": "Token-Guthaben & Verlauf",
+    "tokensFlow": "Token kaufen und Verlauf anzeigen...",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountWarning": "Konto dauerhaft löschen...",
+    "bookmark": "Gespeichert",
+    "bookmarkDesc": "Deine gespeicherten Beiträge...",
+    "archive": "Archiv",
+    "archiveDesc": "Deine archivierten Inhalte...",
+    "notifications": "Benachrichtigungen",
+    "notificationsDesc": "Push-Benachrichtigungseinstellungen...",
+    "privacy": "Privatsphäre",
+    "privacyDesc": "Konto-Datenschutzoptionen...",
+    "blocked": "Blockiert",
+    "blockedDesc": "Liste blockierter Konten...",
+    "appearance": "Theme & Erscheinungsbild",
+    "appearanceDesc": "Dunkelmodus, Hellmodus oder Systemeinstellungen...",
+    "accessibility": "Barrierefreiheit",
+    "accessibilityDesc": "Optionen für Barrierefreiheit...",
+    "help": "Hilfe & Support",
+    "helpDesc": "Hilfe-Center und Support kontaktieren...",
+    "mainSettings": {
+      "title": "Einstellungen und Aktivitäten",
+      "account": "Account",
+      "bookmark": "Gespeichert",
+      "archive": "Archiv",
+      "notifications": "Benachrichtigungen",
+      "privacy": "Privatsphäre",
+      "blocked": "Blockiert",
+      "language": "Sprache",
+      "appearance": "Theme & Erscheinungsbild",
+      "accessibility": "Barrierefreiheit",
+      "help": "Hilfe & Support",
+      "logout": "Abmelden"
+    },
+    "changePassword": {
+      "title": "Passwort ändern",
+      "saving": "Wird gespeichert...",
+      "save": "Speichern",
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Neues Passwort bestätigen",
+      "formDescription": "Formular für Passwortänderung..."
+    },
+    "personalDetails": {
+      "title": "Persönliche Details",
+      "save": "Speichern",
+      "saving": "Wird gespeichert...",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "Gib deine E-Mail ein",
+      "currentPasswordLabel": "Aktuelles Passwort",
+      "passwordPlaceholder": "Passwort eingeben"
+    },
+    "account": {
+      "title": "Account",
+      "personalDetails": "Persönliche Details",
+      "changePassword": "Passwort ändern",
+      "verification": "Identitätsprüfung",
+      "billingCards": "Gespeicherte Karten & Zahlung",
+      "tokens": "Token-Guthaben & Verlauf",
+      "deleteAccount": "Konto löschen"
+    }
+  },
+  "profile": {
+    "age": "Alter",
+    "canton": "Kanton",
+    "follow": "Folgen",
+    "message": "Nachricht",
+    "edit": "Bearbeiten",
+    "deletePhotoTitle": "Foto löschen?",
+    "deletePhotoDesc": "Mist du sicher, dass du dieses Foto löschen möchtest?",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "pageNotFound": "Seite nicht gefunden.",
+    "uploadPhoto": "Foto hochladen",
+    "editProfile": {
+      "title": "Profil bearbeiten",
+      "save": "Speichern",
+      "saving": "Speichert...",
+      "displayNameLabel": "Anzeigename",
+      "displayNamePlaceholder": "Dein Name",
+      "usernameLabel": "Benutzername",
+      "usernamePlaceholder": "Dein Benutzername",
+      "bioLabel": "Bio / Beschreibung",
+      "bioPlaceholder": "Schreibe etwas über dich..."
+    }
+  },
+  "chats": {
+    "typeMessage": "Schreibe eine Nachricht...",
+    "noConversations": "Noch keine Unterhaltungen.",
+    "loading": "Wird geladen...",
+    "startedConversation": "Unterhaltung begonnen"
+  },
+  "search": {
+    "placeholder": "Suchen...",
+    "noUsersFound": "Keine Benutzer gefunden",
+    "loading": "Wird geladen...",
+    "loadMore": "Mehr laden",
+    "seenAllFiles": "Du hast alle Dateien gesehen"
+  },
+  "modals": {
+    "previewPhoto": {
+      "title": "Foto-Vorschau",
+      "cancel": "Abbrechen",
+      "uploading": "Wird hochgeladen...",
+      "save": "Speichern"
+    }
+  }
+}

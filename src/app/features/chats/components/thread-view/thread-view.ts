@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ChatHeader } from '../../../../chat-header/chat-header';
+import { ChatHeader } from '../chat-header/chat-header';
 import { UserService } from '../../../../core/services/user.service';
 import { ChatService } from '../../services/chat.service';
 import { ChatInput } from '../chat-input/chat-input/chat-input';

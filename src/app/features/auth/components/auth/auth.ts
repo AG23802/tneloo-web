@@ -6,10 +6,11 @@ import {
   email as emailValidator,
 } from '@angular/forms/signals';
 import { AuthService } from '../../auth.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-auth',
-  imports: [FormField],
+  imports: [FormField, TranslatePipe],
   templateUrl: './auth.html',
   styleUrl: './auth.css',
 })

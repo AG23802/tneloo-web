@@ -1,0 +1,133 @@
+{
+  "common": {
+    "emailPlaceholder": "E-mail",
+    "passwordPlaceholder": "Mot de passe",
+    "delete": "Supprimer"
+  },
+  "home": {
+    "loadingProfiles": "Chargement des profils...",
+    "loading": "Chargement...",
+    "loadMore": "Charger plus",
+    "seenAllFiles": "Vous avez vu tous les fichiers"
+  },
+  "auth": {
+    "welcome": "Bienvenue",
+    "shareWhatMatters": "Partagez ce qui compte",
+    "communitySubtitle": "Publiez des actualités, découvrez des personnes et restez en contact avec votre communauté.",
+    "signingIn": "Ouverture de la session…",
+    "logIn": "Se connecter",
+    "createAccount": "Créer un nouveau compte"
+  },
+  "settings": {
+    "verification": "Vérification d'identité",
+    "verificationFlow": "Flux de vérification tiers...",
+    "billingCards": "Cartes et paiements",
+    "manageCards": "Gérer les cartes...",
+    "tokens": "Solde de jetons et historique",
+    "tokensFlow": "Acheter des jetons et afficher l'historique...",
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountWarning": "Supprimer définitivement le compte...",
+    "bookmark": "Enregistré",
+    "bookmarkDesc": "Vos publications enregistrées...",
+    "archive": "Archive",
+    "archiveDesc": "Votre contenu archivé...",
+    "notifications": "Notifications",
+    "notificationsDesc": "Paramètres des notifications push...",
+    "privacy": "Confidentialité",
+    "privacyDesc": "Options de confidentialité du compte...",
+    "blocked": "Bloqué",
+    "blockedDesc": "Liste des comptes bloqués...",
+    "appearance": "Thème et apparence",
+    "appearanceDesc": "Mode sombre, mode clair ou paramètres système...",
+    "accessibility": "Accessibilité",
+    "accessibilityDesc": "Options d'accessibilité...",
+    "help": "Aide et support",
+    "helpDesc": "Centre d'aide et contact du support...",
+    "mainSettings": {
+      "title": "Paramètres et activité",
+      "account": "Compte",
+      "bookmark": "Enregistré",
+      "archive": "Archive",
+      "notifications": "Notifications",
+      "privacy": "Confidentialité",
+      "blocked": "Bloqué",
+      "language": "Langue",
+      "appearance": "Thème et apparence",
+      "accessibility": "Accessibilité",
+      "help": "Aide et support",
+      "logout": "Se déconnecter"
+    },
+    "changePassword": {
+      "title": "Changer le mot de passe",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "formDescription": "Formulaire de modification du mot de passe..."
+    },
+    "personalDetails": {
+      "title": "Détails personnels",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "Entrez votre e-mail",
+      "currentPasswordLabel": "Mot de passe actuel",
+      "passwordPlaceholder": "Entrez votre mot de passe"
+    },
+    "account": {
+      "title": "Compte",
+      "personalDetails": "Détails personnels",
+      "changePassword": "Changer le mot de passe",
+      "verification": "Vérification d'identité",
+      "billingCards": "Cartes et paiements",
+      "tokens": "Solde de jetons et historique",
+      "deleteAccount": "Supprimer le compte"
+    }
+  },
+  "profile": {
+    "age": "Âge",
+    "canton": "Canton",
+    "follow": "Suivre",
+    "message": "Message",
+    "edit": "Modifier",
+    "deletePhotoTitle": "Supprimer la photo ?",
+    "deletePhotoDesc": "Êtes-vous sûr de vouloir supprimer cette photo ?",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "pageNotFound": "Page non trouvée.",
+    "uploadPhoto": "Télécharger une photo",
+    "editProfile": {
+      "title": "Modifier le profil",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "displayNameLabel": "Nom d'affichage",
+      "displayNamePlaceholder": "Votre nom",
+      "usernameLabel": "Nom d'utilisateur",
+      "usernamePlaceholder": "Votre nom d'utilisateur",
+      "bioLabel": "Bio / Description",
+      "bioPlaceholder": "Écrivez quelque chose sur vous..."
+    }
+  },
+  "chats": {
+    "typeMessage": "Écrivez un message...",
+    "noConversations": "Aucune conversation pour le moment.",
+    "loading": "Chargement...",
+    "startedConversation": "A commencé une conversation"
+  },
+  "search": {
+    "placeholder": "Rechercher...",
+    "noUsersFound": "Aucun utilisateur trouvé",
+    "loading": "Chargement...",
+    "loadMore": "Charger plus",
+    "seenAllFiles": "Vous avez vu tous les fichiers"
+  },
+  "modals": {
+    "previewPhoto": {
+      "title": "Aperçu de la photo",
+      "cancel": "Annuler",
+      "uploading": "Téléchargement...",
+      "save": "Enregistrer"
+    }
+  }
+}

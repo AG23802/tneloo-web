@@ -1,21 +1,16 @@
-<!--<app-debug />-->
-
-<!-- Global Error / Notification Banner -->
-@if (notificationService.message()) {
-  <div class="global-notification-banner" [class.success]="notificationService.type() === 'success'">
-    <span>{{ notificationService.message() }}</span>
-    <button class="close-btn" (click)="notificationService.clear()">×</button>
-  </div>
+@if (loadingManager.isLoading()) {
+  <!-- Shows ONLY on page refresh while waiting for Firebase/initial auth -->
+  <app-spinner />
+} @else {
+  <!-- Normal app content (won't trigger on button clicks) -->
+  <main class="main-content">
+    @if (!userService.isLoggedIn()) {
+      <app-auth />
+    } @else {
+      <div class="view-container">
+        <router-outlet />
+      </div>
+    }
+    <app-nav />
+  </main>
 }
-<main class="main-content">
-
-  @if (!userService.isLoggedIn()) {
-    <app-auth />
-  } @else {
-    <div class="view-container">
-      <router-outlet />
-    </div>
-  }
-
-  <app-nav />
-</main>

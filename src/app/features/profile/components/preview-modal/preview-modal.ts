@@ -1,9 +1,10 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { PhotoUploadService } from '../../../../core/services/photo-upload.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preview-modal',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './preview-modal.html',
   styleUrl: './preview-modal.css',
 })

@@ -1,0 +1,133 @@
+{
+  "common": {
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "delete": "Elimina"
+  },
+  "home": {
+    "loadingProfiles": "Caricamento profili...",
+    "loading": "Caricamento...",
+    "loadMore": "Carica altro",
+    "seenAllFiles": "Hai visto tutti i file"
+  },
+  "auth": {
+    "welcome": "Benvenuto",
+    "shareWhatMatters": "Condividi ciò che conta",
+    "communitySubtitle": "Pubblica aggiornamenti, scopri persone e rimani in contatto con la tua community.",
+    "signingIn": "Apertura accesso...",
+    "logIn": "Accedi",
+    "createAccount": "Crea un nuovo account"
+  },
+  "settings": {
+    "verification": "Verifica dell'identità",
+    "verificationFlow": "Processo di verifica di terze parti...",
+    "billingCards": "Carte e pagamenti",
+    "manageCards": "Gestisci carte...",
+    "tokens": "Saldo token e cronologia",
+    "tokensFlow": "Acquista token e visualizza la cronologia...",
+    "deleteAccount": "Elimina account",
+    "deleteAccountWarning": "Elimina permanentemente l'account...",
+    "bookmark": "Salvato",
+    "bookmarkDesc": "I tuoi post salvati...",
+    "archive": "Archivio",
+    "archiveDesc": "I tuoi contenuti archiviati...",
+    "notifications": "Notifiche",
+    "notificationsDesc": "Impostazioni notifiche push...",
+    "privacy": "Privacy",
+    "privacyDesc": "Opzioni privacy dell'account...",
+    "blocked": "Bloccati",
+    "blockedDesc": "Elenco degli account bloccati...",
+    "appearance": "Tema e aspetto",
+    "appearanceDesc": "Modalità scura, modalità chiara o impostazioni di sistema...",
+    "accessibility": "Accessibilità",
+    "accessibilityDesc": "Opzioni di accessibilità...",
+    "help": "Aiuto e supporto",
+    "helpDesc": "Centro assistenza e supporto contatti...",
+    "mainSettings": {
+      "title": "Impostazioni e attività",
+      "account": "Account",
+      "bookmark": "Salvato",
+      "archive": "Archivio",
+      "notifications": "Notifiche",
+      "privacy": "Privacy",
+      "blocked": "Bloccati",
+      "language": "Lingua",
+      "appearance": "Tema e aspetto",
+      "accessibility": "Accessibilità",
+      "help": "Aiuto e supporto",
+      "logout": "Esci"
+    },
+    "changePassword": {
+      "title": "Modifica password",
+      "saving": "Salvataggio...",
+      "save": "Salva",
+      "currentPassword": "Password attuale",
+      "newPassword": "Nuova password",
+      "confirmPassword": "Conferma nuova password",
+      "formDescription": "Modulo di modifica password..."
+    },
+    "personalDetails": {
+      "title": "Dettagli personali",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Inserisci la tua email",
+      "currentPasswordLabel": "Password attuale",
+      "passwordPlaceholder": "Inserisci la tua password"
+    },
+    "account": {
+      "title": "Account",
+      "personalDetails": "Dettagli personali",
+      "changePassword": "Modifica password",
+      "verification": "Verifica dell'identità",
+      "billingCards": "Carte e pagamenti",
+      "tokens": "Saldo token e cronologia",
+      "deleteAccount": "Elimina account"
+    }
+  },
+  "profile": {
+    "age": "Età",
+    "canton": "Cantone",
+    "follow": "Segui",
+    "message": "Messaggio",
+    "edit": "Modifica",
+    "deletePhotoTitle": "Eliminare la foto?",
+    "deletePhotoDesc": "Sei sicuro di voler eliminare questa foto?",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "pageNotFound": "Pagina non trovata.",
+    "uploadPhoto": "Carica foto",
+    "editProfile": {
+      "title": "Modifica profilo",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "displayNameLabel": "Nome visualizzato",
+      "displayNamePlaceholder": "Il tuo nome",
+      "usernameLabel": "Nome utente",
+      "usernamePlaceholder": "Il tuo nome utente",
+      "bioLabel": "Bio / Descrizione",
+      "bioPlaceholder": "Scrivi qualcosa su di te..."
+    }
+  },
+  "chats": {
+    "typeMessage": "Scrivi un messaggio...",
+    "noConversations": "Nessuna conversazione ancora.",
+    "loading": "Caricamento...",
+    "startedConversation": "Ha iniziato una conversazione"
+  },
+  "search": {
+    "placeholder": "Cerca...",
+    "noUsersFound": "Nessun utente trovato",
+    "loading": "Caricamento...",
+    "loadMore": "Carica altro",
+    "seenAllFiles": "Hai visto tutti i file"
+  },
+  "modals": {
+    "previewPhoto": {
+      "title": "Anteprima foto",
+      "cancel": "Annulla",
+      "uploading": "Caricamento...",
+      "save": "Salva"
+    }
+  }
+}

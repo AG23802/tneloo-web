@@ -1,0 +1,133 @@
+{
+  "common": {
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "delete": "Delete"
+  },
+  "home": {
+    "loadingProfiles": "Loading profiles...",
+    "loading": "Loading...",
+    "loadMore": "Load More",
+    "seenAllFiles": "You've seen all files"
+  },
+  "auth": {
+    "welcome": "Welcome",
+    "shareWhatMatters": "Share what matters",
+    "communitySubtitle": "Post updates, discover people, and keep up with your community.",
+    "signingIn": "Opening sign in…",
+    "logIn": "Log in",
+    "createAccount": "Create new account"
+  },
+  "settings": {
+    "verification": "Identity Verification",
+    "verificationFlow": "Third-party verification flow...",
+    "billingCards": "Cards & Payment",
+    "manageCards": "Manage cards...",
+    "tokens": "Token Balance & History",
+    "tokensFlow": "Buy tokens and view history...",
+    "deleteAccount": "Delete Account",
+    "deleteAccountWarning": "Permanently delete account...",
+    "bookmark": "Saved",
+    "bookmarkDesc": "Your saved posts...",
+    "archive": "Archive",
+    "archiveDesc": "Your archived content...",
+    "notifications": "Notifications",
+    "notificationsDesc": "Push notification settings...",
+    "privacy": "Privacy",
+    "privacyDesc": "Account privacy options...",
+    "blocked": "Blocked",
+    "blockedDesc": "List of blocked accounts...",
+    "appearance": "Theme & Appearance",
+    "appearanceDesc": "Dark mode, light mode, or system settings...",
+    "accessibility": "Accessibility",
+    "accessibilityDesc": "Accessibility options...",
+    "help": "Help & Support",
+    "helpDesc": "Help center and contact support...",
+    "mainSettings": {
+      "title": "Settings and activity",
+      "account": "Account",
+      "bookmark": "Saved",
+      "archive": "Archive",
+      "notifications": "Notifications",
+      "privacy": "Privacy",
+      "blocked": "Blocked",
+      "language": "Language",
+      "appearance": "Theme & Appearance",
+      "accessibility": "Accessibility",
+      "help": "Help & Support",
+      "logout": "Log Out"
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "saving": "Saving...",
+      "save": "Save",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "formDescription": "Password change form..."
+    },
+    "personalDetails": {
+      "title": "Personal Details",
+      "save": "Save",
+      "saving": "Saving...",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "currentPasswordLabel": "Current Password",
+      "passwordPlaceholder": "Enter your password"
+    },
+    "account": {
+      "title": "Account",
+      "personalDetails": "Personal Details",
+      "changePassword": "Change Password",
+      "verification": "Identity Verification",
+      "billingCards": "Cards & Payment",
+      "tokens": "Token Balance & History",
+      "deleteAccount": "Delete Account"
+    }
+  },
+  "profile": {
+    "age": "Age",
+    "canton": "Canton",
+    "follow": "Follow",
+    "message": "Message",
+    "edit": "Edit",
+    "deletePhotoTitle": "Delete Photo?",
+    "deletePhotoDesc": "Are you sure you want to delete this photo?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "pageNotFound": "Page not found.",
+    "uploadPhoto": "Upload Photo",
+    "editProfile": {
+      "title": "Edit Profile",
+      "save": "Save",
+      "saving": "Saving...",
+      "displayNameLabel": "Display Name",
+      "displayNamePlaceholder": "Your name",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Your username",
+      "bioLabel": "Bio / Description",
+      "bioPlaceholder": "Write something about yourself..."
+    }
+  },
+  "chats": {
+    "typeMessage": "Type a message...",
+    "noConversations": "No conversations yet.",
+    "loading": "Loading...",
+    "startedConversation": "Started a conversation"
+  },
+  "search": {
+    "placeholder": "Search...",
+    "noUsersFound": "No users found",
+    "loading": "Loading...",
+    "loadMore": "Load More",
+    "seenAllFiles": "You've seen all files"
+  },
+  "modals": {
+    "previewPhoto": {
+      "title": "Preview Photo",
+      "cancel": "Cancel",
+      "uploading": "Uploading...",
+      "save": "Save"
+    }
+  }
+}

@@ -8,10 +8,11 @@ import {
 } from 'firebase/auth';
 import app from '../../../../../core/firebase';
 import { IconComponent } from '../../../../../components/icon/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-change-password',
-  imports: [IconComponent, FormsModule],
+  imports: [IconComponent, FormsModule, TranslatePipe],
   templateUrl: './change-password.html',
   styleUrl: './change-password.css',
 })

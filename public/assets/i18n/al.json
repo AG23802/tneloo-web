@@ -1,0 +1,133 @@
+{
+  "common": {
+    "emailPlaceholder": "E-mail",
+    "passwordPlaceholder": "Fjalëkalimi",
+    "delete": "Fshi"
+  },
+  "home": {
+    "loadingProfiles": "Duke ngarkuar profile...",
+    "loading": "Duke u ngarkuar...",
+    "loadMore": "Ngarko më shumë",
+    "seenAllFiles": "I keni parë të gjithë skedarët"
+  },
+  "auth": {
+    "welcome": "Mirë se vini",
+    "shareWhatMatters": "Ndani atë që ka rëndësi",
+    "communitySubtitle": "Postoni përditësime, zbuloni njerëz dhe qëndroni të lidhur me komunitetin tuaj.",
+    "signingIn": "Duke u kyçur...",
+    "logIn": "Kyçu",
+    "createAccount": "Krijo llogari të re"
+  },
+  "settings": {
+    "verification": "Verifikimi i Identitetit",
+    "verificationFlow": "Procesi i verifikimit nga palë të treta...",
+    "billingCards": "Kartat & Pagesat",
+    "manageCards": "Menaxho kartat...",
+    "tokens": "Bilanci i Tokenëve & Historiku",
+    "tokensFlow": "Bli tokenë dhe shiko historikun...",
+    "deleteAccount": "Fshi llogarinë",
+    "deleteAccountWarning": "Fshi përgjithmonë llogarinë...",
+    "bookmark": "Të ruajtura",
+    "bookmarkDesc": "Postimet tuaja të ruajtura...",
+    "archive": "Arkiva",
+    "archiveDesc": "Përmbajtja juaj e arkivuar...",
+    "notifications": "Njoftimet",
+    "notificationsDesc": "Cilësimet e njoftimeve push...",
+    "privacy": "Privatësia",
+    "privacyDesc": "Opsionet e privatësisë së llogarisë...",
+    "blocked": "Të bllokuara",
+    "blockedDesc": "Lista e llogarive të bllokuara...",
+    "appearance": "Tema & Pamja",
+    "appearanceDesc": "Modaliteti i errët, i ndritshëm ose cilësimet e sistemit...",
+    "accessibility": "Përshkathtësia",
+    "accessibilityDesc": "Opsionet e përshkathtësisë...",
+    "help": "Ndihma & Mbështetja",
+    "helpDesc": "Qendra e ndihmës dhe kontaktimi i mbështetjes...",
+    "mainSettings": {
+      "title": "Cilësimet dhe aktiviteti",
+      "account": "Llogaria",
+      "bookmark": "Të ruajtura",
+      "archive": "Arkiva",
+      "notifications": "Njoftimet",
+      "privacy": "Privatësia",
+      "blocked": "Të bllokuara",
+      "language": "Gjuha",
+      "appearance": "Tema & Pamja",
+      "accessibility": "Përshkathtësia",
+      "help": "Ndihma & Mbështetja",
+      "logout": "Dil"
+    },
+    "changePassword": {
+      "title": "Ndrysho fjalëkalimin",
+      "saving": "Duke ruajtur...",
+      "save": "Ruaj",
+      "currentPassword": "Fjalëkalimi aktual",
+      "newPassword": "Fjalëkalimi i ri",
+      "confirmPassword": "Konfirmo fjalëkalimin e ri",
+      "formDescription": "Formulari për ndryshimin e fjalëkalimit..."
+    },
+    "personalDetails": {
+      "title": "Të dhënat personale",
+      "save": "Ruaj",
+      "saving": "Duke ruajtur...",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "Vendosni e-mailin tuaj",
+      "currentPasswordLabel": "Fjalëkalimi aktual",
+      "passwordPlaceholder": "Vendosni fjalëkalimin"
+    },
+    "account": {
+      "title": "Llogaria",
+      "personalDetails": "Të dhënat personale",
+      "changePassword": "Ndrysho fjalëkalimin",
+      "verification": "Verifikimi i Identitetit",
+      "billingCards": "Kartat & Pagesat",
+      "tokens": "Bilanci i Tokenëve & Historiku",
+      "deleteAccount": "Fshi llogarinë"
+    }
+  },
+  "profile": {
+    "age": "Mosha",
+    "canton": "Kantoni",
+    "follow": "Niq",
+    "message": "Mesazh",
+    "edit": "Ndrysho",
+    "deletePhotoTitle": "Fshi foton?",
+    "deletePhotoDesc": "A jeni i sigurt që dëshironi ta fshini këtë foto?",
+    "cancel": "Anulo",
+    "delete": "Fshi",
+    "pageNotFound": "Faqja nuk u gjet.",
+    "uploadPhoto": "Ngarko foto",
+    "editProfile": {
+      "title": "Ndrysho profilin",
+      "save": "Ruaj",
+      "saving": "Duke ruajtur...",
+      "displayNameLabel": "Emri i shfaqur",
+      "displayNamePlaceholder": "Emri juaj",
+      "usernameLabel": "Emri i përdoruesit",
+      "usernamePlaceholder": "Emri juaj i përdoruesit",
+      "bioLabel": "Biografia / Përshkrimi",
+      "bioPlaceholder": "Shkruani diçka për veten tuaj..."
+    }
+  },
+  "chats": {
+    "typeMessage": "Shkruaj një mesazh...",
+    "noConversations": "Ende nuk ka biseda.",
+    "loading": "Duke u ngarkuar...",
+    "startedConversation": "Filloi një bisedë"
+  },
+  "search": {
+    "placeholder": "Kërko...",
+    "noUsersFound": "Nuk u gjetën përdorues",
+    "loading": "Duke u ngarkuar...",
+    "loadMore": "Ngarko më shumë",
+    "seenAllFiles": "I keni parë të gjithë skedarët"
+  },
+  "modals": {
+    "previewPhoto": {
+      "title": "Parapamja e fotos",
+      "cancel": "Anulo",
+      "uploading": "Duke u ngarkuar...",
+      "save": "Ruaj"
+    }
+  }
+}

@@ -7,10 +7,11 @@ import {
   viewChild,
 } from '@angular/core';
 import { IconComponent } from '../../../../components/icon/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-upload',
-  imports: [IconComponent],
+  imports: [IconComponent, TranslatePipe],
   templateUrl: './upload.html',
   styleUrl: './upload.css',
 })

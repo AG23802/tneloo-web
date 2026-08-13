@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProfileGrid } from './profile-grid';
 
-describe('ProfileGrid', () => {
-  let component: ProfileGrid;
-  let fixture: ComponentFixture<ProfileGrid>;
+import { Spinner } from './spinner';
+
+describe('Spinner', () => {
+  let component: Spinner;
+  let fixture: ComponentFixture<Spinner>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileGrid],
+      imports: [Spinner],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProfileGrid);
+    fixture = TestBed.createComponent(Spinner);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

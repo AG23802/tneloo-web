@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, Service } from '@angular/core';
 import {
   getFirestore,
   doc,
@@ -27,11 +27,11 @@ import { Photo } from '../models/photo.model';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FeedPhoto } from '../models/feed-photo';
+import { LoadingManagerService } from './loading.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class UserService {
+  loadingManager = inject(LoadingManagerService);
   private firestore = getFirestore(app);
   private auth = getAuth(app);
   private storage = getStorage(app);
@@ -41,12 +41,16 @@ export class UserService {
   readonly isLoggedIn = computed(() => this.currentUserSignal() !== null);
 
   constructor() {
-    onAuthStateChanged(this.auth, (firebaseUser) => {
+    this.loadingManager.show();
+
+    onAuthStateChanged(this.auth, async (firebaseUser) => {
       if (firebaseUser) {
-        this.fetchUserProfile(firebaseUser.uid);
+        await this.fetchUserProfile(firebaseUser.uid);
       } else {
         this.currentUserSignal.set(null);
       }
+
+      this.loadingManager.hide();
     });
   }
 
@@ -139,9 +143,7 @@ export class UserService {
 
     if (photoData.storagePath) {
       const storageRef = ref(this.storage, photoData.storagePath);
-      await deleteObject(storageRef).catch((err) =>
-        console.warn('Storage delete error:', err),
-      );
+      await deleteObject(storageRef).catch((err) => console.warn('Storage delete error:', err));
     }
   }
 
@@ -169,14 +171,10 @@ export class UserService {
     }
 
     return from(
-      Promise.all([
-        getDocs(photosQuery),
-        getDocs(collection(this.firestore, 'users')),
-      ]),
+      Promise.all([getDocs(photosQuery), getDocs(collection(this.firestore, 'users'))]),
     ).pipe(
       map(([photoSnapshot, userSnapshot]) => {
-        const lastVisible =
-          photoSnapshot.docs[photoSnapshot.docs.length - 1] || null;
+        const lastVisible = photoSnapshot.docs[photoSnapshot.docs.length - 1] || null;
 
         const usersMap = new Map<string, User>();
         userSnapshot.docs.forEach((doc) => {
@@ -228,14 +226,10 @@ export class UserService {
     }
 
     return from(
-      Promise.all([
-        getDocs(usersQuery),
-        getDocs(collection(this.firestore, 'photos')),
-      ]),
+      Promise.all([getDocs(usersQuery), getDocs(collection(this.firestore, 'photos'))]),
     ).pipe(
       map(([userSnapshot, photoSnapshot]) => {
-        const lastVisible =
-          userSnapshot.docs[userSnapshot.docs.length - 1] || null;
+        const lastVisible = userSnapshot.docs[userSnapshot.docs.length - 1] || null;
 
         let users: User[] = userSnapshot.docs.map((doc) => ({
           ...(doc.data() as User),
@@ -262,15 +256,14 @@ export class UserService {
     );
   }
 
-  private fetchUserProfile(uid: string): void {
+  private async fetchUserProfile(uid: string): Promise<void> {
     const docRef = doc(this.firestore, 'users', uid);
-    getDoc(docRef).then((docSnap) => {
-      if (docSnap.exists()) {
-        this.currentUserSignal.set(docSnap.data() as User);
-      } else {
-        this.currentUserSignal.set(null);
-      }
-    });
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      this.currentUserSignal.set(docSnap.data() as User);
+    } else {
+      this.currentUserSignal.set(null);
+    }
   }
 
   searchUsers(queryStr: string): Observable<User[]> {
@@ -280,9 +273,7 @@ export class UserService {
       where('username', '>=', queryStr),
       where('username', '<=', queryStr + '\uf8ff'),
     );
-    return from(getDocs(q)).pipe(
-      map((snapshot) => snapshot.docs.map((doc) => doc.data() as User)),
-    );
+    return from(getDocs(q)).pipe(map((snapshot) => snapshot.docs.map((doc) => doc.data() as User)));
   }
 
   getUserByUsername(username: string): Observable<User | null> {

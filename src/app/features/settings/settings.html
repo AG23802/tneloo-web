@@ -15,122 +15,116 @@
     <!-- VERIFICATION SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('account')" name="back" />
-      <h3>Identitätsprüfung</h3>
+      <h3>{{ 'settings.verification' | translate }}</h3>
       <div></div>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Drittanbieter Verifizierungs-Flow...</div>
+      <div class="setting-item">{{ 'settings.verificationFlow' | translate }}</div>
     </div>
   } @else if (activeView() === 'billing-cards') {
     <!-- BILLING CARDS SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('account')" name="back" />
-      <h3>Karten & Zahlung</h3>
+      <h3>{{ 'settings.billingCards' | translate }}</h3>
       <div></div>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Karten verwalten...</div>
+      <div class="setting-item">{{ 'settings.manageCards' | translate }}</div>
     </div>
   } @else if (activeView() === 'tokens') {
     <!-- TOKENS SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('account')" name="back" />
-      <h3>Token-Guthaben & Verlauf</h3>
+      <h3>{{ 'settings.tokens' | translate }}</h3>
       <div></div>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Token kaufen und Verlauf anzeigen...</div>
+      <div class="setting-item">{{ 'settings.tokensFlow' | translate }}</div>
     </div>
   } @else if (activeView() === 'delete-account') {
     <!-- DELETE ACCOUNT SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('account')" name="back" />
-      <h3>Konto löschen</h3>
-      <button class="btn-primary-danger">Delete</button>
+      <h3>{{ 'settings.deleteAccount' | translate }}</h3>
+      <button class="btn-primary-danger">{{ 'common.delete' | translate }}</button>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Konto unwiderruflich löschen...</div>
+      <div class="setting-item">{{ 'settings.deleteAccountWarning' | translate }}</div>
     </div>
   } @else if (activeView() === 'bookmark') {
     <!-- GESPEICHERT SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Gespeichert</h3>
+      <h3>{{ 'settings.bookmark' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Deine gespeicherten Beiträge...</div>
+      <div class="setting-item">{{ 'settings.bookmarkDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'archive') {
     <!-- ARCHIV SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Archiv</h3>
+      <h3>{{ 'settings.archive' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Deine archivierten Inhalte...</div>
+      <div class="setting-item">{{ 'settings.archiveDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'notifications') {
     <!-- BENACHRICHTIGUNGEN SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Benachrichtigungen</h3>
+      <h3>{{ 'settings.notifications' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Push-Benachrichtigungen Einstellungen...</div>
+      <div class="setting-item">{{ 'settings.notificationsDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'privacy') {
     <!-- PRIVATSPHÄRE SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Privatsphäre</h3>
+      <h3>{{ 'settings.privacy' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Konto-Privatsphäre Optionen...</div>
+      <div class="setting-item">{{ 'settings.privacyDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'blocked') {
     <!-- BLOCKIERT SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Blockiert</h3>
+      <h3>{{ 'settings.blocked' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Liste der blockierten Konten...</div>
+      <div class="setting-item">{{ 'settings.blockedDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'language') {
     <!-- SPRACHE SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Sprache</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">Sprachauswahl Optionen...</div>
-    </div>
+    <app-change-language (saveChanges)="navigateTo($event)" />
   } @else if (activeView() === 'appearance') {
     <!-- APPEARANCE SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Theme & Erscheinungsbild</h3>
+      <h3>{{ 'settings.appearance' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Dark Mode, Light Mode oder Systemeinstellungen...</div>
+      <div class="setting-item">{{ 'settings.appearanceDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'accessibility') {
     <!-- ACCESSIBILITY SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Barrierefreiheit</h3>
+      <h3>{{ 'settings.accessibility' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Optionen für Barrierefreiheit...</div>
+      <div class="setting-item">{{ 'settings.accessibilityDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'help') {
     <!-- HILFE & SUPPORT SUB-MENU -->
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>Hilfe & Support</h3>
+      <h3>{{ 'settings.help' | translate }}</h3>
     </div>
     <div class="settings-section">
-      <div class="setting-item">Hilfe-Center und Support kontaktieren...</div>
+      <div class="setting-item">{{ 'settings.helpDesc' | translate }}</div>
     </div>
   }
 </div>

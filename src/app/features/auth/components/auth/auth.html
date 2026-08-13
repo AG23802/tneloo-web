@@ -1,14 +1,14 @@
 <div class="auth-container">
   <div class="auth-header">
-    <h3>Welcome</h3>
+    <h3>{{ 'auth.welcome' | translate }}</h3>
   </div>
 
   <div class="auth-section">
     <div class="auth-item auth-intro-item">
       <div class="auth-item-content">
         <div>
-          <strong>Share what matters</strong>
-          <p class="auth-subtitle">Post updates, discover people, and keep up with your community.</p>
+          <strong>{{ 'auth.shareWhatMatters' | translate }}</strong>
+          <p class="auth-subtitle">{{ 'auth.communitySubtitle' | translate }}</p>
         </div>
       </div>
     </div>
@@ -22,13 +22,13 @@
 
     <!-- Signal Forms inputs mapped via formField -->
     <div class="auth-input-group">
-      <input class="auth-input-item" type="email" [formField]="authForm.email" placeholder="Email" />
-      <input class="auth-input-item" type="password" [formField]="authForm.password" placeholder="Password" />
+      <input class="auth-input-item" type="email" [formField]="authForm.email" [placeholder]="'common.emailPlaceholder' | translate" />
+      <input class="auth-input-item" type="password" [formField]="authForm.password" [placeholder]="'common.passwordPlaceholder' | translate" />
     </div>
 
     <button class="auth-item" [disabled]="authService.interactionInProgress()" (click)="onLogin()">
       <div class="auth-item-content">
-        <span>{{ authService.interactionInProgress() ? 'Opening sign in…' : 'Log in' }}</span>
+        <span>{{ (authService.interactionInProgress() ? 'auth.signingIn' : 'auth.logIn') | translate }}</span>
       </div>
       <span class="forward-icon">‹</span>
     </button>
@@ -36,7 +36,7 @@
     <button class="auth-item auth-register-item" [disabled]="authService.interactionInProgress()"
             (click)="onRegister()">
       <div class="auth-item-content">
-        <span class="register-text">Create new account</span>
+        <span class="register-text">{{ 'auth.createAccount' | translate }}</span>
       </div>
       <span class="forward-icon">‹</span>
     </button>

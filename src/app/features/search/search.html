@@ -1,19 +1,19 @@
 <div class="search-page">
 
   <!-- Sticky container that hides/shows based on scroll -->
-  <div class="search-container" [class.hidden]="!isSearchVisible()">
-    <input type="text" class="search-bar" placeholder="Search..." [(ngModel)]="searchQuery" />
+  <div class="search-page__container" [class.hidden]="!isSearchVisible()">
+    <input type="text" class="search-page__bar" [placeholder]="'search.placeholder' | translate" [(ngModel)]="searchQuery" />
 
     @if (searchQuery().trim().length > 0) {
-      <div class="search-results-list">
+      <div class="search-page__results-list">
         @for (user of searchResults(); track user.uid) {
-          <a [routerLink]="['/', user.username]" class="search-user-item">
-            <img [src]="user.profilePictureURL || 'assets/default-profile-avatar.png'" alt="" class="search-avatar" />
+          <a [routerLink]="['/', user.username]" class="search-page__user-item">
+            <img [src]="user.profilePictureURL || 'assets/default-profile-avatar.png'" alt="" class="search-page__avatar" />
             <span>{{ user.displayName }}</span>
           </a>
         } @empty {
-          <div class="search-user-item no-results">
-            <span>No users found</span>
+          <div class="search-page__user-item search-page__user-item--no-results">
+            <span>{{ 'search.noUsersFound' | translate }}</span>
           </div>
         }
       </div>
@@ -21,9 +21,9 @@
   </div>
 
   @if (searchQuery().trim().length === 0) {
-    <div class="photo-grid">
+    <div class="search-page__photo-grid">
       @for (photo of photos(); track photo.id) {
-        <div class="photo-card" (click)="openPhoto(photo)" (keydown.enter)="openPhoto(photo)"
+        <div class="search-page__photo-card" (click)="openPhoto(photo)" (keydown.enter)="openPhoto(photo)"
              (keydown.space)="openPhoto(photo)" tabindex="0" role="button">
           <img [src]="photo.url" [alt]="'Photo ' + photo.id" loading="lazy" />
         </div>
@@ -31,18 +31,19 @@
     </div>
 
     <!-- Load More Section / End Message -->
-    <div class="feed-footer" style="text-align: center; padding: 2rem;">
+    <div class="search-page__footer">
       @if (hasMorePhotos()) {
-        <button class="load-more-btn" (click)="loadMorePhotos()" [disabled]="isLoadingMore()">
+        <button class="search-page__load-more-btn" (click)="loadMorePhotos()" [disabled]="isLoadingMore()">
           @if (isLoadingMore()) {
-            Loading...
+            {{ 'search.loading' | translate }}
           } @else {
-            Load More
+            {{ 'search.loadMore' | translate }}
           }
         </button>
       } @else {
-        <p class="end-message" style="color: gray; font-weight: 500;">
-          You've seen all files </p>
+        <p class="search-page__end-message">
+          {{ 'search.seenAllFiles' | translate }}
+        </p>
       }
     </div>
   }

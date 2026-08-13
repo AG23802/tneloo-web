@@ -12,6 +12,7 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile';
 import { User } from '../../core/models/user.model';
 import { Upload } from './components/upload/upload';
 import { PhotoViewerModal } from '../../components/photo-viewer-modal/photo-viewer-modal';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface UserProfileDetails {
   dateOfBirth?: string;
@@ -32,6 +33,7 @@ interface UserProfileDetails {
     Upload,
     RouterModule,
     PhotoViewerModal,
+    TranslatePipe
   ],
 })
 export class Profile {

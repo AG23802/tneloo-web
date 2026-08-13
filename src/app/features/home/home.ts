@@ -4,12 +4,13 @@ import { UserService } from '../../core/services/user.service';
 import { Card } from './components/card/card';
 import { User } from '../../core/models/user.model';
 import { QueryDocumentSnapshot } from 'firebase/firestore';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
   styleUrl: './home.css',
-  imports: [Card],
+  imports: [Card, TranslatePipe],
 })
 export class Home implements OnInit {
   private userService = inject(UserService);
@@ -52,11 +53,7 @@ export class Home implements OnInit {
     const currentUserId = this.userService.currentUser()?.uid ?? '';
 
     this.userService
-      .getHomeFeedPaged(
-        currentUserId,
-        this.batchSize,
-        this.lastVisibleDoc ?? undefined,
-      )
+      .getHomeFeedPaged(currentUserId, this.batchSize, this.lastVisibleDoc ?? undefined)
       .subscribe({
         next: ({ users, lastVisible }) => {
           this.users.update((existing) => [...existing, ...users]);
