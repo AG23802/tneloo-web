@@ -11,6 +11,7 @@ import {
   setDoc,
   doc,
   serverTimestamp,
+  getDoc,
 } from 'firebase/firestore';
 import app from '../../../core/firebase';
 import { Thread } from '../models/thread.model';
@@ -175,5 +176,14 @@ export class ChatService {
       console.error('Error sending message:', err);
       return null;
     }
+  }
+
+  async getThreadById(threadId: string): Promise<Thread | null> {
+    const threadRef = doc(this.firestore, 'threads', threadId);
+    const docSnap = await getDoc(threadRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Thread;
+    }
+    return null;
   }
 }

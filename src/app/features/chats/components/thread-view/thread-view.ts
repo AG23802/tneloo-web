@@ -7,6 +7,7 @@ import { ChatHeader } from '../../../../chat-header/chat-header';
 import { UserService } from '../../../../core/services/user.service';
 import { ChatService } from '../../services/chat.service';
 import { UserProfileMeta } from '../../models/user-profile-meta.model';
+import { Thread } from '../../models/thread.model';
 
 @Component({
   selector: 'app-thread-view',
@@ -39,7 +40,9 @@ export class ThreadView implements OnDestroy {
       if (threadIdParam) {
         this.threadId.set(threadIdParam);
         this.chatService.subscribeToMessages(threadIdParam);
-        this.loadThreadMeta(threadIdParam);
+
+        // Directly fetch the thread details for this ID on hard refresh
+        await this.loadParticipantsForThread(threadIdParam, currentUser.uid);
       } else {
         const navigationState = history.state as { recipientId?: string };
         const recipientId = navigationState?.recipientId;
@@ -52,8 +55,6 @@ export class ThreadView implements OnDestroy {
     });
   }
 
-  // ... existing constructor and methods ...
-
   private scrollToBottom(): void {
     try {
       if (this.scrollContainer) {
@@ -62,6 +63,21 @@ export class ThreadView implements OnDestroy {
       }
     } catch (err) {
       // Ignore scroll errors
+    }
+  }
+
+  private async loadParticipantsForThread(threadId: string, currentUid: string) {
+    // Check if it's already in the local signal first
+    let thread: Thread | null = this.chatService.threads().find((t) => t.id === threadId) || null;
+
+    // If not found (e.g. hard refresh), fetch it explicitly via service
+    if (!thread && typeof this.chatService.getThreadById === 'function') {
+      thread = await this.chatService.getThreadById(threadId);
+    }
+
+    const otherUid = thread?.participants?.find((p) => p !== currentUid);
+    if (otherUid) {
+      this.fetchUserMeta(otherUid);
     }
   }
 
@@ -74,15 +90,7 @@ export class ThreadView implements OnDestroy {
       this.threadId.set(existingThreadId);
       this.chatService.subscribeToMessages(existingThreadId);
       this.router.navigate(['/thread', existingThreadId], { replaceUrl: true });
-    }
-  }
-
-  private loadThreadMeta(threadId: string) {
-    const thread = this.chatService.threads().find((t) => t.id === threadId);
-    const currentUid = this.userService.currentUser()?.uid;
-    const otherUid = thread?.participants.find((p) => p !== currentUid);
-    if (otherUid) {
-      this.fetchUserMeta(otherUid);
+      await this.loadParticipantsForThread(existingThreadId, currentUid);
     }
   }
 
@@ -104,16 +112,29 @@ export class ThreadView implements OnDestroy {
   async handleSendMessage(text: string) {
     const currentUser = this.userService.currentUser();
     const currentThreadId = this.threadId();
-    const recId =
-      this.recipientId() ||
-      (currentThreadId
-        ? this.chatService
-            .threads()
-            .find((t) => t.id === currentThreadId)
-            ?.participants.find((p) => p !== currentUser?.uid)
-        : null);
 
-    if (!currentUser || !recId) return;
+    let recId = this.recipientId();
+
+    if (!recId && currentThreadId) {
+      let thread: Thread | null | undefined = this.chatService
+        .threads()
+        .find((t) => t.id === currentThreadId);
+
+      if (!thread && typeof this.chatService.getThreadById === 'function') {
+        thread = await this.chatService.getThreadById(currentThreadId);
+      }
+
+      recId = thread?.participants?.find((p) => p !== currentUser?.uid) || null;
+    }
+
+    if (!currentUser || !recId) {
+      console.error('Cannot send message: Recipient ID could not be resolved from thread.', {
+        currentUser,
+        recId,
+        currentThreadId,
+      });
+      return;
+    }
 
     const resolvedThreadId = await this.chatService.sendMessage(
       text,
@@ -128,7 +149,6 @@ export class ThreadView implements OnDestroy {
       this.router.navigate(['/thread', resolvedThreadId], { replaceUrl: true });
     }
 
-    // Scroll down immediately after sending
     setTimeout(() => this.scrollToBottom(), 50);
   }
 

@@ -1,23 +1,8 @@
 @import "./tokens.css";
-
-@font-face {
-  font-family: 'Avenir Next';
-  src: url("/assets/fonts/AvenirNext-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Avenir Next';
-  src: url("/assets/fonts/AvenirNext-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
 body {
-  font-family: 'Avenir Next', Verdana, "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  font-family: 'Montserrat', Verdana, "Apple Color Emoji", "Noto Color Emoji", sans-serif;
   font-size: 14px;
   max-width: 500px;
   margin: auto;
@@ -152,9 +137,11 @@ input[type="button"] {
 }
 
 .error-banner {
-  color: red;
-  padding: 16px 0;
-  font-size: 14px;
+  padding: var(--space-md) var(--space-base);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--color-danger-border);
 }
 
 /* --- Settings --- */
@@ -164,12 +151,4 @@ input[type="button"] {
   align-items: center;
   background-color: var(--color-bg-secondary);
   padding: 0 16px;
-}
-
-.error-banner {
-  padding: var(--space-md) var(--space-base);
-  background-color: var(--color-danger-bg);
-  color: var(--color-danger);
-  font-size: var(--font-size-sm);
-  border-bottom: 1px solid var(--color-danger-border);
 }
