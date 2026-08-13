@@ -11,7 +11,7 @@ export const appRoutes: Route[] = [
       import('./features/search/search').then((m) => m.Search),
   },
   {
-    path: 'messages',
+    path: 'chats',
     loadComponent: () =>
       import('./features/chats/chats.component').then((m) => m.Chats),
   },

@@ -5,6 +5,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
   onSnapshot,
   getDocs,
   setDoc,
@@ -25,16 +26,15 @@ export class ChatService {
   private threadsUnsubscribe: (() => void) | null = null;
   private messagesUnsubscribe: (() => void) | null = null;
 
-  loadUserThreads(
-    userId: string,
-    onParticipantsFound: (uids: string[]) => void,
-  ) {
+  loadUserThreads(userId: string, onParticipantsFound: (uids: string[]) => void) {
     if (this.threadsUnsubscribe) this.threadsUnsubscribe();
 
     const threadsRef = collection(this.firestore, 'threads');
     const q = query(
       threadsRef,
       where('participants', 'array-contains', userId),
+      orderBy('lastMessageTime', 'desc'),
+      limit(20),
     );
 
     this.threadsUnsubscribe = onSnapshot(q, (snapshot) => {
@@ -61,43 +61,36 @@ export class ChatService {
     });
   }
 
-  async findExistingThread(
-    userA: string,
-    userB: string,
-  ): Promise<string | null> {
+  async findExistingThread(userA: string, userB: string): Promise<string | null> {
     const threadsRef = collection(this.firestore, 'threads');
     const q = query(threadsRef, where('participants', 'array-contains', userA));
     const snapshot = await getDocs(q);
 
-    let existingThreadId: string | null = null;
-
-    snapshot.forEach((docSnap) => {
+    // Find the first matching document where participants includes userB
+    const matchingDoc = snapshot.docs.find((docSnap) => {
       const data = docSnap.data();
       const participants: string[] = data['participants'] || [];
-      if (participants.includes(userB)) {
-        existingThreadId = docSnap.id;
-      }
+      return participants.includes(userB);
     });
 
-    return existingThreadId;
+    return matchingDoc ? matchingDoc.id : null;
   }
 
   subscribeToMessages(threadId: string) {
     if (this.messagesUnsubscribe) this.messagesUnsubscribe();
 
-    const messagesRef = collection(
-      this.firestore,
-      'threads',
-      threadId,
-      'messages',
-    );
-    const q = query(messagesRef, orderBy('createdAt', 'asc'));
+    const messagesRef = collection(this.firestore, 'threads', threadId, 'messages');
+    const q = query(messagesRef, orderBy('createdAt', 'asc'), limit(50));
 
     this.messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs: Message[] = [];
-      snapshot.forEach((docSnap) => {
-        msgs.push({ id: docSnap.id, ...docSnap.data() } as Message);
-      });
+      const msgs: Message[] = snapshot.docs.map(
+        (docSnap) =>
+          ({
+            id: docSnap.id,
+            ...docSnap.data(),
+          }) as Message,
+      );
+
       this.messages.set(msgs);
     });
   }
@@ -108,6 +101,33 @@ export class ChatService {
       this.messagesUnsubscribe();
       this.messagesUnsubscribe = null;
     }
+  }
+
+  async createNewThread(currentUserId: string, recipientId: string, text: string): Promise<string> {
+    const newThreadRef = doc(collection(this.firestore, 'threads'));
+    const activeThreadId = newThreadRef.id;
+
+    const newThreadData = {
+      id: activeThreadId,
+      participants: [currentUserId, recipientId],
+      createdAt: serverTimestamp(),
+      lastMessageTime: serverTimestamp(),
+    };
+
+    await setDoc(newThreadRef, newThreadData);
+
+    this.threads.update((currentThreads) => [
+      {
+        ...newThreadData,
+        lastMessage: text,
+        lastMessageTime: new Date(),
+      } as Thread,
+      ...currentThreads,
+    ]);
+
+    this.subscribeToMessages(activeThreadId);
+
+    return activeThreadId; // Return the new ID!
   }
 
   async sendMessage(
@@ -123,35 +143,11 @@ export class ChatService {
 
     try {
       if (!activeThreadId) {
-        const newThreadRef = doc(collection(this.firestore, 'threads'));
-        activeThreadId = newThreadRef.id;
-
-        const newThreadData = {
-          id: activeThreadId,
-          participants: [currentUserId, recipientId],
-          createdAt: serverTimestamp(),
-        };
-
-        await setDoc(newThreadRef, newThreadData);
-
-        this.threads.update((currentThreads) => [
-          {
-            ...newThreadData,
-            lastMessage: text,
-            lastMessageTime: new Date(),
-          } as Thread,
-          ...currentThreads,
-        ]);
-
-        this.subscribeToMessages(activeThreadId);
+        // Capture the returned ID
+        activeThreadId = await this.createNewThread(currentUserId, recipientId, text);
       }
 
-      const messagesRef = collection(
-        this.firestore,
-        'threads',
-        activeThreadId,
-        'messages',
-      );
+      const messagesRef = collection(this.firestore, 'threads', activeThreadId, 'messages');
       const newMessageRef = doc(messagesRef);
 
       const messageData = {

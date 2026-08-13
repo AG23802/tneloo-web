@@ -6,6 +6,8 @@ import {
   ViewChild,
   AfterViewChecked,
   OnInit,
+  NgZone,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +28,7 @@ import { UserProfileMeta } from './models/user-profile-meta.model';
 export class Chats implements OnInit, AfterViewChecked {
   public userService = inject(UserService);
   public chatService = inject(ChatService);
+  private ngZone = inject(NgZone);
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
@@ -34,34 +37,42 @@ export class Chats implements OnInit, AfterViewChecked {
   activeThreadId = signal<string | null>(null);
   activeRecipientId = signal<string | null>(null);
 
-  async ngOnInit() {
-    const navigationState = history.state as { recipientId?: string };
-    const recipientId = navigationState?.recipientId;
-    const currentUser = this.userService.currentUser();
+  private isInitialized = false;
 
-    if (!currentUser) {
-      console.error('Missing currentUser for chats session.');
-      return;
-    }
+  constructor() {
+    // Effect safely waits for currentUser() to load asynchronously
+    effect(() => {
+      const currentUser = this.userService.currentUser();
+      if (!currentUser || this.isInitialized) return;
 
-    if (recipientId) {
-      this.activeRecipientId.set(recipientId);
+      this.isInitialized = true;
+      const navigationState = history.state as { recipientId?: string };
+      const recipientId = navigationState?.recipientId;
 
-      const existingThreadId = await this.chatService.findExistingThread(
-        currentUser.uid,
-        recipientId,
-      );
-
-      if (existingThreadId) {
-        this.activeThreadId.set(existingThreadId);
-        this.chatService.subscribeToMessages(existingThreadId);
+      if (recipientId) {
+        this.initializeWithRecipient(currentUser.uid, recipientId);
       } else {
-        this.fetchParticipantMeta([recipientId]);
+        this.chatService.loadUserThreads(currentUser.uid, (uids) => {
+          this.fetchParticipantMeta(uids);
+        });
       }
+    });
+  }
+
+  ngOnInit() {
+    // Initialization is handled by the auth-aware effect above
+  }
+
+  private async initializeWithRecipient(currentUid: string, recipientId: string) {
+    this.activeRecipientId.set(recipientId);
+
+    const existingThreadId = await this.chatService.findExistingThread(currentUid, recipientId);
+
+    if (existingThreadId) {
+      this.activeThreadId.set(existingThreadId);
+      this.chatService.subscribeToMessages(existingThreadId);
     } else {
-      this.chatService.loadUserThreads(currentUser.uid, (uids) => {
-        this.fetchParticipantMeta(uids);
-      });
+      this.fetchParticipantMeta([recipientId]);
     }
   }
 
@@ -151,11 +162,15 @@ export class Chats implements OnInit, AfterViewChecked {
   }
 
   private scrollToBottom(): void {
-    try {
-      if (this.scrollContainer) {
-        this.scrollContainer.nativeElement.scrollTop =
-          this.scrollContainer.nativeElement.scrollHeight;
-      }
-    } catch (err) {}
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        try {
+          if (this.scrollContainer) {
+            const el = this.scrollContainer.nativeElement;
+            el.scrollTop = el.scrollHeight;
+          }
+        } catch (err) {}
+      }, 0);
+    });
   }
 }
