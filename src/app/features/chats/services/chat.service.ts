@@ -1,4 +1,4 @@
-import { Service, signal } from '@angular/core';
+import { Injectable, Service, signal } from '@angular/core';
 import {
   getFirestore,
   collection,
@@ -27,8 +27,8 @@ export class ChatService {
   private threadsUnsubscribe: (() => void) | null = null;
   private messagesUnsubscribe: (() => void) | null = null;
 
-  loadUserThreads(userId: string, onParticipantsFound: (uids: string[]) => void) {
-    if (this.threadsUnsubscribe) this.threadsUnsubscribe();
+  loadUserThreads(userId: string) {
+    if (this.threadsUnsubscribe) return;
 
     const threadsRef = collection(this.firestore, 'threads');
     const q = query(
@@ -39,27 +39,17 @@ export class ChatService {
     );
 
     this.threadsUnsubscribe = onSnapshot(q, (snapshot) => {
-      const userThreads: Thread[] = [];
-      const uidsToFetch = new Set<string>();
-
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const thread = { id: docSnap.id, ...data } as Thread;
-        userThreads.push(thread);
-
-        thread.participants.forEach((pUid) => {
-          if (pUid !== userId) {
-            uidsToFetch.add(pUid);
-          }
-        });
-      });
+      const userThreads: Thread[] = snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+      })) as Thread[];
 
       this.threads.set(userThreads);
-
-      if (uidsToFetch.size > 0) {
-        onParticipantsFound(Array.from(uidsToFetch));
-      }
     });
+  }
+
+  getOtherParticipantUid(thread: Thread, currentUserId: string): string | undefined {
+    return thread.participants?.find((p) => p !== currentUserId);
   }
 
   async findExistingThread(userA: string, userB: string): Promise<string | null> {
@@ -67,7 +57,6 @@ export class ChatService {
     const q = query(threadsRef, where('participants', 'array-contains', userA));
     const snapshot = await getDocs(q);
 
-    // Find the first matching document where participants includes userB
     const matchingDoc = snapshot.docs.find((docSnap) => {
       const data = docSnap.data();
       const participants: string[] = data['participants'] || [];
@@ -128,24 +117,33 @@ export class ChatService {
 
     this.subscribeToMessages(activeThreadId);
 
-    return activeThreadId; // Return the new ID!
+    return activeThreadId;
   }
 
   async sendMessage(
     textInput: string,
     threadId: string | null,
-    recipientId: string,
+    recipientId: string | null,
     currentUserId: string,
   ): Promise<string | null> {
     const text = textInput.trim();
-    if (!text || !currentUserId || !recipientId) return null;
+    if (!text || !currentUserId) return null;
 
     let activeThreadId = threadId;
+    let recId = recipientId;
 
     try {
+      // If we have a threadId but no recipient, look it up from the service threads or Firestore
+      if (!recId && activeThreadId) {
+        let thread = this.threads().find((t) => t.id === activeThreadId);
+        if (!thread) thread = (await this.getThreadById(activeThreadId)) ?? undefined;
+        recId = thread ? this.getOtherParticipantUid(thread, currentUserId) || null : null;
+      }
+
+      if (!recId) return null;
+
       if (!activeThreadId) {
-        // Capture the returned ID
-        activeThreadId = await this.createNewThread(currentUserId, recipientId, text);
+        activeThreadId = await this.createNewThread(currentUserId, recId, text);
       }
 
       const messagesRef = collection(this.firestore, 'threads', activeThreadId, 'messages');
@@ -155,7 +153,7 @@ export class ChatService {
         id: newMessageRef.id,
         threadId: activeThreadId,
         uid: currentUserId,
-        receiverId: recipientId,
+        receiverId: recId,
         text: text,
         createdAt: serverTimestamp(),
       };

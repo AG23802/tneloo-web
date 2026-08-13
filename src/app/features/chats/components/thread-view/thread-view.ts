@@ -41,7 +41,6 @@ export class ThreadView implements OnDestroy {
         this.threadId.set(threadIdParam);
         this.chatService.subscribeToMessages(threadIdParam);
 
-        // Directly fetch the thread details for this ID on hard refresh
         await this.loadParticipantsForThread(threadIdParam, currentUser.uid);
       } else {
         const navigationState = history.state as { recipientId?: string };
@@ -56,15 +55,15 @@ export class ThreadView implements OnDestroy {
   }
 
   private async loadParticipantsForThread(threadId: string, currentUid: string) {
-    // Check if it's already in the local signal first
     let thread: Thread | null = this.chatService.threads().find((t) => t.id === threadId) || null;
 
-    // If not found (e.g. hard refresh), fetch it explicitly via service
     if (!thread && typeof this.chatService.getThreadById === 'function') {
       thread = await this.chatService.getThreadById(threadId);
     }
 
-    const otherUid = thread?.participants?.find((p) => p !== currentUid);
+    const otherUid = thread
+      ? this.chatService.getOtherParticipantUid(thread, currentUid)
+      : undefined;
     if (otherUid) {
       this.fetchUserMeta(otherUid);
     }
@@ -96,39 +95,16 @@ export class ThreadView implements OnDestroy {
 
   async handleSendMessage(text: string) {
     const currentUser = this.userService.currentUser();
-    const currentThreadId = this.threadId();
-
-    let recId = this.recipientId();
-
-    if (!recId && currentThreadId) {
-      let thread: Thread | null | undefined = this.chatService
-        .threads()
-        .find((t) => t.id === currentThreadId);
-
-      if (!thread && typeof this.chatService.getThreadById === 'function') {
-        thread = await this.chatService.getThreadById(currentThreadId);
-      }
-
-      recId = thread?.participants?.find((p) => p !== currentUser?.uid) || null;
-    }
-
-    if (!currentUser || !recId) {
-      console.error('Cannot send message: Recipient ID could not be resolved from thread.', {
-        currentUser,
-        recId,
-        currentThreadId,
-      });
-      return;
-    }
+    if (!currentUser) return;
 
     const resolvedThreadId = await this.chatService.sendMessage(
       text,
-      currentThreadId,
-      recId,
+      this.threadId(),
+      this.recipientId(),
       currentUser.uid,
     );
 
-    if (resolvedThreadId && !currentThreadId) {
+    if (resolvedThreadId && !this.threadId()) {
       this.threadId.set(resolvedThreadId);
       this.chatService.subscribeToMessages(resolvedThreadId);
       this.router.navigate(['/thread', resolvedThreadId], { replaceUrl: true });

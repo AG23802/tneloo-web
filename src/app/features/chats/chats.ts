@@ -1,10 +1,11 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../core/models/user.model';
 import { ChatService } from './services/chat.service';
 import { UserProfileMeta } from './models/user-profile-meta.model';
+import { Thread } from './models/thread.model';
 
 @Component({
   selector: 'app-chats',
@@ -13,58 +14,59 @@ import { UserProfileMeta } from './models/user-profile-meta.model';
   templateUrl: './chats.html',
   styleUrl: './chats..css',
 })
-export class Chats implements OnInit {
+export class Chats {
   public userService = inject(UserService);
   public chatService = inject(ChatService);
   private router = inject(Router);
 
   userMeta = signal<{ [uid: string]: UserProfileMeta }>({});
-  private isInitialized = false;
 
   constructor() {
     effect(() => {
       const currentUser = this.userService.currentUser();
-      if (!currentUser || this.isInitialized) return;
+      if (!currentUser) return;
 
-      this.isInitialized = true;
+      this.chatService.loadUserThreads(currentUser.uid);
+    });
 
-      this.chatService.loadUserThreads(currentUser.uid, (uids) => {
-        this.fetchParticipantMeta(uids);
+    effect(() => {
+      const currentUser = this.userService.currentUser();
+      const threads = this.chatService.threads();
+      if (!currentUser) return;
+
+      threads.forEach((thread) => {
+        const otherUid = this.chatService.getOtherParticipantUid(thread, currentUser.uid);
+        if (otherUid && !this.userMeta()[otherUid]) {
+          this.fetchUserMeta(otherUid);
+        }
       });
     });
   }
 
-  ngOnInit() {}
-
-  private fetchParticipantMeta(uids: string[]) {
-    const metaMap = { ...this.userMeta() };
-
-    for (const uid of uids) {
-      if (!metaMap[uid]) {
-        this.userService.getUserById?.(uid)?.subscribe({
-          next: (user: User | null) => {
-            if (user) {
-              metaMap[uid] = {
-                displayName: user.displayName || '',
-                profilePictureURL: user.profilePictureURL,
-              };
-              this.userMeta.set({ ...metaMap });
-            }
-          },
-        });
-      }
-    }
-  }
-
-  getOtherParticipantUid(participants: string[]): string | undefined {
-    const currentUser = this.userService.currentUser();
-    return participants.find((p) => p !== currentUser?.uid);
+  private fetchUserMeta(uid: string) {
+    this.userService.getUserById?.(uid)?.subscribe({
+      next: (user: User | null) => {
+        if (user) {
+          this.userMeta.update((meta) => ({
+            ...meta,
+            [uid]: {
+              displayName: user.displayName || '',
+              profilePictureURL: user.profilePictureURL,
+            },
+          }));
+        }
+      },
+    });
   }
 
   getTargetUserMeta(participants: string[]): UserProfileMeta {
-    const otherUid = this.getOtherParticipantUid(participants);
-    if (!otherUid) return { displayName: '' };
-    return this.userMeta()[otherUid] || { displayName: '' };
+    const currentUser = this.userService.currentUser();
+    if (!currentUser) return { displayName: '' };
+    const otherUid = this.chatService.getOtherParticipantUid(
+      { participants } as Thread,
+      currentUser.uid,
+    );
+    return otherUid ? this.userMeta()[otherUid] || { displayName: '' } : { displayName: '' };
   }
 
   selectThread(threadId: string) {
