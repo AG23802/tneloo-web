@@ -1,12 +1,4 @@
 :host {
-  --color-white: #fff;
-  --color-border: #dbdbdb;
-  --color-border-focus: #a8a8a8;
-  --color-text-main: #262626;
-  --color-bg-secondary: #fafafa;
-  --color-primary: #0095f6;
-  --color-incoming-bubble: #efefef;
-
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -16,11 +8,11 @@
 
 .chat-messages {
   flex: 1;
-  padding: 16px;
+  padding: var(--space-base);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
   background-color: var(--color-bg-secondary);
 }
 
@@ -34,7 +26,7 @@
     .message-bubble {
       background-color: var(--color-primary);
       color: var(--color-white);
-      border-bottom-right-radius: 4px;
+      border-bottom-right-radius: var(--radius-xs);
     }
   }
 
@@ -42,19 +34,19 @@
     justify-content: flex-start;
 
     .message-bubble {
-      background-color: var(--color-incoming-bubble);
-      color: var(--color-text-main);
-      border-bottom-left-radius: 4px;
+      background-color: var(--color-border-light);
+      color: var(--color-text-dark);
+      border-bottom-left-radius: var(--radius-xs);
     }
   }
 }
 
 .message-bubble {
   max-width: 70%;
-  padding: 10px 14px;
-  border-radius: 18px;
+  padding: 10px var(--space-base);
+  border-radius: var(--radius-lg);
   word-break: break-word;
-  font-size: 14px;
+  font-size: var(--font-size-base);
 
   p {
     margin: 0;
@@ -63,17 +55,17 @@
 
 .chat-input-form {
   display: flex;
-  padding: 12px 16px;
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-base);
+  border-top: var(--border-width-thin) solid var(--color-border);
   background-color: var(--color-white);
   gap: 10px;
   align-items: center;
 
   input[type="text"] {
     flex: 1;
-    border-radius: 22px;
-    padding: 10px 16px;
-    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: 10px var(--space-base);
+    border: var(--border-width-thin) solid var(--color-border);
     background-color: var(--color-bg-secondary);
     outline: none;
 
@@ -85,7 +77,7 @@
 
   button {
     background-color: var(--color-primary);
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     width: 40px;
     height: 40px;
     display: inline-flex;

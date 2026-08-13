@@ -55,17 +55,6 @@ export class ThreadView implements OnDestroy {
     });
   }
 
-  private scrollToBottom(): void {
-    try {
-      if (this.scrollContainer) {
-        const element = this.scrollContainer.nativeElement;
-        element.scrollTop = element.scrollHeight;
-      }
-    } catch (err) {
-      // Ignore scroll errors
-    }
-  }
-
   private async loadParticipantsForThread(threadId: string, currentUid: string) {
     // Check if it's already in the local signal first
     let thread: Thread | null = this.chatService.threads().find((t) => t.id === threadId) || null;
@@ -103,10 +92,6 @@ export class ThreadView implements OnDestroy {
         });
       }
     });
-  }
-
-  onBackClicked() {
-    this.router.navigate(['/chats']);
   }
 
   async handleSendMessage(text: string) {
@@ -150,6 +135,21 @@ export class ThreadView implements OnDestroy {
     }
 
     setTimeout(() => this.scrollToBottom(), 50);
+  }
+
+  onBackClicked() {
+    this.router.navigate(['/chats']);
+  }
+
+  private scrollToBottom(): void {
+    try {
+      if (this.scrollContainer) {
+        const element = this.scrollContainer.nativeElement;
+        element.scrollTop = element.scrollHeight;
+      }
+    } catch (err) {
+      // Ignore scroll errors
+    }
   }
 
   ngOnDestroy() {
