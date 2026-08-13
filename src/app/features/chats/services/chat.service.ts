@@ -17,6 +17,7 @@ import app from '../../../core/firebase';
 import { Thread } from '../models/thread.model';
 import { Message } from '../models/message.model';
 import { Router } from '@angular/router';
+import { UserService } from '../../../core/services/user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,9 +25,14 @@ import { Router } from '@angular/router';
 export class ChatService {
   private firestore = getFirestore(app);
   private router = inject(Router);
+  private userService = inject(UserService);
 
   threads = signal<Thread[]>([]);
   messages = signal<Message[]>([]);
+
+  // Track active context internally so components don't have to pass them back
+  private currentActiveThreadId: string | null = null;
+  private currentRecipientId: string | null = null;
 
   private threadsUnsubscribe: (() => void) | null = null;
   private messagesUnsubscribe: (() => void) | null = null;
@@ -36,6 +42,9 @@ export class ChatService {
     recipientId: string | null,
     currentUid: string,
   ) {
+    this.currentActiveThreadId = threadIdParam;
+    this.currentRecipientId = recipientId;
+
     if (threadIdParam) {
       this.subscribeToMessages(threadIdParam);
       let thread = this.threads().find((t) => t.id === threadIdParam);
@@ -50,6 +59,7 @@ export class ChatService {
     if (recipientId) {
       const existingThreadId = await this.findExistingThread(currentUid, recipientId);
       if (existingThreadId) {
+        this.currentActiveThreadId = existingThreadId;
         this.subscribeToMessages(existingThreadId);
         this.router.navigate(['/thread', existingThreadId], { replaceUrl: true });
         return {
@@ -126,6 +136,8 @@ export class ChatService {
 
   clearMessages() {
     this.messages.set([]);
+    this.currentActiveThreadId = null;
+    this.currentRecipientId = null;
     if (this.messagesUnsubscribe) {
       this.messagesUnsubscribe();
       this.messagesUnsubscribe = null;
@@ -159,23 +171,19 @@ export class ChatService {
     return activeThreadId;
   }
 
-  async sendMessage(
-    textInput: string,
-    threadId: string | null,
-    recipientId: string | null,
-    currentUserId: string,
-  ): Promise<string | null> {
+  async sendMessage(textInput: string): Promise<string | null> {
     const text = textInput.trim();
-    if (!text || !currentUserId) return null;
+    const currentUser = this.userService.currentUser();
+    if (!text || !currentUser) return null;
 
-    let activeThreadId = threadId;
-    let recId = recipientId;
+    let activeThreadId = this.currentActiveThreadId;
+    let recId = this.currentRecipientId;
 
     try {
       if (!recId && activeThreadId) {
         let thread = this.threads().find((t) => t.id === activeThreadId);
         if (!thread) thread = (await this.getThreadById(activeThreadId)) ?? undefined;
-        recId = thread ? this.getOtherParticipantUid(thread, currentUserId) || null : null;
+        recId = thread ? this.getOtherParticipantUid(thread, currentUser.uid) || null : null;
       }
 
       if (!recId) return null;
@@ -183,10 +191,9 @@ export class ChatService {
       const isNewThread = !activeThreadId;
 
       if (isNewThread) {
-        activeThreadId = await this.createNewThread(currentUserId, recId, text);
+        activeThreadId = await this.createNewThread(currentUser.uid, recId, text);
       }
 
-      // Guard check: ensure TypeScript knows activeThreadId is definitely a string here
       if (!activeThreadId) return null;
 
       const messagesRef = collection(this.firestore, 'threads', activeThreadId, 'messages');
@@ -195,7 +202,7 @@ export class ChatService {
       const messageData = {
         id: newMessageRef.id,
         threadId: activeThreadId,
-        uid: currentUserId,
+        uid: currentUser.uid,
         receiverId: recId,
         text: text,
         createdAt: serverTimestamp(),
@@ -213,6 +220,7 @@ export class ChatService {
       );
 
       if (isNewThread && activeThreadId) {
+        this.currentActiveThreadId = activeThreadId;
         this.subscribeToMessages(activeThreadId);
         this.router.navigate(['/thread', activeThreadId], { replaceUrl: true });
       }
