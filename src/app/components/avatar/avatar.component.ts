@@ -9,6 +9,6 @@ import { IconComponent } from '../icon/icon';
   imports: [IconComponent],
 })
 export class Avatar {
-  user = input<AvatarUser | null>(null);
+  url = input<string | null | undefined>(null);
   imageFailed = signal(false);
 }

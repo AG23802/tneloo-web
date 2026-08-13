@@ -1,9 +1,7 @@
-@if (user()) {
-  <div class="avatar">
-    @if (user()!.profilePictureURL && !imageFailed()) {
-      <img class="avatar__image" [src]="user()!.profilePictureURL" alt="" loading="lazy" (error)="imageFailed.set(true)" />
+<div class="avatar">
+    @if (url() && !imageFailed()) {
+      <img class="avatar__image" [src]="url()" alt="" loading="lazy" (error)="imageFailed.set(true)" />
     } @else {
       <app-icon class="avatar__icon" name="ghost" />
     }
   </div>
-}

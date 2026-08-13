@@ -6,11 +6,7 @@
 
       <div class="viewer-user" (click)="openProfile(photo().username)" (keydown.enter)="openProfile(photo().username)"
            (keydown.space)="openProfile(photo().username)" tabindex="0" role="button">
-        <app-avatar [user]="{
-                uid: photo().uid,
-                displayName: photo().username,
-                profilePictureURL: photo().profilePictureURL,
-              }" />
+        <app-avatar [url]="photo()?.profilePictureURL" />
         <span class="username">{{ photo().username }}</span>
       </div>
     </div>

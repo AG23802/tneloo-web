@@ -7,14 +7,13 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { User } from '../../core/models/user.model';
 import { FeedPhoto } from '../../core/models/feed-photo';
 import { QueryDocumentSnapshot } from 'firebase/firestore';
-import { Avatar } from '../../components/avatar/avatar.component';
 import { PhotoViewerModal } from '../../components/photo-viewer-modal/photo-viewer-modal';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.html',
   styleUrl: './search.css',
-  imports: [FormsModule, RouterLink, Avatar, PhotoViewerModal],
+  imports: [FormsModule, RouterLink, PhotoViewerModal],
 })
 export class Search implements OnInit {
   private userService = inject(UserService);

@@ -1,6 +1,6 @@
 <div class="profile-card">
   <div class="profile-header" (click)="openProfile()">
-    <app-avatar [user]="user()" />
+    <app-avatar [url]="user()?.profilePictureURL" />
     <div class="user-info">
       <div>
         {{ user().displayName }}

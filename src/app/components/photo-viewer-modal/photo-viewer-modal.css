@@ -8,51 +8,51 @@
   height: 100vh;
   background-color: var(--color-black);
   z-index: 99999;
-  overflow-y: auto;
-}
+  overflow: hidden;
 
-.viewer-modal-overlay .viewer {
-  width: 100%;
-  min-height: 100vh;
-  background-color: var(--color-black);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  & .viewer {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-black);
+    display: flex;
+    flex-direction: column;
+  }
 
-.viewer-modal-overlay .viewer-header {
-  width: 100%;
-  padding: var(--space-base);
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-}
+  & .viewer-header {
+    width: 100%;
+    padding: var(--space-base);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-shrink: 0;
+  }
 
-.viewer-modal-overlay .viewer-user {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  cursor: pointer;
-}
+  & .viewer-user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    cursor: pointer;
+  }
 
-.viewer-modal-overlay .back-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--color-primary);
-  cursor: pointer;
-  flex-shrink: 0;
-}
+  & .back-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--color-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
 
-.viewer-modal-overlay .username {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-white);
-}
+  & .username {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+  }
 
-.viewer-modal-overlay .main-photo {
-  width: 100%;
-  height: calc(100vh - 80px); /* Locks the height to the viewport minus header */
-  object-fit: cover; /* Crops the image to fill the exact dimensions without scrolling */
-  display: block;
-  margin: auto;
+  & .main-photo {
+    width: 100%;
+    height: calc(100vh - 80px);
+    object-fit: cover;
+    display: block;
+    margin: auto;
+  }
 }
