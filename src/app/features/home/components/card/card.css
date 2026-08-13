@@ -1,5 +1,3 @@
-@import "../../../../../tokens.css";
-
 .profile-card {
   background-color: var(--color-bg-primary);
   margin-bottom: var(--space-lg);

@@ -1,5 +1,3 @@
-@import "../../../tokens.css";
-
 .settings-container {
   display: flex;
   flex-direction: column;
