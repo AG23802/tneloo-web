@@ -1,27 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
-:root {
-  --color-white: #fff;
-  --color-black: #000;
-  --color-border: #dbdbdb;
-  --color-border-focus: #a8a8a8;
-  --color-text-main: #333;
-  --color-text-dark: #262626;
-  --color-bg-secondary: #fafafa;
-  --color-primary: #0095f6;
-  --color-primary-hover: #00376b;
-  --color-danger: #ed4956;
-  --color-secondary-bg: #f1f5f9;
-  --color-secondary-text: #334155;
-
-  --color-border-light: #efefef;
-  --color-text-muted: #8e8e8e;
-  --color-text-placeholder: #737373;
-
-  /*nav comp*/
-  --color-nav-border: #e2e8f0;
-  --color-nav-text: #64748b;
-  --shadow-nav: 0 -2px 10px rgba(0, 0, 0, 0.03);
-}
+@import "./tokens.css";
 
 @font-face {
   font-family: 'Avenir Next';
@@ -93,7 +70,7 @@ textarea {
   padding: 10px 14px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  font-size: 15px;
+  font-size: var(--font-size-base);
   font-family: inherit;
   outline: none;
   background-color: var(--color-bg-secondary);

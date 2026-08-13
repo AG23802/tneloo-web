@@ -16,13 +16,6 @@ export const appRoutes: Route[] = [
       import('./features/chats/chats.component').then((m) => m.Chats),
   },
   {
-    path: 'photo/:id',
-    loadComponent: () =>
-      import('./components/photo-viewer/photo-viewer').then(
-        (m) => m.PhotoViewer,
-      ),
-  },
-  {
     path: 'settings',
     loadComponent: () =>
       import('./features/settings/settings').then((m) => m.Settings),

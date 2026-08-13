@@ -1,9 +1,9 @@
 @if (user()) {
   <div class="avatar">
     @if (user()!.profilePictureURL && !imageFailed()) {
-      <img [src]="user()!.profilePictureURL" alt="" loading="lazy" (error)="imageFailed.set(true)" />
+      <img class="avatar__image" [src]="user()!.profilePictureURL" alt="" loading="lazy" (error)="imageFailed.set(true)" />
     } @else {
-      <app-icon name="ghost" />
+      <app-icon class="avatar__icon" name="ghost" />
     }
   </div>
 }
