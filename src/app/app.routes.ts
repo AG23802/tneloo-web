@@ -7,23 +7,23 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'search',
-    loadComponent: () =>
-      import('./features/search/search').then((m) => m.Search),
+    loadComponent: () => import('./features/search/search').then((m) => m.Search),
   },
   {
     path: 'chats',
-    loadComponent: () =>
-      import('./features/chats/chats.component').then((m) => m.Chats),
+    loadComponent: () => import('./features/chats/chats').then((m) => m.Chats),
+  },
+  {
+    path: 'chats/:threadId',
+    loadComponent: () => import('./features/chats/components/thread-view/thread-view').then((m) => m.ThreadView),
   },
   {
     path: 'settings',
-    loadComponent: () =>
-      import('./features/settings/settings').then((m) => m.Settings),
+    loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
   },
   {
     path: ':username',
-    loadComponent: () =>
-      import('./features/profile/profile').then((m) => m.Profile),
+    loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
   },
   { path: '**', redirectTo: '/404' },
 ];

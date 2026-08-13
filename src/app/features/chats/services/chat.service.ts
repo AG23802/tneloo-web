@@ -12,9 +12,9 @@ import {
   doc,
   serverTimestamp,
 } from 'firebase/firestore';
-import app from '../../core/firebase';
-import { Thread } from './models/thread.model';
-import { Message } from './models/message.model';
+import app from '../../../core/firebase';
+import { Thread } from '../models/thread.model';
+import { Message } from '../models/message.model';
 
 @Service()
 export class ChatService {

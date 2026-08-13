@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Chats } from './chats.component';
+import { Chats } from './chats';
 
 describe('Messages', () => {
   let component: Chats;

@@ -1,7 +1,7 @@
-<app-chat-header (event)="onBackClicked()" [url]="url()" [displayName]="displayName()" />
+<app-chat-header (event)="onBackClicked()" [url]="targetMeta().profilePictureURL" [displayName]="targetMeta().displayName" />
 
 <div class="chat-messages" #scrollContainer>
-  @for (msg of messages(); track msg.id) {
+  @for (msg of chatService.messages(); track msg.id) {
     <div class="message-row" [class.outgoing]="msg.uid === currentUid()" [class.incoming]="msg.uid !== currentUid()">
       <div class="message-bubble">
         <p>{{ msg.text }}</p>
@@ -11,7 +11,7 @@
 </div>
 
 <form class="chat-input-form"
-      (submit)="$event.preventDefault(); messageEmitter.emit(newMessageText); newMessageText = ''">
+      (submit)="$event.preventDefault(); handleSendMessage(newMessageText); newMessageText = ''">
   <input type="text" [(ngModel)]="newMessageText" name="newMessageText" placeholder="Type a message..."
          autocomplete="off" />
   <button type="submit" [disabled]="!newMessageText.trim()">

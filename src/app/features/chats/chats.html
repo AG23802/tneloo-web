@@ -1,42 +1,28 @@
 <div class="chat-container">
-  @if (!activeThreadId() && !activeRecipientId()) {
-    <div class="threads-list">
-      @if (chatService.threads().length === 0) {
-        <p class="no-threads">No conversations yet.</p>
-      }
-      @for (thread of chatService.threads(); track thread.id) {
-        @let threadMeta = getTargetUserMeta(thread.participants);
-        <div class="thread-item" (click)="selectThread(thread.id)">
-          <div class="thread-avatar">
-            @if (threadMeta.profilePictureURL) {
-              <img [src]="threadMeta.profilePictureURL" alt="" />
-            } @else {
-              <div class="avatar-placeholder">{{ threadMeta.displayName.charAt(0) }}</div>
+  <div class="threads-list">
+    @if (chatService.threads().length === 0) {
+      <p class="no-threads">No conversations yet.</p>
+    }
+    @for (thread of chatService.threads(); track thread.id) {
+      @let threadMeta = getTargetUserMeta(thread.participants);
+      <div class="thread-item" (click)="selectThread(thread.id)">
+        <div class="thread-avatar">
+          @if (threadMeta.profilePictureURL) {
+            <img [src]="threadMeta.profilePictureURL" alt="" />
+          } @else {
+            <div class="avatar-placeholder">{{ threadMeta.displayName.charAt(0) }}</div>
+          }
+        </div>
+        <div class="thread-info">
+          <div class="thread-top">
+            <span class="thread-title">{{ threadMeta.displayName }}</span>
+            @if (thread.lastMessageTime) {
+              <span class="thread-time">{{ thread.lastMessageTime?.toDate() | date:'shortTime' }}</span>
             }
           </div>
-          <div class="thread-info">
-            <div class="thread-top">
-              <span class="thread-title">{{ threadMeta.displayName }}</span>
-              @if (thread.lastMessageTime) {
-                <span class="thread-time">{{ thread.lastMessageTime?.toDate() | date:'shortTime' }}</span>
-              }
-            </div>
-            <p class="thread-preview">{{ thread.lastMessage || 'Started a conversation' }}</p>
-          </div>
+          <p class="thread-preview">{{ thread.lastMessage || 'Started a conversation' }}</p>
         </div>
-      }
-    </div>
-  } @else {
-    @let currentUid = userService.currentUser()?.uid;
-    @let participants = getParticipants();
-    @let meta = getTargetUserMeta(participants);
-
-    <app-thread-view
-      [url]="meta.profilePictureURL"
-      [displayName]="meta.displayName"
-      (messageEmitter)="handleSendMessage($event)"
-      (back)="backToThreads()"
-      [messages]="chatService.messages()"
-      [currentUid]="currentUid" />
-  }
+      </div>
+    }
+  </div>
 </div>
