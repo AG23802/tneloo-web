@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   selector: 'app-main-settings-view',
   imports: [IconComponent, SettingsHeader, TranslatePipe],
   templateUrl: './main-settings-view.html',
-  styleUrl: './main-settings-view.css',
+  styleUrls: ['../../settings.css', './main-settings-view.css'],
 })
 export class MainSettingsView {
   authService = inject(AuthService);

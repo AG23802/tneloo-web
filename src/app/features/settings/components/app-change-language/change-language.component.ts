@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, IconComponent],
   templateUrl: './change-language.component.html',
-  styleUrl: './change-language.component.css',
+  styleUrls: ['../../settings.css', './change-language.component.css'],
 })
 export class ChangeLanguage {
   translate = inject(TranslateService);
