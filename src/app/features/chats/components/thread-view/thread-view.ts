@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, OnDestroy } from '@angular/core';
+import { Component, inject, signal, effect, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ export class ThreadView implements OnDestroy {
   private router = inject(Router);
   public chatService = inject(ChatService);
   public userService = inject(UserService);
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   threadId = signal<string | null>(null);
   currentUid = signal<string | undefined>(undefined);
@@ -49,6 +50,19 @@ export class ThreadView implements OnDestroy {
         }
       }
     });
+  }
+
+  // ... existing constructor and methods ...
+
+  private scrollToBottom(): void {
+    try {
+      if (this.scrollContainer) {
+        const element = this.scrollContainer.nativeElement;
+        element.scrollTop = element.scrollHeight;
+      }
+    } catch (err) {
+      // Ignore scroll errors
+    }
   }
 
   private async initializeWithRecipient(currentUid: string, recipientId: string) {
@@ -113,6 +127,9 @@ export class ThreadView implements OnDestroy {
       this.chatService.subscribeToMessages(resolvedThreadId);
       this.router.navigate(['/thread', resolvedThreadId], { replaceUrl: true });
     }
+
+    // Scroll down immediately after sending
+    setTimeout(() => this.scrollToBottom(), 50);
   }
 
   ngOnDestroy() {
