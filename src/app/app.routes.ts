@@ -14,8 +14,14 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./features/chats/chats').then((m) => m.Chats),
   },
   {
-    path: 'chats/:threadId',
-    loadComponent: () => import('./features/chats/components/thread-view/thread-view').then((m) => m.ThreadView),
+    path: 'thread/:threadId',
+    loadComponent: () =>
+      import('./features/chats/components/thread-view/thread-view').then((m) => m.ThreadView),
+  },
+  {
+    path: 'thread',
+    loadComponent: () =>
+      import('./features/chats/components/thread-view/thread-view').then((m) => m.ThreadView),
   },
   {
     path: 'settings',

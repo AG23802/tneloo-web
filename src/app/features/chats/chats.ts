@@ -9,57 +9,32 @@ import { UserProfileMeta } from './models/user-profile-meta.model';
 @Component({
   selector: 'app-chats',
   standalone: true,
-
   imports: [CommonModule],
-
   templateUrl: './chats.html',
-
   styleUrl: './chats..css',
 })
 export class Chats implements OnInit {
   public userService = inject(UserService);
-
   public chatService = inject(ChatService);
-
   private router = inject(Router);
 
   userMeta = signal<{ [uid: string]: UserProfileMeta }>({});
-
   private isInitialized = false;
 
   constructor() {
     effect(() => {
       const currentUser = this.userService.currentUser();
-
       if (!currentUser || this.isInitialized) return;
 
       this.isInitialized = true;
 
-      const navigationState = history.state as { recipientId?: string };
-
-      const recipientId = navigationState?.recipientId;
-
-      if (recipientId) {
-        this.initializeWithRecipient(currentUser.uid, recipientId);
-      } else {
-        this.chatService.loadUserThreads(currentUser.uid, (uids) => {
-          this.fetchParticipantMeta(uids);
-        });
-      }
+      this.chatService.loadUserThreads(currentUser.uid, (uids) => {
+        this.fetchParticipantMeta(uids);
+      });
     });
   }
 
   ngOnInit() {}
-
-  private async initializeWithRecipient(currentUid: string, recipientId: string) {
-    const existingThreadId = await this.chatService.findExistingThread(currentUid, recipientId);
-
-    if (existingThreadId) {
-      this.router.navigate(['/chats', existingThreadId]);
-    } else {
-      this.fetchParticipantMeta([recipientId]);
-    }
-  }
 
   private fetchParticipantMeta(uids: string[]) {
     const metaMap = { ...this.userMeta() };
@@ -71,10 +46,8 @@ export class Chats implements OnInit {
             if (user) {
               metaMap[uid] = {
                 displayName: user.displayName || '',
-
                 profilePictureURL: user.profilePictureURL,
               };
-
               this.userMeta.set({ ...metaMap });
             }
           },
@@ -85,7 +58,6 @@ export class Chats implements OnInit {
 
   getOtherParticipantUid(participants: string[]): string | undefined {
     const currentUser = this.userService.currentUser();
-
     return participants.find((p) => p !== currentUser?.uid);
   }
 
@@ -96,6 +68,6 @@ export class Chats implements OnInit {
   }
 
   selectThread(threadId: string) {
-    this.router.navigate(['/chats', threadId]);
+    this.router.navigate(['/thread', threadId]);
   }
 }
