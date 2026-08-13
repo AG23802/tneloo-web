@@ -7,15 +7,15 @@
       @let threadMeta = getTargetUserMeta(thread.participants);
       <div class="thread-item" (click)="selectThread(thread.id)">
         <div class="thread-avatar">
-          @if (threadMeta.profilePictureURL) {
-            <img [src]="threadMeta.profilePictureURL" alt="" />
+          @if (threadMeta?.profilePictureURL) {
+            <img [src]="threadMeta?.profilePictureURL" alt="" />
           } @else {
-            <div class="avatar-placeholder">{{ threadMeta.displayName.charAt(0) }}</div>
+            <div class="avatar-placeholder">{{ threadMeta?.displayName?.charAt(0) || '?' }}</div>
           }
         </div>
         <div class="thread-info">
           <div class="thread-top">
-            <span class="thread-title">{{ threadMeta.displayName }}</span>
+            <span class="thread-title">{{ threadMeta?.displayName || 'Loading...' }}</span>
             @if (thread.lastMessageTime) {
               <span class="thread-time">{{ thread.lastMessageTime?.toDate() | date:'shortTime' }}</span>
             }

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../core/models/user.model';
 import { ChatService } from './services/chat.service';
-import { UserProfileMeta } from './models/user-profile-meta.model';
 import { Thread } from './models/thread.model';
 
 @Component({
@@ -19,7 +18,7 @@ export class Chats {
   public chatService = inject(ChatService);
   private router = inject(Router);
 
-  userMeta = signal<{ [uid: string]: UserProfileMeta }>({});
+  userMeta = signal<{ [uid: string]: User }>({});
 
   constructor() {
     effect(() => {
@@ -49,24 +48,21 @@ export class Chats {
         if (user) {
           this.userMeta.update((meta) => ({
             ...meta,
-            [uid]: {
-              displayName: user.displayName || '',
-              profilePictureURL: user.profilePictureURL,
-            },
+            [uid]: user,
           }));
         }
       },
     });
   }
 
-  getTargetUserMeta(participants: string[]): UserProfileMeta {
+  getTargetUserMeta(participants: string[]): User | null {
     const currentUser = this.userService.currentUser();
-    if (!currentUser) return { displayName: '' };
+    if (!currentUser) return null;
     const otherUid = this.chatService.getOtherParticipantUid(
       { participants } as Thread,
       currentUser.uid,
     );
-    return otherUid ? this.userMeta()[otherUid] || { displayName: '' } : { displayName: '' };
+    return otherUid ? this.userMeta()[otherUid] || null : null;
   }
 
   selectThread(threadId: string) {

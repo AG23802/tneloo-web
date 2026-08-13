@@ -1,4 +1,4 @@
-import { Injectable, Service, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   getFirestore,
   collection,
@@ -16,16 +16,55 @@ import {
 import app from '../../../core/firebase';
 import { Thread } from '../models/thread.model';
 import { Message } from '../models/message.model';
+import { Router } from '@angular/router';
 
-@Service()
+@Injectable({
+  providedIn: 'root',
+})
 export class ChatService {
   private firestore = getFirestore(app);
+  private router = inject(Router);
 
   threads = signal<Thread[]>([]);
   messages = signal<Message[]>([]);
 
   private threadsUnsubscribe: (() => void) | null = null;
   private messagesUnsubscribe: (() => void) | null = null;
+
+  async initializeActiveThread(
+    threadIdParam: string | null,
+    recipientId: string | null,
+    currentUid: string,
+  ) {
+    if (threadIdParam) {
+      this.subscribeToMessages(threadIdParam);
+      let thread = this.threads().find((t) => t.id === threadIdParam);
+      if (!thread) thread = (await this.getThreadById(threadIdParam)) ?? undefined;
+
+      return {
+        threadId: threadIdParam,
+        targetUid: thread ? this.getOtherParticipantUid(thread, currentUid) : null,
+      };
+    }
+
+    if (recipientId) {
+      const existingThreadId = await this.findExistingThread(currentUid, recipientId);
+      if (existingThreadId) {
+        this.subscribeToMessages(existingThreadId);
+        this.router.navigate(['/thread', existingThreadId], { replaceUrl: true });
+        return {
+          threadId: existingThreadId,
+          targetUid: recipientId,
+        };
+      }
+      return {
+        threadId: null,
+        targetUid: recipientId, // Brand new chat
+      };
+    }
+
+    return { threadId: null, targetUid: null };
+  }
 
   loadUserThreads(userId: string) {
     if (this.threadsUnsubscribe) return;
@@ -133,7 +172,6 @@ export class ChatService {
     let recId = recipientId;
 
     try {
-      // If we have a threadId but no recipient, look it up from the service threads or Firestore
       if (!recId && activeThreadId) {
         let thread = this.threads().find((t) => t.id === activeThreadId);
         if (!thread) thread = (await this.getThreadById(activeThreadId)) ?? undefined;
@@ -142,9 +180,14 @@ export class ChatService {
 
       if (!recId) return null;
 
-      if (!activeThreadId) {
+      const isNewThread = !activeThreadId;
+
+      if (isNewThread) {
         activeThreadId = await this.createNewThread(currentUserId, recId, text);
       }
+
+      // Guard check: ensure TypeScript knows activeThreadId is definitely a string here
+      if (!activeThreadId) return null;
 
       const messagesRef = collection(this.firestore, 'threads', activeThreadId, 'messages');
       const newMessageRef = doc(messagesRef);
@@ -168,6 +211,11 @@ export class ChatService {
         },
         { merge: true },
       );
+
+      if (isNewThread && activeThreadId) {
+        this.subscribeToMessages(activeThreadId);
+        this.router.navigate(['/thread', activeThreadId], { replaceUrl: true });
+      }
 
       return activeThreadId;
     } catch (err) {
