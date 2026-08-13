@@ -1,0 +1,8 @@
+<header class="chat-header">
+  <app-icon class="back-icon" name="back" (click)="event.emit()" />
+  <div class="header-user-info">
+    <app-avatar [url]="url()" />
+    <span class="thread-title">{{ displayName() }}</span>
+  </div>
+  <div></div>
+</header>

@@ -1,3 +1,5 @@
+<app-chat-header (event)="onBackClicked()" [url]="url()" [displayName]="displayName()" />
+
 <div class="chat-messages" #scrollContainer>
   @for (msg of messages(); track msg.id) {
     <div class="message-row" [class.outgoing]="msg.uid === currentUid()" [class.incoming]="msg.uid !== currentUid()">

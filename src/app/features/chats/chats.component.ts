@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  computed,
   ElementRef,
   ViewChild,
   AfterViewChecked,
@@ -17,11 +18,12 @@ import { IconComponent } from '../../components/icon/icon';
 import { ThreadView } from './components/thread-view/thread-view';
 import { ChatService } from './chat.service';
 import { UserProfileMeta } from './models/user-profile-meta.model';
+import { ChatHeader } from '../../chat-header/chat-header';
 
 @Component({
   selector: 'app-chats',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, ThreadView],
+  imports: [CommonModule, FormsModule, IconComponent, ThreadView, ChatHeader],
   templateUrl: './chats.component.html',
   styleUrl: './chats.component.css',
 })
@@ -37,10 +39,23 @@ export class Chats implements OnInit, AfterViewChecked {
   activeThreadId = signal<string | null>(null);
   activeRecipientId = signal<string | null>(null);
 
+  getParticipants(): string[] {
+    const threadId = this.activeThreadId();
+    const recipientId = this.activeRecipientId();
+
+    if (threadId) {
+      const thread = this.chatService.threads().find((t) => t.id === threadId);
+      if (thread) {
+        return thread.participants;
+      }
+    }
+
+    return [];
+  };
+
   private isInitialized = false;
 
   constructor() {
-    // Effect safely waits for currentUser() to load asynchronously
     effect(() => {
       const currentUser = this.userService.currentUser();
       if (!currentUser || this.isInitialized) return;
@@ -59,9 +74,7 @@ export class Chats implements OnInit, AfterViewChecked {
     });
   }
 
-  ngOnInit() {
-    // Initialization is handled by the auth-aware effect above
-  }
+  ngOnInit() {}
 
   private async initializeWithRecipient(currentUid: string, recipientId: string) {
     this.activeRecipientId.set(recipientId);
@@ -109,12 +122,6 @@ export class Chats implements OnInit, AfterViewChecked {
     const otherUid = this.getOtherParticipantUid(participants);
     if (!otherUid) return { displayName: 'Chat' };
     return this.userMeta()[otherUid] || { displayName: otherUid };
-  }
-
-  getPendingTargetMeta(): UserProfileMeta {
-    const recipientId = this.activeRecipientId();
-    if (!recipientId) return { displayName: 'Chat' };
-    return this.userMeta()[recipientId] || { displayName: recipientId };
   }
 
   async selectThread(threadId: string) {
