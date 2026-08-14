@@ -11,8 +11,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0; /* Crucial so inner views shrink properly */
-  overflow: hidden;
+  min-height: 0;
+  overflow-y: auto; /* Change from overflow: hidden to allow scrolling */
 }
 
 .view-container {
@@ -20,7 +20,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto; /* Change from overflow: hidden to allow scrolling */
 }
 
 .global-notification-banner {

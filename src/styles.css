@@ -11,7 +11,6 @@ body {
   max-width: 500px;
   margin: auto;
   height: 100dvh;
-  overflow: hidden;
 
   *, *::before, *::after {
     box-sizing: border-box;
