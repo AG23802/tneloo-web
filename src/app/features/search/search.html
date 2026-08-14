@@ -25,7 +25,7 @@
       @for (photo of photos(); track photo.id) {
         <div class="search-page__photo-card" (click)="openPhoto(photo)" (keydown.enter)="openPhoto(photo)"
              (keydown.space)="openPhoto(photo)" tabindex="0" role="button">
-          <img [src]="photo.url" [alt]="'Photo ' + photo.id" loading="lazy" />
+          <img [src]="photo.url" [alt]="'Photo ' + photo.id" />
         </div>
       }
     </div>

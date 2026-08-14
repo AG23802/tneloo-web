@@ -1,6 +1,6 @@
 <div class="avatar">
     @if (url() && !imageFailed()) {
-      <img class="avatar__image" [src]="url()" alt="" loading="lazy" (error)="imageFailed.set(true)" />
+      <img class="avatar__image" [src]="url()" alt="" (error)="imageFailed.set(true)" />
     } @else {
       <app-icon class="avatar__icon" name="ghost" />
     }
