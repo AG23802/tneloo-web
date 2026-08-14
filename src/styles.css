@@ -59,7 +59,6 @@ textarea {
   padding: var(--space-sm) var(--space-md);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: var(--font-size-lg);
   font-family: inherit;
   outline: none;
   background-color: var(--color-bg-secondary);
@@ -82,7 +81,6 @@ input[type="button"] {
   color: var(--color-white);
   border: none;
   border-radius: var(--radius-sm);
-  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   font-family: inherit;
   cursor: pointer;
@@ -119,7 +117,6 @@ input[type="button"] {
   text-align: left;
 
   label {
-    font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
     color: var(--color-text-main);
   }
@@ -127,14 +124,12 @@ input[type="button"] {
 
 .error-message {
   color: var(--color-danger);
-  font-size: var(--font-size-base);
   margin: 0;
   text-align: left;
 }
 
 .success-message {
   color: var(--color-primary);
-  font-size: var(--font-size-base);
   margin: 0 0 var(--space-base) 0;
   text-align: left;
   font-weight: var(--font-weight-medium);
