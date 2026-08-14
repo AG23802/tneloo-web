@@ -132,5 +132,8 @@
       "uploading": "Uploading...",
       "save": "Save"
     }
+  },
+  "photoSlider": {
+    "imageUnavailable": "Image unavailable"
   }
 }

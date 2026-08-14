@@ -132,5 +132,8 @@
       "uploading": "Téléchargement...",
       "save": "Enregistrer"
     }
+  },
+  "photoSlider": {
+    "imageUnavailable": "Image indisponible"
   }
 }

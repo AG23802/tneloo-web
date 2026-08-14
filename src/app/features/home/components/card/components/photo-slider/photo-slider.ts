@@ -1,10 +1,12 @@
 import { Component, input, signal } from '@angular/core';
 import { Photo } from '../../../../../../core/models/photo.model';
 import { User } from '../../../../../../core/models/user.model';
+import { IconComponent } from '../../../../../../components/icon/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-photo-slider',
-  imports: [],
+  imports: [IconComponent, TranslatePipe],
   templateUrl: './photo-slider.html',
   styleUrl: './photo-slider.css',
 })

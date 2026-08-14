@@ -132,5 +132,8 @@
       "uploading": "Duke u ngarkuar...",
       "save": "Ruaj"
     }
+  },
+  "photoSlider": {
+    "imageUnavailable": "Imazhi i padisponueshëm"
   }
 }

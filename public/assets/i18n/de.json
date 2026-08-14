@@ -85,7 +85,7 @@
       "deleteAccount": "Konto löschen"
     },
     "changeLanguage": {
-        "language": "Sprache"
+      "language": "Sprache"
     }
   },
   "profile": {
@@ -132,5 +132,8 @@
       "uploading": "Wird hochgeladen...",
       "save": "Speichern"
     }
+  },
+  "photoSlider": {
+    "imageUnavailable": "Bild nicht verfügbar"
   }
 }
