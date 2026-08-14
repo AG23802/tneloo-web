@@ -1,13 +1,18 @@
 :host {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100dvh; /* Change min-height to strict height */
+  overflow: hidden; /* Lock the root container */
   background: #fafafa;
   color: #262626;
 }
 
 .main-content {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  min-height: 0; /* Crucial for inner content shrinking */
+  overflow: hidden;
 }
 
 .global-notification-banner {
@@ -37,4 +42,12 @@
   color: #fff;
   font-size: 18px;
   cursor: pointer;
+}
+
+.view-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }

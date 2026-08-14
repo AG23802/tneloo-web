@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, TranslatePipe],
   templateUrl: './chats.html',
-  styleUrl: './chats..css',
+  styleUrl: './chats.css',
 })
 export class Chats {
   public chatService = inject(ChatService);

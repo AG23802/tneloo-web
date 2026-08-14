@@ -3,10 +3,11 @@
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-  height: calc(100vh - var(--nav-height));
+  height: 100%;
 }
 
 .chat-messages {
+  min-height: 0;
   flex: 1;
   padding: var(--space-base);
   overflow-y: auto;
