@@ -83,6 +83,9 @@
       "billingCards": "Kartat & Pagesat",
       "tokens": "Bilanci i Tokenëve & Historiku",
       "deleteAccount": "Fshi llogarinë"
+    },
+    "changeLanguage": {
+      "language": "Gjuha"
     }
   },
   "profile": {

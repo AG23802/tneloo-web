@@ -2,12 +2,12 @@ import { Component, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../../../components/icon/icon';
 import { SettingsView } from '../../../../core/models/settings-view.type';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-change-language',
   standalone: true,
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, IconComponent, TranslatePipe],
   templateUrl: './change-language.component.html',
   styleUrls: ['../../settings.css', './change-language.component.css'],
 })

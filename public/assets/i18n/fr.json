@@ -83,6 +83,9 @@
       "billingCards": "Cartes et paiements",
       "tokens": "Solde de jetons et historique",
       "deleteAccount": "Supprimer le compte"
+    },
+    "changeLanguage": {
+      "language": "Langue"
     }
   },
   "profile": {

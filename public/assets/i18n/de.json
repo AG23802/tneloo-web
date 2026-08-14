@@ -83,6 +83,9 @@
       "billingCards": "Gespeicherte Karten & Zahlung",
       "tokens": "Token-Guthaben & Verlauf",
       "deleteAccount": "Konto löschen"
+    },
+    "changeLanguage": {
+        "language": "Sprache"
     }
   },
   "profile": {

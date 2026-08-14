@@ -83,6 +83,9 @@
       "billingCards": "Carte e pagamenti",
       "tokens": "Saldo token e cronologia",
       "deleteAccount": "Elimina account"
+    },
+    "changeLanguage": {
+      "language": "Lingua"
     }
   },
   "profile": {

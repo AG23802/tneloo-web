@@ -194,7 +194,7 @@ export class UserService {
               id: doc.id,
               url: photoData.url,
               uid: owner.uid,
-              username: owner.displayName ?? 'username',
+              username: owner.username,
               profilePictureURL: owner.profilePictureURL ?? '',
             });
           }
