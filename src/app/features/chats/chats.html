@@ -1,28 +1,26 @@
-<div class="chat-container">
-  <div class="threads-list">
-    @if (threads().length === 0) {
-      <p class="no-threads">{{ 'chats.noConversations' | translate }}</p>
-    }
-    @for (chat of threads(); track chat.id) {
-      @let threadMeta = chat.targetUser;
-      <div class="thread-item" (click)="selectThread(chat.id)">
-        <div class="thread-avatar">
-          @if (threadMeta?.profilePictureURL) {
-            <img [src]="threadMeta?.profilePictureURL" alt="" />
-          } @else {
-            <div class="avatar-placeholder">{{ threadMeta?.displayName?.charAt(0) || '?' }}</div>
+<div class="threads-list">
+  @if (threads().length === 0) {
+    <p class="no-threads">{{ 'chats.noConversations' | translate }}</p>
+  }
+  @for (chat of threads(); track chat.id) {
+    @let threadMeta = chat.targetUser;
+    <div class="thread-item" (click)="selectThread(chat.id)">
+      <div class="thread-avatar">
+        @if (threadMeta?.profilePictureURL) {
+          <img [src]="threadMeta?.profilePictureURL" alt="" />
+        } @else {
+          <div class="avatar-placeholder">{{ threadMeta?.displayName?.charAt(0) || '?' }}</div>
+        }
+      </div>
+      <div class="thread-info">
+        <div class="thread-top">
+          <span class="thread-title">{{ threadMeta?.displayName || ('chats.loading' | translate) }}</span>
+          @if (chat.lastMessageTime) {
+            <span class="thread-time">{{ chat.lastMessageTime?.toDate() | date:'shortTime' }}</span>
           }
         </div>
-        <div class="thread-info">
-          <div class="thread-top">
-            <span class="thread-title">{{ threadMeta?.displayName || ('chats.loading' | translate) }}</span>
-            @if (chat.lastMessageTime) {
-              <span class="thread-time">{{ chat.lastMessageTime?.toDate() | date:'shortTime' }}</span>
-            }
-          </div>
-          <p class="thread-preview">{{ chat.lastMessage || ('chats.startedConversation' | translate) }}</p>
-        </div>
+        <p class="thread-preview">{{ chat.lastMessage || ('chats.startedConversation' | translate) }}</p>
       </div>
-    }
-  </div>
+    </div>
+  }
 </div>

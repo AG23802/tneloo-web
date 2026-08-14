@@ -1,7 +1,7 @@
 <div class="avatar">
-    @if (url() && !imageFailed()) {
-      <img class="avatar__image" [src]="url()" alt="" (error)="imageFailed.set(true)" />
-    } @else {
-      <app-icon class="avatar__icon" name="account" />
-    }
-  </div>
+  @if (url() && !imageFailed()) {
+    <img [src]="url()" alt="" (error)="imageFailed.set(true)" />
+  } @else {
+    <app-icon name="person" />
+  }
+</div>

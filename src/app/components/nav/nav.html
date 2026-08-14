@@ -1,19 +1,20 @@
-<!-- Bottom Navigation Bar -->
 <nav class="bottom-nav">
   @let username = userService.currentUser()?.username;
-  <a routerLink="/" routerLinkActive="active" class="nav-item">
-    <app-icon class="nav-icon" name="home" />
-  </a>
 
-  <a routerLink="/search" routerLinkActive="active" class="nav-item">
-    <app-icon class="nav-icon" name="search" />
-  </a>
-
-  <a routerLink="/chats" routerLinkActive="active" class="nav-item">
-    <app-icon class="nav-icon" name="share" />
-  </a>
-
-  <a [routerLink]="['/', username]" [class.disabled]="!username" routerLinkActive="active" class="nav-item">
-    <app-icon class="nav-icon" name="account" />
-  </a>
+  @for (item of navItems; track item.label) {
+    <a
+      [routerLink]="item.route(username)"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: !!item.exact }"
+      #rla="routerLinkActive"
+      class="nav-item"
+      [class.disabled]="item.needsUsername && !username"
+      [attr.aria-label]="item.label"
+    >
+      <app-icon
+        class="nav-icon"
+        [name]="rla.isActive ? item.activeIcon : item.icon"
+      />
+    </a>
+  }
 </nav>

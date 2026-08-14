@@ -23,7 +23,6 @@
 
   &.outgoing {
     justify-content: flex-end;
-
     .message-bubble {
       background-color: var(--color-primary);
       color: var(--color-white);
@@ -33,7 +32,6 @@
 
   &.incoming {
     justify-content: flex-start;
-
     .message-bubble {
       background-color: var(--color-border-light);
       color: var(--color-text-main);
@@ -48,8 +46,5 @@
   border-radius: var(--radius-lg);
   word-break: break-word;
   font-size: var(--font-size-base);
-
-  p {
-    margin: 0;
-  }
+  p { margin: 0; }
 }

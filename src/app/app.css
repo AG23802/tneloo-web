@@ -1,8 +1,8 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100dvh; /* Change min-height to strict height */
-  overflow: hidden; /* Lock the root container */
+  height: 100dvh;
+  overflow: hidden;
   background: #fafafa;
   color: #262626;
 }
@@ -11,7 +11,15 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0; /* Crucial for inner content shrinking */
+  min-height: 0; /* Crucial so inner views shrink properly */
+  overflow: hidden;
+}
+
+.view-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -42,12 +50,4 @@
   color: #fff;
   font-size: 18px;
   cursor: pointer;
-}
-
-.view-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
 }

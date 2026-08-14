@@ -10,14 +10,10 @@ body {
   font-size: var(--font-size-base);
   max-width: 500px;
   margin: auto;
-
-  /* Lock body height and prevent global scrolling */
   height: 100dvh;
   overflow: hidden;
 
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     box-sizing: border-box;
   }
 }
@@ -25,10 +21,7 @@ body {
 .btn-primary {
   background: none;
   color: var(--color-primary);
-
-  &:hover {
-    color: var(--color-primary-hover);
-  }
+  &:hover { color: var(--color-primary-hover); }
 }
 
 .btn-primary-danger {
@@ -48,31 +41,17 @@ body {
   color: var(--color-danger);
 }
 
-/* --- Global Elements: All Inputs and Buttons --- */
-
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="url"],
-input[type="tel"],
-textarea {
+input[type="text"], input[type="password"], input[type="email"], input[type="number"], input[type="search"], input[type="url"], input[type="tel"], textarea {
   display: block;
   width: 100%;
   padding: var(--space-sm) var(--space-md);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--radius-sm);
-
-  /* Explicitly map your tokens instead of inheriting */
-  font-family: var(--font-family-base), sans-serif;
+  font-family: inherit;
   font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-regular);
-
   outline: none;
   background-color: var(--color-bg-secondary);
   transition: border-color 0.2s, background-color 0.2s;
-  box-sizing: border-box;
 
   &:focus {
     border-color: var(--color-border-focus);
@@ -80,9 +59,7 @@ textarea {
   }
 }
 
-button,
-input[type="submit"],
-input[type="button"] {
+button, input[type="submit"], input[type="button"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -95,17 +72,9 @@ input[type="button"] {
   cursor: pointer;
   transition: opacity 0.2s;
 
-  &:hover {
-    opacity: 0.85;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  &:hover { opacity: 0.85; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
-
-/* --- Form Utilities --- */
 
 .password-form {
   display: flex;
@@ -115,35 +84,18 @@ input[type="button"] {
   border-radius: var(--radius-md);
 }
 
-.settings-body {
-  padding: var(--space-lg);
-}
+.settings-body { padding: var(--space-lg); }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
   text-align: left;
-
-  label {
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text-main);
-  }
+  label { font-weight: var(--font-weight-medium); color: var(--color-text-main); }
 }
 
-.error-message {
-  color: var(--color-danger);
-  margin: 0;
-  text-align: left;
-}
-
-.success-message {
-  color: var(--color-primary);
-  margin: 0 0 var(--space-base) 0;
-  text-align: left;
-  font-weight: var(--font-weight-medium);
-}
-
+.error-message { color: var(--color-danger); margin: 0; text-align: left; }
+.success-message { color: var(--color-primary); margin: 0 0 var(--space-base) 0; text-align: left; font-weight: var(--font-weight-medium); }
 .error-banner {
   padding: var(--space-md) var(--space-base);
   background-color: var(--color-danger-bg);
@@ -152,11 +104,20 @@ input[type="button"] {
   border-bottom: var(--border-width-thin) solid var(--color-danger-border);
 }
 
-/* --- Settings --- */
 .settings-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--color-bg-secondary);
   padding: 0 var(--space-base);
+}
+
+.message-btn { text-decoration: none; cursor: pointer; }
+
+.back-icon {
+  color: var(--color-primary);
+  cursor: pointer;
+  align-self: center;
+  &.hidden { visibility: hidden; pointer-events: none; }
+  &:hover { opacity: 0.7; }
 }
