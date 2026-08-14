@@ -73,11 +73,14 @@
       <div class="gallery-section">
         <div class="photo-grid">
           @for (photo of photos(); track $index) {
-            <div class="photo-item" (click)="openPhoto(photo)" (mousedown)="startLongPress(photo, $event)"
-                 (mouseup)="cancelLongPress()" (mouseleave)="cancelLongPress()"
-                 (touchstart)="startLongPress(photo, $event)" (touchend)="cancelLongPress()" tabindex="0" role="button">
+            <button type="button" class="photo-item"
+                    (click)="openPhoto(photo)"
+                    (pointerdown)="startLongPress(photo, $event)"
+                    (pointerup)="cancelLongPress()"
+                    (pointercancel)="cancelLongPress()"
+                    (pointerleave)="cancelLongPress()">
               <img [src]="photo" alt="" loading="lazy" />
-            </div>
+            </button>
           }
         </div>
       </div>
