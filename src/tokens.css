@@ -1,13 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
 :root {
-  /* 1. Colors - Core & Brand */
-  /* Base & Surfaces */
+  /* --- Typography --- */
+  --font-family-base: 'Montserrat', Verdana, "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+
+  /* Font Sizes */
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* --- Spacing & Sizing --- */
+  --space-2xs: 4px;
+  --space-xs: 6px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-base: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --nav-height: 48px;
+
+  /* --- Borders & Radii --- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --border-width-thin: 1px;
+  --border-width-thick: 2px;
+
+  /* --- Colors - Core & Brand --- */
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #fafafa;
-  --color-bg-tertiary: #f1f5f9; /* Clean replacement for secondary-bg */
+  --color-bg-tertiary: #f1f5f9;
 
   /* Text & Typography */
-  --color-text-main: #262626;   /* Merged main & dark for consistency */
+  --color-text-main: #262626;
   --color-text-muted: #8e8e8e;
   --color-text-placeholder: #737373;
 
@@ -20,51 +58,15 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* 2. Colors - Border Palette */
+  /* --- Colors - Border Palette --- */
   --color-border: #dbdbdb;
   --color-border-light: #efefef;
   --color-border-focus: #a8a8a8;
   --color-danger-border: #ffdddd;
   --color-danger-bg: #fff2f2;
 
-  /* 3. Colors - Navigation Component */
+  /* --- Colors - Navigation Component --- */
   --color-nav-border: #e2e8f0;
   --color-nav-text: #64748b;
   --shadow-nav: 0 -2px 10px rgba(0, 0, 0, 0.03);
-
-  /* 4. Typography - Font Sizes */
-  --font-size-xs: 12px;
-  --font-size-sm: 13px;
-  --font-size-base: 14px;
-  --font-size-md: 15px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-2xl: 20px;
-  --font-size-3xl: 24px;
-
-  /* 5. Typography - Font Weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* 6. Spacing & Sizing */
-  --space-2xs: 4px;
-  --space-xs: 6px;
-  --space-sm: 8px;
-  --space-md: 12px;
-  --space-base: 16px;
-  --space-lg: 20px;
-  --space-xl: 24px;
-  --space-2xl: 32px;
-
-  /* 7. Borders & Radii */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-full: 9999px;
-
-  --border-width-thin: 1px;
-  --border-width-thick: 2px;
 }

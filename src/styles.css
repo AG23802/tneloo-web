@@ -2,12 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
 :root {
-  --nav-height: 48px;
+  --nav-height: var(--space-2xl);
 }
 
 body {
-  font-family: 'Montserrat', Verdana, "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-  font-size: 14px;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
   max-width: 500px;
   margin: auto;
 
@@ -34,9 +34,9 @@ body {
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary-bg);
-  color: var(--color-secondary-text);
-  padding: 10px 14px;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-main);
+  padding: var(--space-sm) var(--space-md);
 }
 
 .btn-secondary.btn-secondary-danger,
@@ -56,10 +56,10 @@ input[type="tel"],
 textarea {
   display: block;
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: var(--font-size-base);
+  padding: var(--space-sm) var(--space-md);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-lg);
   font-family: inherit;
   outline: none;
   background-color: var(--color-bg-secondary);
@@ -81,9 +81,9 @@ input[type="button"] {
   padding: 0;
   color: var(--color-white);
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   font-family: inherit;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -103,41 +103,41 @@ input[type="button"] {
 .password-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-base);
   background: var(--color-white);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 .settings-body {
-  padding: 20px;
+  padding: var(--space-lg);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-xs);
   text-align: left;
 
   label {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
     color: var(--color-text-main);
   }
 }
 
 .error-message {
   color: var(--color-danger);
-  font-size: 14px;
+  font-size: var(--font-size-base);
   margin: 0;
   text-align: left;
 }
 
 .success-message {
   color: var(--color-primary);
-  font-size: 14px;
-  margin: 0 0 16px 0;
+  font-size: var(--font-size-base);
+  margin: 0 0 var(--space-base) 0;
   text-align: left;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .error-banner {
@@ -145,7 +145,7 @@ input[type="button"] {
   background-color: var(--color-danger-bg);
   color: var(--color-danger);
   font-size: var(--font-size-sm);
-  border-bottom: 1px solid var(--color-danger-border);
+  border-bottom: var(--border-width-thin) solid var(--color-danger-border);
 }
 
 /* --- Settings --- */
@@ -154,5 +154,5 @@ input[type="button"] {
   justify-content: space-between;
   align-items: center;
   background-color: var(--color-bg-secondary);
-  padding: 0 16px;
+  padding: 0 var(--space-base);
 }

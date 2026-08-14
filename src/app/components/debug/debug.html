@@ -5,3 +5,12 @@
   <!--  {{ currentUser | json }}-->
   <!--</pre>-->
 </div>
+
+<div class="container">
+  @for (icon of icons; track icon) {
+    <div style="margin: 10px;">
+      <app-icon [size]="40" [name]="icon" />
+      <span>{{ icon }}</span>
+    </div>
+  }
+</div>

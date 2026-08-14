@@ -28,6 +28,10 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
   },
   {
+    path: 'debug',
+    loadComponent: () => import('./components/debug/debug').then((m) => m.Debug),
+  },
+  {
     path: ':username',
     loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
   },
