@@ -39,8 +39,12 @@ export class ThreadView implements OnInit, OnDestroy {
   recipientId = signal<string | null>(null);
   private userMetaSub?: Subscription;
 
+  activeMessageId = signal<string | null>(null);
+  private touchStartX = 0;
+  private currentDraggingId = signal<string | null>(null);
+  messageOffsets = signal<{ [key: string]: number }>({});
+
   constructor() {
-    // Automatically scroll to bottom whenever messages signal updates
     effect(() => {
       const messages = this.chatService.messages();
       if (messages.length > 0) {
@@ -88,6 +92,35 @@ export class ThreadView implements OnInit, OnDestroy {
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
+  }
+
+  onTouchStart(msgId: string | undefined, event: TouchEvent) {
+    if (!msgId) return;
+    this.touchStartX = event.touches[0].clientX;
+    this.currentDraggingId.set(msgId);
+  }
+
+  onTouchMove(event: TouchEvent) {
+    const msgId = this.currentDraggingId();
+    if (!msgId) return;
+    const currentX = event.touches[0].clientX;
+    const diff = currentX - this.touchStartX;
+
+    if (diff < 0) {
+      const offset = Math.max(diff, -90);
+      this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: offset }));
+      if (offset < -50) {
+        this.activeMessageId.set(msgId);
+      }
+    }
+  }
+
+  onTouchEnd() {
+    const msgId = this.currentDraggingId();
+    if (msgId) {
+      this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: 0 }));
+    }
+    this.currentDraggingId.set(null);
   }
 
   onBackClicked() {

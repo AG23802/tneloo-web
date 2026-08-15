@@ -2,9 +2,23 @@
 
 <div class="chat-messages" #scrollContainer>
   @for (msg of chatService.messages(); track msg.id) {
-    <div class="message-row" [class.outgoing]="msg.uid === currentUid()" [class.incoming]="msg.uid !== currentUid()">
-      <div class="message-bubble">
-        <p>{{ msg.text }}</p>
+    <div
+      class="message-row-wrapper"
+      (touchstart)="onTouchStart(msg.id, $event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd()">
+
+      <div class="message-row"
+           [class.outgoing]="msg.uid === currentUid()"
+           [class.incoming]="msg.uid !== currentUid()"
+           [style.transform]="'translateX(' + (msg.id ? (messageOffsets()[msg.id] || 0) : 0) + 'px)'">
+        <div class="message-bubble">
+          <p>{{ msg.text }}</p>
+        </div>
+      </div>
+
+      <div class="message-timestamp" [class.visible]="(msg.id && activeMessageId() === msg.id) || (msg.id && (messageOffsets()[msg.id] || 0) < -40)">
+        {{ msg.createdAt?.toDate() | date:'shortTime' }}
       </div>
     </div>
   }

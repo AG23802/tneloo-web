@@ -17,9 +17,20 @@
   background-color: var(--color-bg-secondary);
 }
 
+.message-row-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .message-row {
   display: flex;
   width: 100%;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+  z-index: 2;
+  background: transparent;
 
   &.outgoing {
     justify-content: flex-end;
@@ -47,4 +58,19 @@
   word-break: break-word;
   font-size: var(--font-size-base);
   p { margin: 0; }
+}
+
+.message-timestamp {
+  position: absolute;
+  right: 12px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #888);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+  pointer-events: none;
+
+  &.visible {
+    opacity: 1;
+  }
 }
