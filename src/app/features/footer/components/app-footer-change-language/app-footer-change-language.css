@@ -1,7 +1,7 @@
 /* app-footer-change-language.css */
 .auth-language-dropdown {
   position: relative;
-  margin-top: 24px;
+  margin-top: var(--space-xl);
   display: flex;
   justify-content: center;
 }
@@ -10,10 +10,10 @@
   background: var(--color-white);
   border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 8px 14px;
+  padding: var(--space-sm) var(--space-md);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   cursor: pointer;
   color: var(--color-text-main);
   font-size: var(--font-size-sm);
@@ -28,7 +28,7 @@
 }
 
 .dropdown-arrow {
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   margin-left: 4px;
 }
@@ -52,10 +52,10 @@
 .auth-lang-option {
   background: transparent;
   border: none;
-  padding: 10px 14px;
+  padding: var(--space-sm) var(--space-md);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-sm);
   cursor: pointer;
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
@@ -80,6 +80,6 @@
   width: 20px;
   height: 14px;
   object-fit: cover;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }

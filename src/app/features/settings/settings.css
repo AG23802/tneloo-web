@@ -13,7 +13,7 @@ app-main-settings-view {
 }
 
 .settings-container h2 {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-lg);
   color: var(--color-text-main);
@@ -40,7 +40,7 @@ app-main-settings-view {
   background: none;
   border: none;
   border-bottom: var(--border-width-thin) solid var(--color-border-light);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   cursor: pointer;
   text-align: left;
   text-decoration: none;

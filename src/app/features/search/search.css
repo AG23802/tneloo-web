@@ -63,7 +63,7 @@
     background: none;
     border: none;
     border-bottom: var(--border-width-thin) solid var(--color-border-light);
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-base);
     cursor: pointer;
     text-align: left;
     text-decoration: none;

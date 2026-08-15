@@ -1,38 +1,37 @@
 .edit-profile-section {
-  padding: 16px;
+  padding: var(--space-base);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-base);
 }
 
 .edit-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .edit-field label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #737373;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-placeholder);
 }
 
 .edit-field input,
 .edit-field textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #dbdbdb;
-  border-radius: 6px;
-  font-size: 15px;
+  padding: var(--space-md);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-family: inherit;
-  background: #fafafa;
+  background: var(--color-bg-secondary);
   outline: none;
 }
 
 .edit-field input:focus,
 .edit-field textarea:focus {
-  border-color: #a8a8a8;
-  background: #fff;
+  border-color: var(--color-border-focus);
+  background: var(--color-white);
 }
 
 .edit-field textarea {

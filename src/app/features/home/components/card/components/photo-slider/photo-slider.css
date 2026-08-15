@@ -62,7 +62,7 @@
 
   height:100%;
 
-  background:#f3f3f3;
+  background: var(--color-border-light);
 
   display:flex;
 
@@ -72,11 +72,11 @@
 
   justify-content:center;
 
-  gap:12px;
+  gap: var(--space-md);
 
-  color:#777;
+  color: var(--color-text-placeholder);
 
-  font-size:14px;
+  font-size: var(--font-size-base);
 
 }
 
@@ -100,9 +100,9 @@
 
   align-items:center;
 
-  gap:6px;
+  gap: var(--space-xs);
 
-  padding:10px 0;
+  padding: var(--space-sm) 0;
 
 }
 
@@ -115,7 +115,7 @@
 
   border-radius:50%;
 
-  background:#ccc;
+  background: var(--color-border);
 
   transition:.2s ease;
 
@@ -124,7 +124,7 @@
 
 .dot.active {
 
-  background:#111;
+  background: var(--color-black);
 
   transform:scale(1.2);
 

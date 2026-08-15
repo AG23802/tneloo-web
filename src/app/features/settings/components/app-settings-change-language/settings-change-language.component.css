@@ -2,7 +2,7 @@
   width: 24px;
   height: 18px;
   object-fit: cover;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 

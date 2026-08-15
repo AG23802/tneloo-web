@@ -66,6 +66,7 @@ button, input[type="submit"], input[type="button"] {
   color: var(--color-white);
   border: none;
   border-radius: var(--radius-sm);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   font-family: inherit;
   cursor: pointer;

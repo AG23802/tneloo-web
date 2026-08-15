@@ -2,15 +2,14 @@
   /* --- Typography --- */
   --font-family-base: 'Montserrat', Verdana, "Apple Color Emoji", "Noto Color Emoji", sans-serif;
 
-  /* Font Sizes */
-  --font-size-xs: 12px;
-  --font-size-sm: 13px;
-  --font-size-base: 14px;
-  --font-size-md: 15px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-2xl: 20px;
-  --font-size-3xl: 24px;
+  /* Font Sizes - keep to this scale, don't add one-off values.
+     --font-size-lg stays in sync with the text-input font-size in
+     styles.css: below 16px, iOS Safari auto-zooms on focus. */
+  --font-size-xs: 12px;   /* meta text: timestamps, badges, captions */
+  --font-size-sm: 13px;   /* secondary text: subtitles, footer, muted labels */
+  --font-size-base: 15px; /* default body copy, list rows, nav items */
+  --font-size-lg: 16px;   /* inputs & buttons */
+  --font-size-xl: 20px;   /* headings & section titles */
 
   /* Font Weights */
   --font-weight-regular: 400;
@@ -52,6 +51,8 @@
   --color-primary: #0095f6;
   --color-primary-hover: #00376b;
   --color-danger: #ed4956;
+  --color-danger-solid: #dc3545;
+  --color-success-solid: #28a745;
 
   /* Pure Tints */
   --color-white: #ffffff;

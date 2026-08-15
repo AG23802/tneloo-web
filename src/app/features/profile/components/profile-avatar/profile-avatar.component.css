@@ -31,9 +31,9 @@
 
   justify-content: center;
 
-  background: #ddd;
+  background: var(--color-border);
 
-  font-size: 40px;
+  font-size: var(--font-size-xl);
 
 }
 
@@ -54,7 +54,7 @@
 
   background: rgba(0, 0, 0, .45);
 
-  color: white;
+  color: var(--color-white);
 
   opacity: 0;
 
@@ -93,13 +93,13 @@
 
   border: none;
 
-  background: #111;
+  background: var(--color-black);
 
-  color: white;
+  color: var(--color-white);
 
-  padding: 8px 20px;
+  padding: var(--space-sm) var(--space-lg);
 
-  border-radius: 20px;
+  border-radius: var(--radius-full);
 
   cursor: pointer;
 
