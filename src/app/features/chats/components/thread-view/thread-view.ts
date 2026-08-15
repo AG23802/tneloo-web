@@ -1,13 +1,4 @@
-import {
-  Component,
-  inject,
-  signal,
-  OnDestroy,
-  OnInit,
-  viewChild,
-  ElementRef,
-  effect,
-} from '@angular/core';
+import { Component, inject, signal, OnDestroy, OnInit, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -44,17 +35,6 @@ export class ThreadView implements OnInit, OnDestroy {
   private currentDraggingId = signal<string | null>(null);
   messageOffsets = signal<{ [key: string]: number }>({});
 
-  constructor() {
-    effect(() => {
-      const messages = this.chatService.messages();
-      if (messages.length > 0) {
-        setTimeout(() => {
-          this.scrollToBottom();
-        }, 50);
-      }
-    });
-  }
-
   async ngOnInit() {
     const currentUser = this.userService.currentUser();
     if (!currentUser) return;
@@ -77,6 +57,11 @@ export class ThreadView implements OnInit, OnDestroy {
     if (result.targetUid) {
       this.fetchUser(result.targetUid);
     }
+
+    // Initial scroll to bottom once messages are rendered
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 100);
   }
 
   private fetchUser(uid: string) {
@@ -94,6 +79,30 @@ export class ThreadView implements OnInit, OnDestroy {
     }
   }
 
+  onContainerScroll(event: Event) {
+    const container = event.target as HTMLElement;
+
+    // Trigger when user scrolls close to the top
+    if (container.scrollTop <= 50) {
+      const currentThreadId = this.threadId();
+      if (
+        currentThreadId &&
+        this.chatService.hasMoreMessages() &&
+        !this.chatService.isLoadingMoreMessages()
+      ) {
+        // Record prior dimensions and scroll state
+        const oldScrollHeight = container.scrollHeight;
+        const oldScrollTop = container.scrollTop;
+
+        this.chatService.loadMoreMessages(currentThreadId).then(() => {
+          // Adjust scroll position precisely so the user doesn't lose their place
+          const newScrollHeight = container.scrollHeight;
+          container.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
+        });
+      }
+    }
+  }
+
   onTouchStart(msgId: string | undefined, event: TouchEvent) {
     if (!msgId) return;
     this.touchStartX = event.touches[0].clientX;
@@ -107,7 +116,6 @@ export class ThreadView implements OnInit, OnDestroy {
     const diff = currentX - this.touchStartX;
 
     if (diff < 0) {
-      // Increased max drag limit from -45 to -70 to reveal more of the timestamp
       const offset = Math.max(diff, -70);
       this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: offset }));
       if (offset < -40) {

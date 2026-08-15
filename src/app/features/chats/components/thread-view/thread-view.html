@@ -1,6 +1,7 @@
 <app-chat-header (event)="onBackClicked()" [user]="user()" />
-
-<div class="chat-messages" #scrollContainer>
+@let counter = 0;
+<div class="chat-messages" #scrollContainer (scroll)="onContainerScroll($event)">
+  {{ chatService.messages().length }}
   @for (msg of chatService.messages(); track msg.id || $index) {
     <div class="message-row-wrapper">
       <!-- Timestamp positioned behind the row, shown when swiped -->
@@ -17,6 +18,7 @@
            (touchend)="onTouchEnd()">
 
         <div class="message-bubble">
+          {{ $index }}
           <p>{{ msg.text }}</p>
         </div>
       </div>

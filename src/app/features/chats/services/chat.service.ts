@@ -13,6 +13,8 @@ import {
   doc,
   serverTimestamp,
   getDoc,
+  startAfter,
+  QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import app from '../../../core/firebase';
 import { Thread } from '../models/thread.model';
@@ -32,6 +34,17 @@ export class ChatService {
   threads = signal<Thread[]>([]);
   messages = signal<Message[]>([]);
   userMeta = signal<{ [uid: string]: User }>({});
+
+  // Pagination states for threads
+  hasMoreThreads = signal<boolean>(true);
+  isLoadingMoreThreads = signal<boolean>(false);
+  private lastThreadDoc: QueryDocumentSnapshot | null = null;
+  private threadBatchSize = 20;
+
+  // Pagination states for messages
+  hasMoreMessages = signal<boolean>(true);
+  isLoadingMoreMessages = signal<boolean>(false);
+  private messageBatchSize = 10;
 
   enrichedThreads = computed(() => {
     const currentUser = this.userService.currentUser();
@@ -64,7 +77,7 @@ export class ChatService {
     effect(() => {
       const currentUser = this.userService.currentUser();
       if (currentUser) {
-        this.loadUserThreads(currentUser.uid);
+        this.loadInitialThreads(currentUser.uid);
       } else {
         this.clearThreads();
       }
@@ -84,7 +97,7 @@ export class ChatService {
     });
   }
 
-  loadUserThreads(userId: string) {
+  loadInitialThreads(userId: string) {
     if (this.threadsUnsubscribe) return;
 
     const threadsRef = collection(this.firestore, 'threads');
@@ -92,7 +105,7 @@ export class ChatService {
       threadsRef,
       where('participants', 'array-contains', userId),
       orderBy('lastMessageTime', 'desc'),
-      limit(20),
+      limit(this.threadBatchSize),
     );
 
     this.threadsUnsubscribe = onSnapshot(q, (snapshot) => {
@@ -103,12 +116,64 @@ export class ChatService {
           ...data,
         } as Thread;
       });
+
+      this.lastThreadDoc = snapshot.docs[snapshot.docs.length - 1] || null;
+      this.hasMoreThreads.set(snapshot.docs.length === this.threadBatchSize);
       this.threads.set(userThreads);
     });
   }
 
+  async loadMoreThreads() {
+    const currentUser = this.userService.currentUser();
+    if (
+      !currentUser ||
+      this.isLoadingMoreThreads() ||
+      !this.hasMoreThreads() ||
+      !this.lastThreadDoc
+    )
+      return;
+
+    this.isLoadingMoreThreads.set(true);
+
+    try {
+      const threadsRef = collection(this.firestore, 'threads');
+      const q = query(
+        threadsRef,
+        where('participants', 'array-contains', currentUser.uid),
+        orderBy('lastMessageTime', 'desc'),
+        startAfter(this.lastThreadDoc),
+        limit(this.threadBatchSize),
+      );
+
+      const snapshot = await getDocs(q);
+      const moreThreads: Thread[] = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          ...data,
+        } as Thread;
+      });
+
+      if (snapshot.docs.length > 0) {
+        this.lastThreadDoc = snapshot.docs[snapshot.docs.length - 1];
+      }
+
+      if (snapshot.docs.length < this.threadBatchSize) {
+        this.hasMoreThreads.set(false);
+      }
+
+      this.threads.update((existing) => [...existing, ...moreThreads]);
+    } catch (err) {
+      console.error('Error loading more threads:', err);
+    } finally {
+      this.isLoadingMoreThreads.set(false);
+    }
+  }
+
   clearThreads() {
     this.threads.set([]);
+    this.lastThreadDoc = null;
+    this.hasMoreThreads.set(true);
     if (this.threadsUnsubscribe) {
       this.threadsUnsubscribe();
       this.threadsUnsubscribe = null;
@@ -135,23 +200,79 @@ export class ChatService {
   subscribeToMessages(threadId: string) {
     if (this.messagesUnsubscribe) this.messagesUnsubscribe();
 
+    this.hasMoreMessages.set(true);
     const messagesRef = collection(this.firestore, 'threads', threadId, 'messages');
-    const q = query(messagesRef, orderBy('createdAt', 'asc'), limit(50));
+    const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(this.messageBatchSize));
 
     this.messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs: Message[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data();
-        return {
-          id: docSnap.id,
-          ...data,
-        } as Message;
-      });
+      const msgs: Message[] = snapshot.docs
+        .map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            id: docSnap.id,
+            ...data,
+          } as Message;
+        })
+        .reverse();
+
+      this.hasMoreMessages.set(snapshot.docs.length === this.messageBatchSize);
       this.messages.set(msgs);
     });
   }
 
+  async loadMoreMessages(threadId: string) {
+    if (this.isLoadingMoreMessages() || !this.hasMoreMessages() || this.messages().length === 0)
+      return;
+
+    this.isLoadingMoreMessages.set(true);
+
+    try {
+      const messagesRef = collection(this.firestore, 'threads', threadId, 'messages');
+      const oldestMessage = this.messages()[0];
+      const oldestDocSnap = await getDoc(
+        doc(this.firestore, 'threads', threadId, 'messages', oldestMessage.id!),
+      );
+
+      if (!oldestDocSnap.exists()) {
+        this.hasMoreMessages.set(false);
+        return;
+      }
+
+      const q = query(
+        messagesRef,
+        orderBy('createdAt', 'desc'),
+        startAfter(oldestDocSnap),
+        limit(this.messageBatchSize),
+      );
+
+      const snapshot = await getDocs(q);
+      const olderMsgs: Message[] = snapshot.docs
+        .map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            id: docSnap.id,
+            ...data,
+          } as Message;
+        })
+        .reverse();
+
+      if (snapshot.docs.length < this.messageBatchSize) {
+        this.hasMoreMessages.set(false);
+      }
+
+      if (olderMsgs.length > 0) {
+        this.messages.update((existing) => [...olderMsgs, ...existing]);
+      }
+    } catch (err) {
+      console.error('Error loading more messages:', err);
+    } finally {
+      this.isLoadingMoreMessages.set(false);
+    }
+  }
+
   clearMessages() {
     this.messages.set([]);
+    this.hasMoreMessages.set(true);
     this.currentActiveThreadId = null;
     this.currentRecipientId = null;
     if (this.messagesUnsubscribe) {
@@ -172,6 +293,7 @@ export class ChatService {
       if (!recipientId && activeThreadId) {
         const thread = await this.getOrFindThread(activeThreadId);
         recipientId = thread ? this.getOtherParticipantUid(thread, currentUser.uid) || null : null;
+        this.currentRecipientId = recipientId;
       }
 
       if (!recipientId) return null;
@@ -270,6 +392,7 @@ export class ChatService {
       const existingThreadId = await this.findExistingThread(currentUid, recipientId);
       if (existingThreadId) {
         this.currentActiveThreadId = existingThreadId;
+        this.currentRecipientId = recipientId;
         this.subscribeToMessages(existingThreadId);
         this.router.navigate(['/thread', existingThreadId], { replaceUrl: true });
         return { threadId: existingThreadId, targetUid: recipientId };
