@@ -1,4 +1,5 @@
-import { inject, signal, computed, effect, Service } from '@angular/core';
+import { inject, signal, computed, effect } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   getFirestore,
   collection,
@@ -20,7 +21,9 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../core/models/user.model';
 
-@Service()
+@Injectable({
+  providedIn: 'root',
+})
 export class ChatService {
   private firestore = getFirestore(app);
   private router = inject(Router);
@@ -58,7 +61,6 @@ export class ChatService {
   private messagesUnsubscribe: (() => void) | null = null;
 
   constructor() {
-    // Automatically load user threads whenever the current user changes/becomes available
     effect(() => {
       const currentUser = this.userService.currentUser();
       if (currentUser) {
@@ -254,9 +256,13 @@ export class ChatService {
     if (threadIdParam) {
       this.subscribeToMessages(threadIdParam);
       const thread = await this.getOrFindThread(threadIdParam);
+      const targetUid = thread ? this.getOtherParticipantUid(thread, currentUid) : null;
+      if (targetUid) {
+        this.currentRecipientId = targetUid;
+      }
       return {
         threadId: threadIdParam,
-        targetUid: thread ? this.getOtherParticipantUid(thread, currentUid) : null,
+        targetUid: targetUid,
       };
     }
 
