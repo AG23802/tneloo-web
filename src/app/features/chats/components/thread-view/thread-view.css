@@ -22,16 +22,16 @@
   display: flex;
   align-items: center;
   width: 100%;
-  overflow: hidden; /* Clips any overflow during drag */
+  overflow: hidden;
 }
 
 .message-row {
   display: flex;
   width: 100%;
+  flex-shrink: 0; /* <--- PREVENTS THE SHRINKING BUG */
   transition: transform 0.1s ease-out;
   will-change: transform;
   z-index: 2;
-  /* Solid background using your secondary background color so the timestamp is hidden until swiped */
   background-color: var(--color-bg-secondary);
 
   &.outgoing {
