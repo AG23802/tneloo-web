@@ -107,10 +107,10 @@ export class ThreadView implements OnInit, OnDestroy {
     const diff = currentX - this.touchStartX;
 
     if (diff < 0) {
-      // Reduced swipe distance limit from -90 to -45
-      const offset = Math.max(diff, -45);
+      // Increased max drag limit from -45 to -70 to reveal more of the timestamp
+      const offset = Math.max(diff, -70);
       this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: offset }));
-      if (offset < -30) {
+      if (offset < -40) {
         this.activeMessageId.set(msgId);
       }
     }
