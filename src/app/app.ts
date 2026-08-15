@@ -6,6 +6,7 @@ import { Auth } from './features/auth/components/auth/auth';
 import { Spinner } from './components/spinner/spinner';
 import { LoadingManagerService } from './core/services/loading.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
   imports: [RouterModule, Nav, Auth, Spinner],
@@ -18,6 +19,8 @@ export class App implements OnInit {
   userService = inject(UserService);
   loadingManager = inject(LoadingManagerService);
   translateService = inject(TranslateService);
+  // Injected for its side effect: applies the saved theme preference to <html>.
+  private themeService = inject(ThemeService);
 
   private translate = inject(TranslateService);
 

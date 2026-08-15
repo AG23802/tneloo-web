@@ -104,9 +104,27 @@
     <div class="settings-header">
       <app-icon (click)="navigateTo('main')" name="back" />
       <h3>{{ 'settings.appearance' | translate }}</h3>
+      <div></div>
     </div>
     <div class="settings-section">
-      <div class="setting-item">{{ 'settings.appearanceDesc' | translate }}</div>
+      @for (option of themeOptions; track option.value) {
+        <button class="setting-item" (click)="selectTheme(option.value)">
+          <div class="setting-item-content">
+            <app-icon [name]="option.icon" />
+            <span>{{ 'settings.themeOptions.' + option.value | translate }}</span>
+          </div>
+
+          @if (themeService.preference() === option.value) {
+            <div class="radio-indicator checked">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+          } @else {
+            <div class="radio-indicator"></div>
+          }
+        </button>
+      }
     </div>
   } @else if (activeView() === 'accessibility') {
     <!-- ACCESSIBILITY SUB-MENU -->

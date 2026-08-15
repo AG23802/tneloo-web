@@ -15,6 +15,7 @@ import { MainSettingsView } from './components/main-settings-view/main-settings-
 import { SettingsView } from '../../core/models/settings-view.type';
 import { SettingsChangeLanguage } from './components/app-settings-change-language/settings-change-language.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ThemePreference, ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -33,7 +34,18 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class Settings {
   userService = inject(UserService);
+  themeService = inject(ThemeService);
   private auth = getAuth(app);
+
+  readonly themeOptions: { value: ThemePreference; icon: 'monitor' | 'sun' | 'moon' }[] = [
+    { value: 'system', icon: 'monitor' },
+    { value: 'light', icon: 'sun' },
+    { value: 'dark', icon: 'moon' },
+  ];
+
+  selectTheme(preference: ThemePreference): void {
+    this.themeService.setPreference(preference);
+  }
 
   // Inside your Settings class:
   requiresReauth = signal<boolean>(false);

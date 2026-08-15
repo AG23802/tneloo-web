@@ -49,6 +49,11 @@
     "blockedDesc": "Lista e llogarive të bllokuara...",
     "appearance": "Tema & Pamja",
     "appearanceDesc": "Modaliteti i errët, i ndritshëm ose cilësimet e sistemit...",
+    "themeOptions": {
+      "system": "Cilësimi i sistemit",
+      "light": "Modaliteti i ndritshëm",
+      "dark": "Modaliteti i errët"
+    },
     "accessibility": "Përshkathtësia",
     "accessibilityDesc": "Opsionet e përshkathtësisë...",
     "help": "Ndihma & Mbështetja",

@@ -48,13 +48,18 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: var(--font-size-lg);
+  color: var(--color-text-main);
   outline: none;
   background-color: var(--color-bg-secondary);
-  transition: border-color 0.2s, background-color 0.2s;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+
+  &::placeholder {
+    color: var(--color-text-placeholder);
+  }
 
   &:focus {
     border-color: var(--color-border-focus);
-    background-color: var(--color-white);
+    background-color: var(--color-bg-primary);
   }
 }
 
@@ -80,7 +85,7 @@ button, input[type="submit"], input[type="button"] {
   display: flex;
   flex-direction: column;
   gap: var(--space-base);
-  background: var(--color-white);
+  background: var(--color-bg-primary);
   border-radius: var(--radius-md);
 }
 

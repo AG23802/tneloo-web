@@ -107,6 +107,22 @@ export const ICONS = {
   moon: `
     <path d="M11.502,22.99805A11.4313,11.4313,0,0,1,.49512,14.83691a.99889.99889,0,0,1,.251-.998,1.01148,1.01148,0,0,1,.99707-.249,9.43041,9.43041,0,0,0,2.75879.40821A9.5082,9.5082,0,0,0,13.5957,1.74023a1.00039,1.00039,0,0,1,1.24707-1.248A11.501,11.501,0,0,1,11.502,22.99805ZM3.08984,15.91211A9.49991,9.49991,0,0,0,21.002,11.498,9.57875,9.57875,0,0,0,15.916,3.08594,11.5083,11.5083,0,0,1,3.08984,15.91211Z"></path>
   `,
+  sun: `
+    <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="1" y2="3"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="21" y2="23"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="1" x2="3" y1="12" y2="12"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="21" x2="23" y1="12" y2="12"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
+  `,
+  monitor: `
+    <rect fill="none" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" width="20" x="2" y="3"></rect>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="8" x2="16" y1="21" y2="21"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="17" y2="21"></line>
+  `,
   report: `
     <path d="M18.001 1h-12a5.006 5.006 0 0 0-5 5v9.005a5.006 5.006 0 0 0 5 5h2.514l2.789 2.712a1 1 0 0 0 1.394 0l2.787-2.712h2.516a5.006 5.006 0 0 0 5-5V6a5.006 5.006 0 0 0-5-5Zm3 14.005a3.003 3.003 0 0 1-3 3h-2.936a1 1 0 0 0-.79.387l-2.274 2.212-2.276-2.212a1 1 0 0 0-.79-.387H6a3.003 3.003 0 0 1-3-3V6a3.003 3.003 0 0 1 3-3h12a3.003 3.003 0 0 1 3 3Zm-9-1.66a1.229 1.229 0 1 0 1.228 1.228A1.23 1.23 0 0 0 12 13.344Zm0-8.117a1.274 1.274 0 0 0-.933.396 1.108 1.108 0 0 0-.3.838l.347 4.861a.892.892 0 0 0 1.77 0l.348-4.86a1.106 1.106 0 0 0-.3-.838A1.272 1.272 0 0 0 12 5.228Z"></path>
   `,

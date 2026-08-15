@@ -49,6 +49,11 @@
     "blockedDesc": "Elenco degli account bloccati...",
     "appearance": "Tema e aspetto",
     "appearanceDesc": "Modalità scura, modalità chiara o impostazioni di sistema...",
+    "themeOptions": {
+      "system": "Impostazione di sistema",
+      "light": "Modalità chiara",
+      "dark": "Modalità scura"
+    },
     "accessibility": "Accessibilità",
     "accessibilityDesc": "Opzioni di accessibilità...",
     "help": "Aiuto e supporto",

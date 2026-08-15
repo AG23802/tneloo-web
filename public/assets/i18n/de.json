@@ -49,6 +49,11 @@
     "blockedDesc": "Liste blockierter Konten...",
     "appearance": "Theme & Erscheinungsbild",
     "appearanceDesc": "Dunkelmodus, Hellmodus oder Systemeinstellungen...",
+    "themeOptions": {
+      "system": "Systemeinstellung",
+      "light": "Hellmodus",
+      "dark": "Dunkelmodus"
+    },
     "accessibility": "Barrierefreiheit",
     "accessibilityDesc": "Optionen für Barrierefreiheit...",
     "help": "Hilfe & Support",

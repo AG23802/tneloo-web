@@ -76,3 +76,24 @@ app-icon {
   color: var(--color-danger);
   font-weight: var(--font-weight-semibold);
 }
+
+.radio-indicator {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  border: var(--border-width-thick) solid var(--color-text-muted);
+}
+
+.radio-indicator.checked {
+  background-color: var(--color-primary);
+  border: none;
+}
+
+.radio-indicator.checked svg {
+  color: var(--color-white);
+}

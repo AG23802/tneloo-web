@@ -6,6 +6,17 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    // Applied before Angular bootstraps so an explicit light/dark choice
+    // doesn't flash the wrong theme for a frame. 'system' needs no attribute -
+    // that case is handled purely by CSS via prefers-color-scheme.
+    (function () {
+      var theme = localStorage.getItem('preferred_theme');
+      if (theme === 'light' || theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

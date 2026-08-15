@@ -49,6 +49,11 @@
     "blockedDesc": "List of blocked accounts...",
     "appearance": "Theme & Appearance",
     "appearanceDesc": "Dark mode, light mode, or system settings...",
+    "themeOptions": {
+      "system": "System setting",
+      "light": "Light mode",
+      "dark": "Dark mode"
+    },
     "accessibility": "Accessibility",
     "accessibilityDesc": "Accessibility options...",
     "help": "Help & Support",

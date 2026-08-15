@@ -49,6 +49,11 @@
     "blockedDesc": "Liste des comptes bloqués...",
     "appearance": "Thème et apparence",
     "appearanceDesc": "Mode sombre, mode clair ou paramètres système...",
+    "themeOptions": {
+      "system": "Paramètre système",
+      "light": "Mode clair",
+      "dark": "Mode sombre"
+    },
     "accessibility": "Accessibilité",
     "accessibilityDesc": "Options d'accessibilité...",
     "help": "Aide et support",

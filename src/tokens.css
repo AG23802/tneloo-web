@@ -70,3 +70,51 @@
   --color-nav-text: #64748b;
   --shadow-nav: 0 -2px 10px rgba(0, 0, 0, 0.03);
 }
+
+/* --- Dark theme ---
+   'system' (default): no [data-theme] attribute, so this applies purely from
+   the OS preference. An explicit choice sets [data-theme] on <html> via
+   ThemeService and overrides the OS either direction - see the block below. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-primary: #000000;
+    --color-bg-secondary: #121212;
+    --color-bg-tertiary: #262626;
+
+    --color-text-main: #f5f5f5;
+    --color-text-muted: #a8a8a8;
+    --color-text-placeholder: #8e8e8e;
+
+    --color-primary-hover: #4db8ff;
+
+    --color-border: #363636;
+    --color-border-light: #2a2a2a;
+    --color-danger-border: #4a1f1f;
+    --color-danger-bg: #3a1a1a;
+
+    --color-nav-border: #2a2a2a;
+    --color-nav-text: #9aa4b2;
+    --shadow-nav: 0 -2px 10px rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #121212;
+  --color-bg-tertiary: #262626;
+
+  --color-text-main: #f5f5f5;
+  --color-text-muted: #a8a8a8;
+  --color-text-placeholder: #8e8e8e;
+
+  --color-primary-hover: #4db8ff;
+
+  --color-border: #363636;
+  --color-border-light: #2a2a2a;
+  --color-danger-border: #4a1f1f;
+  --color-danger-bg: #3a1a1a;
+
+  --color-nav-border: #2a2a2a;
+  --color-nav-text: #9aa4b2;
+  --shadow-nav: 0 -2px 10px rgba(0, 0, 0, 0.6);
+}

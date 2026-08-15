@@ -22,7 +22,7 @@
   .auth-section {
     display: flex;
     flex-direction: column;
-    background: var(--color-white);
+    background: var(--color-bg-primary);
     border-radius: var(--radius-md, 8px);
     margin-bottom: var(--space-base);
     border: 1px solid var(--color-border-light);

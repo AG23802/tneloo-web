@@ -9,7 +9,7 @@
   margin: 0 auto;
   width: 100%;
   overflow: hidden;
-  background-color: var(--color-white);
+  background-color: var(--color-bg-primary);
 }
 
 .threads-list {
@@ -28,7 +28,7 @@
     display: flex;
     align-items: center;
     padding: var(--space-sm) var(--space-base);
-    background-color: var(--color-white);
+    background-color: var(--color-bg-primary);
     border-bottom: 1px solid var(--color-border-light);
     cursor: pointer;
     gap: var(--space-sm);

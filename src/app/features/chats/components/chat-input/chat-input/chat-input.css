@@ -2,7 +2,7 @@
   display: flex;
   padding: var(--space-md) var(--space-base);
   border-top: var(--border-width-thin) solid var(--color-border);
-  background-color: var(--color-white);
+  background-color: var(--color-bg-primary);
   gap: var(--space-sm);
   align-items: center;
 
@@ -16,7 +16,7 @@
 
     &:focus {
       border-color: var(--color-border-focus);
-      background-color: var(--color-white);
+      background-color: var(--color-bg-primary);
     }
   }
 
