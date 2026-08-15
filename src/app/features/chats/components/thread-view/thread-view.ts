@@ -82,22 +82,28 @@ export class ThreadView implements OnInit, OnDestroy {
   onContainerScroll(event: Event) {
     const container = event.target as HTMLElement;
 
-    // Trigger when user scrolls close to the top
-    if (container.scrollTop <= 50) {
+    // Trigger when within 200px of the top
+    if (container.scrollTop <= 200) {
       const currentThreadId = this.threadId();
       if (
         currentThreadId &&
         this.chatService.hasMoreMessages() &&
         !this.chatService.isLoadingMoreMessages()
       ) {
-        // Record prior dimensions and scroll state
-        const oldScrollHeight = container.scrollHeight;
-        const oldScrollTop = container.scrollTop;
+        // 1. Grab the current topmost visible element/child to use as an anchor
+        const firstMessageElement = container.firstElementChild as HTMLElement;
+        const previousScrollHeight = container.scrollHeight;
+        const previousScrollTop = container.scrollTop;
 
         this.chatService.loadMoreMessages(currentThreadId).then(() => {
-          // Adjust scroll position precisely so the user doesn't lose their place
-          const newScrollHeight = container.scrollHeight;
-          container.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
+          // 2. Use requestAnimationFrame so Safari finishes rendering the newly prepended DOM nodes
+          requestAnimationFrame(() => {
+            const newScrollHeight = container.scrollHeight;
+            const scrollDiff = newScrollHeight - previousScrollHeight;
+
+            // Adjust scroll position precisely
+            container.scrollTop = previousScrollTop + scrollDiff;
+          });
         });
       }
     }

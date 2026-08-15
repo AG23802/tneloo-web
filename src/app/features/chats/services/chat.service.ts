@@ -44,7 +44,7 @@ export class ChatService {
   // Pagination states for messages
   hasMoreMessages = signal<boolean>(true);
   isLoadingMoreMessages = signal<boolean>(false);
-  private messageBatchSize = 10;
+  private messageBatchSize = 15;
 
   enrichedThreads = computed(() => {
     const currentUser = this.userService.currentUser();
