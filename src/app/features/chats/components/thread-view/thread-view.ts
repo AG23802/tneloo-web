@@ -149,6 +149,14 @@ export class ThreadView implements OnInit, OnDestroy {
     });
   }
 
+  // Splicing the whole 15-message page into the DOM in one shot means a
+  // single ~700px scrollTop correction — mathematically exact, but still a
+  // large instantaneous jump that can visibly interrupt an in-flight scroll
+  // gesture. Inserting in smaller chunks turns that into several small,
+  // easy-to-hide corrections instead of one big one, while still doing a
+  // single Firestore round trip.
+  private readonly insertChunkSize = 5;
+
   private async loadOlderMessages(threadId: string): Promise<void> {
     const container = this.scrollContainer()?.nativeElement;
     if (!container) return;
@@ -162,26 +170,40 @@ export class ThreadView implements OnInit, OnDestroy {
         return;
       }
 
-      // Measure right before inserting, not before the network fetch — the
-      // user can keep scrolling during the await, so an earlier snapshot of
-      // scrollTop goes stale and produces the wrong correction.
-      const previousScrollHeight = container.scrollHeight;
-      this.chatService.prependMessages(older);
+      const chunks: Message[][] = [];
+      for (let i = 0; i < older.length; i += this.insertChunkSize) {
+        chunks.push(older.slice(i, i + this.insertChunkSize));
+      }
 
-      await this.afterNextRenderWrite(() => {
-        const previousScrollTop = container.scrollTop;
-        const newScrollHeight = container.scrollHeight;
-        const delta = newScrollHeight - previousScrollHeight;
-        container.scrollTop = previousScrollTop + delta;
+      // Insert the chunk closest to the existing content first, working
+      // backward to the oldest chunk, so the array ends up in the same
+      // order as inserting the whole batch at once would produce.
+      for (let i = chunks.length - 1; i >= 0; i--) {
+        const chunk = chunks[i];
 
-        console.log('[thread-view] loadOlderMessages: corrected scroll', {
-          previousScrollHeight,
-          newScrollHeight,
-          delta,
-          previousScrollTop,
-          newScrollTop: container.scrollTop,
+        // Measure right before inserting, not before the network fetch —
+        // the user can keep scrolling during the await, so an earlier
+        // snapshot of scrollTop goes stale and produces the wrong correction.
+        const previousScrollHeight = container.scrollHeight;
+        this.chatService.prependMessages(chunk);
+
+        await this.afterNextRenderWrite(() => {
+          const previousScrollTop = container.scrollTop;
+          const newScrollHeight = container.scrollHeight;
+          const delta = newScrollHeight - previousScrollHeight;
+          container.scrollTop = previousScrollTop + delta;
+
+          console.log('[thread-view] loadOlderMessages: corrected scroll', {
+            chunkIndex: i,
+            chunkSize: chunk.length,
+            previousScrollHeight,
+            newScrollHeight,
+            delta,
+            previousScrollTop,
+            newScrollTop: container.scrollTop,
+          });
         });
-      });
+      }
     } finally {
       this.restoringScrollPosition = false;
       console.log('[thread-view] loadOlderMessages: done');
