@@ -1,333 +1,253 @@
-import { inject, signal, computed, effect } from '@angular/core';
-import { Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import {
-  getFirestore,
+  QueryDocumentSnapshot,
   collection,
-  query,
-  where,
-  orderBy,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
   limit,
   onSnapshot,
-  getDocs,
-  setDoc,
-  doc,
+  orderBy,
+  query,
   serverTimestamp,
-  getDoc,
+  setDoc,
   startAfter,
-  QueryDocumentSnapshot,
+  where,
 } from 'firebase/firestore';
-import app from '../../../core/firebase';
-import { Thread } from '../models/thread.model';
-import { Message } from '../models/message.model';
 import { Router } from '@angular/router';
+import app from '../../../core/firebase';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../core/models/user.model';
+import { Thread } from '../models/thread.model';
+import { Message } from '../models/message.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ChatService {
-  private firestore = getFirestore(app);
-  private router = inject(Router);
-  private userService = inject(UserService);
-
-  threads = signal<Thread[]>([]);
-  messages = signal<Message[]>([]);
-  userMeta = signal<{ [uid: string]: User }>({});
-
-  // Pagination states for threads
-  hasMoreThreads = signal<boolean>(true);
-  isLoadingMoreThreads = signal<boolean>(false);
+  private readonly firestore = getFirestore(app);
+  private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
+  private readonly threadBatchSize = 20;
+  private readonly messageBatchSize = 15;
   private lastThreadDoc: QueryDocumentSnapshot | null = null;
-  private threadBatchSize = 20;
-
-  // Pagination states for messages
-  hasMoreMessages = signal<boolean>(true);
-  isLoadingMoreMessages = signal<boolean>(false);
-  private messageBatchSize = 15;
-
-  enrichedThreads = computed(() => {
-    const currentUser = this.userService.currentUser();
-    const currentThreads = this.threads();
-    const meta = this.userMeta();
-
-    if (!currentUser) return [];
-
-    return currentThreads.map((thread) => {
-      const otherUid = this.getOtherParticipantUid(thread, currentUser.uid);
-
-      if (otherUid && !meta[otherUid]) {
-        this.fetchUserMeta(otherUid);
-      }
-
-      return {
-        ...thread,
-        targetUser: otherUid ? meta[otherUid] || null : null,
-      };
-    });
-  });
-
+  private oldestMessageDoc: QueryDocumentSnapshot | null = null;
+  private messagesUnsubscribe: (() => void) | null = null;
+  private threadsUnsubscribe: (() => void) | null = null;
   private currentActiveThreadId: string | null = null;
   private currentRecipientId: string | null = null;
 
-  private threadsUnsubscribe: (() => void) | null = null;
-  private messagesUnsubscribe: (() => void) | null = null;
+  readonly threads = signal<Thread[]>([]);
+  readonly messages = signal<Message[]>([]);
+  readonly userMeta = signal<Record<string, User>>({});
+  readonly hasMoreThreads = signal(true);
+  readonly isLoadingMoreThreads = signal(false);
+  readonly hasMoreMessages = signal(true);
+  readonly isLoadingMoreMessages = signal(false);
+  readonly initialMessagesLoaded = signal(false);
+
+  readonly enrichedThreads = computed(() => {
+    const currentUser = this.userService.currentUser();
+    const meta = this.userMeta();
+    if (!currentUser) return [];
+    return this.threads().map((thread) => {
+      const uid = this.getOtherParticipantUid(thread, currentUser.uid);
+      if (uid && !meta[uid]) this.fetchUserMeta(uid);
+      return { ...thread, targetUser: uid ? (meta[uid] ?? null) : null };
+    });
+  });
 
   constructor() {
     effect(() => {
       const currentUser = this.userService.currentUser();
-      if (currentUser) {
-        this.loadInitialThreads(currentUser.uid);
-      } else {
-        this.clearThreads();
-      }
+      if (currentUser) this.loadInitialThreads(currentUser.uid);
+      else this.clearThreads();
     });
   }
 
-  private fetchUserMeta(uid: string) {
-    this.userService.getUserById?.(uid)?.subscribe({
-      next: (user: User | null) => {
-        if (user) {
-          this.userMeta.update((meta) => ({
-            ...meta,
-            [uid]: user,
-          }));
-        }
-      },
+  private fetchUserMeta(uid: string): void {
+    this.userService.getUserById?.(uid)?.subscribe((user) => {
+      if (user) this.userMeta.update((meta) => ({ ...meta, [uid]: user }));
     });
   }
 
-  loadInitialThreads(userId: string) {
+  loadInitialThreads(userId: string): void {
     if (this.threadsUnsubscribe) return;
-
-    const threadsRef = collection(this.firestore, 'threads');
+    const ref = collection(this.firestore, 'threads');
     const q = query(
-      threadsRef,
+      ref,
       where('participants', 'array-contains', userId),
       orderBy('lastMessageTime', 'desc'),
       limit(this.threadBatchSize),
     );
-
     this.threadsUnsubscribe = onSnapshot(q, (snapshot) => {
-      const userThreads: Thread[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data();
-        return {
-          id: docSnap.id,
-          ...data,
-        } as Thread;
-      });
-
-      this.lastThreadDoc = snapshot.docs[snapshot.docs.length - 1] || null;
+      this.threads.set(snapshot.docs.map((snap) => ({ id: snap.id, ...snap.data() }) as Thread));
+      this.lastThreadDoc = snapshot.docs[snapshot.docs.length - 1] ?? null;
       this.hasMoreThreads.set(snapshot.docs.length === this.threadBatchSize);
-      this.threads.set(userThreads);
     });
   }
 
-  async loadMoreThreads() {
-    const currentUser = this.userService.currentUser();
-    if (
-      !currentUser ||
-      this.isLoadingMoreThreads() ||
-      !this.hasMoreThreads() ||
-      !this.lastThreadDoc
-    )
+  async loadMoreThreads(): Promise<void> {
+    const user = this.userService.currentUser();
+    if (!user || !this.lastThreadDoc || this.isLoadingMoreThreads() || !this.hasMoreThreads())
       return;
-
     this.isLoadingMoreThreads.set(true);
-
     try {
-      const threadsRef = collection(this.firestore, 'threads');
       const q = query(
-        threadsRef,
-        where('participants', 'array-contains', currentUser.uid),
+        collection(this.firestore, 'threads'),
+        where('participants', 'array-contains', user.uid),
         orderBy('lastMessageTime', 'desc'),
         startAfter(this.lastThreadDoc),
         limit(this.threadBatchSize),
       );
-
       const snapshot = await getDocs(q);
-      const moreThreads: Thread[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data();
-        return {
-          id: docSnap.id,
-          ...data,
-        } as Thread;
-      });
-
-      if (snapshot.docs.length > 0) {
-        this.lastThreadDoc = snapshot.docs[snapshot.docs.length - 1];
-      }
-
-      if (snapshot.docs.length < this.threadBatchSize) {
-        this.hasMoreThreads.set(false);
-      }
-
-      this.threads.update((existing) => [...existing, ...moreThreads]);
-    } catch (err) {
-      console.error('Error loading more threads:', err);
+      const more = snapshot.docs.map((snap) => ({ id: snap.id, ...snap.data() }) as Thread);
+      this.lastThreadDoc = snapshot.docs[snapshot.docs.length - 1] ?? this.lastThreadDoc;
+      this.hasMoreThreads.set(snapshot.docs.length === this.threadBatchSize);
+      this.threads.update((threads) => [...threads, ...more]);
+    } catch (error) {
+      console.error('Error loading more threads:', error);
     } finally {
       this.isLoadingMoreThreads.set(false);
     }
   }
 
-  clearThreads() {
+  clearThreads(): void {
     this.threads.set([]);
     this.lastThreadDoc = null;
     this.hasMoreThreads.set(true);
-    if (this.threadsUnsubscribe) {
-      this.threadsUnsubscribe();
-      this.threadsUnsubscribe = null;
-    }
+    this.threadsUnsubscribe?.();
+    this.threadsUnsubscribe = null;
   }
 
   getOtherParticipantUid(thread: Thread, currentUserId: string): string | undefined {
-    return thread.participants?.find((p) => p !== currentUserId);
+    return thread.participants?.find((uid) => uid !== currentUserId);
   }
 
   async findExistingThread(userA: string, userB: string): Promise<string | null> {
-    const threadsRef = collection(this.firestore, 'threads');
-    const q = query(threadsRef, where('participants', 'array-contains', userA));
-    const snapshot = await getDocs(q);
-
-    const matchingDoc = snapshot.docs.find((docSnap) => {
-      const participants: string[] = docSnap.data()['participants'] || [];
-      return participants.includes(userB);
-    });
-
-    return matchingDoc ? matchingDoc.id : null;
+    const snapshot = await getDocs(
+      query(collection(this.firestore, 'threads'), where('participants', 'array-contains', userA)),
+    );
+    return (
+      snapshot.docs.find((snap) => (snap.data()['participants'] ?? []).includes(userB))?.id ?? null
+    );
   }
 
-  subscribeToMessages(threadId: string) {
-    if (this.messagesUnsubscribe) this.messagesUnsubscribe();
-
+  subscribeToMessages(threadId: string): void {
+    this.messagesUnsubscribe?.();
+    this.messages.set([]);
+    this.oldestMessageDoc = null;
     this.hasMoreMessages.set(true);
-    const messagesRef = collection(this.firestore, 'threads', threadId, 'messages');
-    const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(this.messageBatchSize));
+    this.initialMessagesLoaded.set(false);
+    let firstSnapshot = true;
+    const q = query(
+      collection(this.firestore, 'threads', threadId, 'messages'),
+      orderBy('createdAt', 'desc'),
+      limit(this.messageBatchSize),
+    );
 
     this.messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs: Message[] = snapshot.docs
-        .map((docSnap) => {
-          const data = docSnap.data();
-          return {
-            id: docSnap.id,
-            ...data,
-          } as Message;
-        })
+      const newest = snapshot.docs
+        .map((snap) => ({ id: snap.id, ...snap.data() }) as Message)
         .reverse();
-
-      this.hasMoreMessages.set(snapshot.docs.length === this.messageBatchSize);
-      this.messages.set(msgs);
-    });
-  }
-
-  async loadMoreMessages(threadId: string) {
-    if (this.isLoadingMoreMessages() || !this.hasMoreMessages() || this.messages().length === 0)
-      return;
-
-    this.isLoadingMoreMessages.set(true);
-
-    try {
-      const messagesRef = collection(this.firestore, 'threads', threadId, 'messages');
-      const oldestMessage = this.messages()[0];
-      const oldestDocSnap = await getDoc(
-        doc(this.firestore, 'threads', threadId, 'messages', oldestMessage.id!),
-      );
-
-      if (!oldestDocSnap.exists()) {
-        this.hasMoreMessages.set(false);
+      if (firstSnapshot) {
+        firstSnapshot = false;
+        this.oldestMessageDoc = snapshot.docs[snapshot.docs.length - 1] ?? null;
+        this.hasMoreMessages.set(snapshot.docs.length === this.messageBatchSize);
+        this.messages.set(newest);
+        this.initialMessagesLoaded.set(true);
         return;
       }
 
+      // A realtime update only contains the newest page. Keep earlier pages.
+      const newestIds = new Set(newest.map((message) => message.id));
+      this.messages.update((existing) => [
+        ...existing.filter((message) => !newestIds.has(message.id)),
+        ...newest,
+      ]);
+    });
+  }
+
+  async loadMoreMessages(threadId: string): Promise<boolean> {
+    if (this.isLoadingMoreMessages() || !this.hasMoreMessages() || !this.oldestMessageDoc)
+      return false;
+    this.isLoadingMoreMessages.set(true);
+    try {
       const q = query(
-        messagesRef,
+        collection(this.firestore, 'threads', threadId, 'messages'),
         orderBy('createdAt', 'desc'),
-        startAfter(oldestDocSnap),
+        startAfter(this.oldestMessageDoc),
         limit(this.messageBatchSize),
       );
-
       const snapshot = await getDocs(q);
-      const olderMsgs: Message[] = snapshot.docs
-        .map((docSnap) => {
-          const data = docSnap.data();
-          return {
-            id: docSnap.id,
-            ...data,
-          } as Message;
-        })
+      const older = snapshot.docs
+        .map((snap) => ({ id: snap.id, ...snap.data() }) as Message)
         .reverse();
-
-      if (snapshot.docs.length < this.messageBatchSize) {
-        this.hasMoreMessages.set(false);
-      }
-
-      if (olderMsgs.length > 0) {
-        this.messages.update((existing) => [...olderMsgs, ...existing]);
-      }
-    } catch (err) {
-      console.error('Error loading more messages:', err);
+      this.oldestMessageDoc = snapshot.docs[snapshot.docs.length - 1] ?? this.oldestMessageDoc;
+      this.hasMoreMessages.set(snapshot.docs.length === this.messageBatchSize);
+      if (!older.length) return false;
+      const ids = new Set(this.messages().map((message) => message.id));
+      this.messages.update((existing) => [
+        ...older.filter((message) => !ids.has(message.id)),
+        ...existing,
+      ]);
+      return true;
+    } catch (error) {
+      console.error('Error loading more messages:', error);
+      return false;
     } finally {
       this.isLoadingMoreMessages.set(false);
     }
   }
 
-  clearMessages() {
+  clearMessages(): void {
     this.messages.set([]);
+    this.oldestMessageDoc = null;
     this.hasMoreMessages.set(true);
+    this.initialMessagesLoaded.set(false);
     this.currentActiveThreadId = null;
     this.currentRecipientId = null;
-    if (this.messagesUnsubscribe) {
-      this.messagesUnsubscribe();
-      this.messagesUnsubscribe = null;
-    }
+    this.messagesUnsubscribe?.();
+    this.messagesUnsubscribe = null;
   }
 
   async sendMessage(textInput: string): Promise<string | null> {
     const text = textInput.trim();
-    const currentUser = this.userService.currentUser();
-    if (!text || !currentUser) return null;
-
+    const user = this.userService.currentUser();
+    if (!text || !user) return null;
     try {
-      let activeThreadId = this.currentActiveThreadId;
+      let threadId = this.currentActiveThreadId;
       let recipientId = this.currentRecipientId;
-
-      if (!recipientId && activeThreadId) {
-        const thread = await this.getOrFindThread(activeThreadId);
-        recipientId = thread ? this.getOtherParticipantUid(thread, currentUser.uid) || null : null;
+      if (!recipientId && threadId) {
+        const thread = await this.getOrFindThread(threadId);
+        recipientId = thread ? (this.getOtherParticipantUid(thread, user.uid) ?? null) : null;
         this.currentRecipientId = recipientId;
       }
-
       if (!recipientId) return null;
-
-      if (!activeThreadId) {
-        activeThreadId = await this.createNewThread(currentUser.uid, recipientId, text);
-        this.currentActiveThreadId = activeThreadId;
-        this.router.navigate(['/thread', activeThreadId], { replaceUrl: true });
+      if (!threadId) {
+        threadId = await this.createNewThread(user.uid, recipientId, text);
+        this.currentActiveThreadId = threadId;
+        await this.router.navigate(['/thread', threadId], { replaceUrl: true });
       }
-
-      const threadRef = doc(this.firestore, 'threads', activeThreadId);
-      const newMessageRef = doc(collection(threadRef, 'messages'));
-
-      const messageData = {
-        id: newMessageRef.id,
-        threadId: activeThreadId,
-        uid: currentUser.uid,
-        receiverId: recipientId,
-        text: text,
-        createdAt: serverTimestamp(),
-      };
-
+      const threadRef = doc(this.firestore, 'threads', threadId);
+      const messageRef = doc(collection(threadRef, 'messages'));
       await Promise.all([
-        setDoc(newMessageRef, messageData),
+        setDoc(messageRef, {
+          id: messageRef.id,
+          threadId,
+          uid: user.uid,
+          receiverId: recipientId,
+          text,
+          createdAt: serverTimestamp(),
+        }),
         setDoc(
           threadRef,
           { lastMessage: text, lastMessageTime: serverTimestamp() },
           { merge: true },
         ),
       ]);
-
-      return activeThreadId;
-    } catch (err) {
-      console.error('Error sending message:', err);
+      return threadId;
+    } catch (error) {
+      console.error('Error sending message:', error);
       return null;
     }
   }
@@ -337,69 +257,51 @@ export class ChatService {
     recipientId: string,
     text: string,
   ): Promise<string> {
-    const newThreadRef = doc(collection(this.firestore, 'threads'));
-    const threadId = newThreadRef.id;
-
-    const newThreadData = {
-      id: threadId,
+    const ref = doc(collection(this.firestore, 'threads'));
+    const data = {
+      id: ref.id,
       participants: [currentUserId, recipientId],
       createdAt: serverTimestamp(),
       lastMessageTime: serverTimestamp(),
     };
-
-    await setDoc(newThreadRef, newThreadData);
-
-    this.threads.update((currentThreads) => [
-      { ...newThreadData, lastMessage: text, lastMessageTime: new Date() } as Thread,
-      ...currentThreads,
+    await setDoc(ref, data);
+    this.threads.update((threads) => [
+      { ...data, lastMessage: text, lastMessageTime: new Date() } as Thread,
+      ...threads,
     ]);
-
-    this.subscribeToMessages(threadId);
-    return threadId;
+    this.subscribeToMessages(ref.id);
+    return ref.id;
   }
 
   private async getOrFindThread(threadId: string): Promise<Thread | null> {
-    let thread = this.threads().find((t) => t.id === threadId);
+    let thread = this.threads().find((item) => item.id === threadId);
     if (!thread) {
-      const docSnap = await getDoc(doc(this.firestore, 'threads', threadId));
-      thread = docSnap.exists() ? ({ id: docSnap.id, ...docSnap.data() } as Thread) : undefined;
+      const snap = await getDoc(doc(this.firestore, 'threads', threadId));
+      if (snap.exists()) thread = { id: snap.id, ...snap.data() } as Thread;
     }
-    return thread || null;
+    return thread ?? null;
   }
 
   async initializeActiveThread(
-    threadIdParam: string | null,
+    threadId: string | null,
     recipientId: string | null,
     currentUid: string,
-  ) {
-    this.currentActiveThreadId = threadIdParam;
+  ): Promise<{ threadId: string | null; targetUid: string | null }> {
+    this.currentActiveThreadId = threadId;
     this.currentRecipientId = recipientId;
-
-    if (threadIdParam) {
-      this.subscribeToMessages(threadIdParam);
-      const thread = await this.getOrFindThread(threadIdParam);
-      const targetUid = thread ? this.getOtherParticipantUid(thread, currentUid) : null;
-      if (targetUid) {
-        this.currentRecipientId = targetUid;
-      }
-      return {
-        threadId: threadIdParam,
-        targetUid: targetUid,
-      };
+    if (threadId) {
+      this.subscribeToMessages(threadId);
+      const thread = await this.getOrFindThread(threadId);
+      const targetUid = thread ? (this.getOtherParticipantUid(thread, currentUid) ?? null) : null;
+      this.currentRecipientId = targetUid;
+      return { threadId, targetUid };
     }
-
-    if (recipientId) {
-      const existingThreadId = await this.findExistingThread(currentUid, recipientId);
-      if (existingThreadId) {
-        this.currentActiveThreadId = existingThreadId;
-        this.currentRecipientId = recipientId;
-        this.subscribeToMessages(existingThreadId);
-        this.router.navigate(['/thread', existingThreadId], { replaceUrl: true });
-        return { threadId: existingThreadId, targetUid: recipientId };
-      }
-      return { threadId: null, targetUid: recipientId };
-    }
-
-    return { threadId: null, targetUid: null };
+    if (!recipientId) return { threadId: null, targetUid: null };
+    const existingId = await this.findExistingThread(currentUid, recipientId);
+    if (!existingId) return { threadId: null, targetUid: recipientId };
+    this.currentActiveThreadId = existingId;
+    this.subscribeToMessages(existingId);
+    await this.router.navigate(['/thread', existingId], { replaceUrl: true });
+    return { threadId: existingId, targetUid: recipientId };
   }
 }

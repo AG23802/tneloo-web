@@ -1,75 +1,74 @@
 :host {
   display: flex;
-  flex-direction: column;
   flex: 1;
-  overflow: hidden;
+  flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .chat-messages {
-  min-height: 0;
+  display: block;
   flex: 1;
+  min-height: 0;
   padding: var(--space-base);
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  background-color: var(--color-bg-secondary);
+  background: var(--color-bg-secondary);
 }
 
 .message-row-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   width: 100%;
-  overflow: hidden; /* Clips any overflow during drag */
-
-  /* ADD THIS HERE INSTEAD */
-  flex-shrink: 0;
+  padding-bottom: var(--space-md);
+  overflow: hidden;
 }
 
 .message-row {
   display: flex;
   width: 100%;
-  flex-shrink: 0; /* <--- PREVENTS THE SHRINKING BUG */
-  transition: transform 0.1s ease-out;
-  will-change: transform;
+  flex-shrink: 0;
   z-index: 2;
-  background-color: var(--color-bg-secondary);
+  background: var(--color-bg-secondary);
+  transition: transform 100ms ease-out;
+  touch-action: pan-y;
+  will-change: transform;
+}
 
-  &.outgoing {
-    justify-content: flex-end;
-    .message-bubble {
-      background-color: var(--color-primary);
-      color: var(--color-white);
-      border-bottom-right-radius: var(--radius-xs);
-    }
-  }
+.message-row.outgoing { justify-content: flex-end; }
+.message-row.incoming { justify-content: flex-start; }
 
-  &.incoming {
-    justify-content: flex-start;
-    .message-bubble {
-      background-color: var(--color-border-light);
-      color: var(--color-text-main);
-      border-bottom-left-radius: var(--radius-xs);
-    }
-  }
+.message-row.outgoing .message-bubble {
+  color: var(--color-white);
+  background: var(--color-primary);
+  border-bottom-right-radius: var(--radius-xs);
+}
+
+.message-row.incoming .message-bubble {
+  color: var(--color-text-main);
+  background: var(--color-border-light);
+  border-bottom-left-radius: var(--radius-xs);
 }
 
 .message-bubble {
   max-width: 70%;
   padding: 10px var(--space-base);
+  overflow-wrap: anywhere;
   border-radius: var(--radius-lg);
-  word-break: break-word;
   font-size: var(--font-size-base);
-  p { margin: 0; }
 }
+
+.message-bubble p { margin: 0; }
 
 .message-timestamp {
   position: absolute;
-  right: 12px;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
   z-index: 1;
+  right: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  opacity: 0;
+  transition: opacity 100ms ease-out;
   pointer-events: none;
 }
+
+.message-timestamp.visible { opacity: 1; }

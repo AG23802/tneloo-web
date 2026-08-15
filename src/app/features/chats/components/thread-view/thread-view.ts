@@ -1,148 +1,190 @@
-import { Component, inject, signal, OnDestroy, OnInit, viewChild, ElementRef } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { CdkAutoSizeVirtualScroll } from '@angular/cdk-experimental/scrolling';
+import { Subscription } from 'rxjs';
+
 import { ChatHeader } from '../chat-header/chat-header';
+import { ChatInput } from '../chat-input/chat-input/chat-input';
 import { UserService } from '../../../../core/services/user.service';
 import { ChatService } from '../../services/chat.service';
-import { ChatInput } from '../chat-input/chat-input/chat-input';
-import { Subscription } from 'rxjs';
+import { Message } from '../../models/message.model';
 import { User } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-thread-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ChatHeader, ChatInput],
+  imports: [
+    CommonModule,
+    ChatHeader,
+    ChatInput,
+    CdkVirtualScrollViewport,
+    CdkVirtualForOf,
+    CdkAutoSizeVirtualScroll,
+  ],
   templateUrl: './thread-view.html',
   styleUrl: './thread-view.css',
 })
 export class ThreadView implements OnInit, OnDestroy {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  public chatService = inject(ChatService);
-  public userService = inject(UserService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  public readonly chatService = inject(ChatService);
+  public readonly userService = inject(UserService);
+  private readonly scrollViewport = viewChild<CdkVirtualScrollViewport>('scrollViewport');
 
-  private scrollContainer = viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
+  readonly threadId = signal<string | null>(null);
+  readonly currentUid = signal<string | undefined>(undefined);
+  readonly user = signal<User | null>(null);
+  readonly activeMessageId = signal<string | null>(null);
+  readonly messageOffsets = signal<Record<string, number>>({});
 
-  threadId = signal<string | null>(null);
-  currentUid = signal<string | undefined>(undefined);
-  user = signal<User | null>(null);
-  recipientId = signal<string | null>(null);
   private userMetaSub?: Subscription;
-
-  activeMessageId = signal<string | null>(null);
   private touchStartX = 0;
-  private currentDraggingId = signal<string | null>(null);
-  messageOffsets = signal<{ [key: string]: number }>({});
+  private readonly currentDraggingId = signal<string | null>(null);
+  private restoringScrollPosition = false;
+  private initiallyScrolledThreadId: string | null = null;
 
-  async ngOnInit() {
+  private readonly initialScrollEffect = effect(() => {
+    const threadId = this.threadId();
+    if (!threadId || !this.chatService.initialMessagesLoaded()) return;
+    if (this.initiallyScrolledThreadId === threadId) return;
+
+    this.initiallyScrolledThreadId = threadId;
+    this.scrollToBottom();
+  });
+
+  readonly trackByMessageId = (index: number, message: Message): string =>
+    message.id ?? index.toString();
+
+  async ngOnInit(): Promise<void> {
     const currentUser = this.userService.currentUser();
     if (!currentUser) return;
+
     this.currentUid.set(currentUser.uid);
-
-    const threadIdParam = this.route.snapshot.paramMap.get('threadId');
-    const rawRecipientId = history.state?.recipientId || null;
-    this.recipientId.set(rawRecipientId);
-
+    const recipientId = history.state?.recipientId ?? null;
     const result = await this.chatService.initializeActiveThread(
-      threadIdParam,
-      rawRecipientId,
+      this.route.snapshot.paramMap.get('threadId'),
+      recipientId,
       currentUser.uid,
     );
 
-    if (result.threadId) {
-      this.threadId.set(result.threadId);
-    }
-
-    if (result.targetUid) {
-      this.fetchUser(result.targetUid);
-    }
-
-    // Initial scroll to bottom once messages are rendered
-    setTimeout(() => {
-      this.scrollToBottom();
-    }, 100);
+    this.threadId.set(result.threadId);
+    if (result.targetUid) this.fetchUser(result.targetUid);
   }
 
-  private fetchUser(uid: string) {
+  private fetchUser(uid: string): void {
     this.userMetaSub = this.userService.getUserById?.(uid)?.subscribe((user) => {
-      if (user) {
-        this.user.set(user);
-      }
+      if (user) this.user.set(user);
     });
   }
 
-  public scrollToBottom() {
-    const container = this.scrollContainer()?.nativeElement;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
-    }
+  scrollToBottom(): void {
+    const viewport = this.scrollViewport();
+    if (!viewport) return;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const element = viewport.getElementRef().nativeElement;
+        element.scrollTop = element.scrollHeight;
+      });
+    });
   }
 
-  onContainerScroll(event: Event) {
-    const container = event.target as HTMLElement;
+  onViewportScroll(event: Event): void {
+    const threadId = this.threadId();
+    const scrollTop = (event.target as HTMLElement).scrollTop;
 
-    // Trigger when within 200px of the top
-    if (container.scrollTop <= 200) {
-      const currentThreadId = this.threadId();
-      if (
-        currentThreadId &&
-        this.chatService.hasMoreMessages() &&
-        !this.chatService.isLoadingMoreMessages()
-      ) {
-        // 1. Grab the current topmost visible element/child to use as an anchor
-        const firstMessageElement = container.firstElementChild as HTMLElement;
-        const previousScrollHeight = container.scrollHeight;
-        const previousScrollTop = container.scrollTop;
+    if (
+      scrollTop > 200 ||
+      !threadId ||
+      this.restoringScrollPosition ||
+      this.chatService.isLoadingMoreMessages() ||
+      !this.chatService.hasMoreMessages()
+    ) {
+      return;
+    }
 
-        this.chatService.loadMoreMessages(currentThreadId).then(() => {
-          // 2. Use requestAnimationFrame so Safari finishes rendering the newly prepended DOM nodes
-          requestAnimationFrame(() => {
-            const newScrollHeight = container.scrollHeight;
-            const scrollDiff = newScrollHeight - previousScrollHeight;
+    void this.loadOlderMessages(threadId);
+  }
 
-            // Adjust scroll position precisely
-            container.scrollTop = previousScrollTop + scrollDiff;
-          });
+  private waitForLayout(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          resolve();
         });
-      }
+      });
+    });
+  }
+
+  private async loadOlderMessages(threadId: string): Promise<void> {
+    const viewport = this.scrollViewport();
+    if (!viewport) return;
+
+    const container = viewport.getElementRef().nativeElement;
+    const contentWrapper = container.querySelector<HTMLElement>(
+      '.cdk-virtual-scroll-content-wrapper',
+    );
+
+    this.restoringScrollPosition = true;
+    let previousScrollHeight = container.scrollHeight;
+
+    // The autosize strategy re-measures row heights over several render
+    // passes as the newly prepended rows settle, so we keep compensating
+    // scrollTop for every height change instead of correcting only once.
+    const pinScrollPosition = (): void => {
+      const scrollHeight = container.scrollHeight;
+      const delta = scrollHeight - previousScrollHeight;
+      if (delta !== 0) container.scrollTop += delta;
+      previousScrollHeight = scrollHeight;
+    };
+
+    const resizeObserver = contentWrapper ? new ResizeObserver(pinScrollPosition) : null;
+    resizeObserver?.observe(contentWrapper!);
+
+    try {
+      const didLoad = await this.chatService.loadMoreMessages(threadId);
+      if (!didLoad) return;
+
+      viewport.checkViewportSize();
+      await this.waitForLayout();
+      pinScrollPosition();
+    } finally {
+      resizeObserver?.disconnect();
+      this.restoringScrollPosition = false;
     }
   }
 
-  onTouchStart(msgId: string | undefined, event: TouchEvent) {
-    if (!msgId) return;
+  onTouchStart(messageId: string | undefined, event: TouchEvent): void {
+    if (!messageId) return;
     this.touchStartX = event.touches[0].clientX;
-    this.currentDraggingId.set(msgId);
+    this.currentDraggingId.set(messageId);
   }
 
-  onTouchMove(event: TouchEvent) {
-    const msgId = this.currentDraggingId();
-    if (!msgId) return;
-    const currentX = event.touches[0].clientX;
-    const diff = currentX - this.touchStartX;
+  onTouchMove(event: TouchEvent): void {
+    const messageId = this.currentDraggingId();
+    if (!messageId) return;
 
-    if (diff < 0) {
-      const offset = Math.max(diff, -70);
-      this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: offset }));
-      if (offset < -40) {
-        this.activeMessageId.set(msgId);
-      }
-    }
+    const offset = Math.max(event.touches[0].clientX - this.touchStartX, -70);
+    this.messageOffsets.update((offsets) => ({ ...offsets, [messageId]: Math.min(offset, 0) }));
+    this.activeMessageId.set(offset < -40 ? messageId : null);
   }
 
-  onTouchEnd() {
-    const msgId = this.currentDraggingId();
-    if (msgId) {
-      this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: 0 }));
+  onTouchEnd(): void {
+    const messageId = this.currentDraggingId();
+    if (messageId) {
+      this.messageOffsets.update((offsets) => ({ ...offsets, [messageId]: 0 }));
     }
+    this.activeMessageId.set(null);
     this.currentDraggingId.set(null);
   }
 
-  onBackClicked() {
-    this.router.navigate(['/chats']);
+  onBackClicked(): void {
+    void this.router.navigate(['/chats']);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.chatService.clearMessages();
     this.userMetaSub?.unsubscribe();
   }
