@@ -1,6 +1,12 @@
 <app-chat-header (event)="onBackClicked()" [user]="user()" />
 
-<div #scrollContainer class="chat-messages" (scroll)="onScroll($event)">
+<div
+  #scrollContainer
+  class="chat-messages"
+  (scroll)="onScroll($event)"
+  (touchstart)="onContainerTouchStart($event)"
+  (touchend)="onContainerTouchEnd($event)"
+>
   <div
     *ngFor="let msg of chatService.messages(); trackBy: trackByMessageId"
     class="message-row-wrapper"

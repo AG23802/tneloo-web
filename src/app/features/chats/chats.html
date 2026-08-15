@@ -4,7 +4,7 @@
   }
   @for (chat of threads(); track chat.id) {
     @let threadMeta = chat.targetUser;
-    <div class="thread-item" (click)="selectThread(chat.id)">
+    <div class="thread-item" (click)="selectThread(chat)">
       <div class="thread-avatar">
         @if (threadMeta?.profilePictureURL) {
           <img [src]="threadMeta?.profilePictureURL" alt="" />

@@ -172,7 +172,7 @@ export class ChatService {
   // scroll position around the DOM update.
   async loadMoreMessages(threadId: string): Promise<Message[]> {
     if (this.isLoadingMoreMessages() || !this.hasMoreMessages() || !this.oldestMessageDoc) {
-      console.log('[chat.service] loadMoreMessages: skipped', {
+      console.log(`[chat.service t=${performance.now().toFixed(1)}] loadMoreMessages: skipped`, {
         isLoadingMoreMessages: this.isLoadingMoreMessages(),
         hasMoreMessages: this.hasMoreMessages(),
         hasOldestMessageDoc: !!this.oldestMessageDoc,
@@ -180,7 +180,9 @@ export class ChatService {
       return [];
     }
     this.isLoadingMoreMessages.set(true);
-    console.log('[chat.service] loadMoreMessages: fetching', { threadId });
+    console.log(`[chat.service t=${performance.now().toFixed(1)}] loadMoreMessages: fetching`, {
+      threadId,
+    });
     try {
       const q = query(
         collection(this.firestore, 'threads', threadId, 'messages'),
@@ -196,7 +198,7 @@ export class ChatService {
       this.hasMoreMessages.set(snapshot.docs.length === this.messageBatchSize);
       const ids = new Set(this.messages().map((message) => message.id));
       const deduped = older.filter((message) => !ids.has(message.id));
-      console.log('[chat.service] loadMoreMessages: fetched', {
+      console.log(`[chat.service t=${performance.now().toFixed(1)}] loadMoreMessages: fetched`, {
         docCount: snapshot.docs.length,
         dedupedCount: deduped.length,
         hasMoreMessages: this.hasMoreMessages(),
@@ -213,7 +215,9 @@ export class ChatService {
   prependMessages(messages: Message[]): void {
     if (!messages.length) return;
     this.messages.update((existing) => [...messages, ...existing]);
-    console.log('[chat.service] prependMessages: applied', { count: messages.length });
+    console.log(`[chat.service t=${performance.now().toFixed(1)}] prependMessages: applied`, {
+      count: messages.length,
+    });
   }
 
   clearMessages(): void {

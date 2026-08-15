@@ -55,7 +55,9 @@
             <span class="badge">
               <strong>{{ 'profile.follow' | translate }}</strong>
             </span>
-            <a [routerLink]="['/thread']" [state]="{ recipientId: profileUser()?.uid }" class="badge message-btn">
+            <a [routerLink]="['/thread']"
+               [state]="{ recipientUser: profileUser() }"
+               class="badge message-btn">
               <strong>{{ 'profile.message' | translate }}</strong>
             </a>
           </div>
