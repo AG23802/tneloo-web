@@ -4,6 +4,9 @@ import {
   signal,
   OnDestroy,
   OnInit,
+  viewChild,
+  ElementRef,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,9 +27,11 @@ import { User } from '../../../../core/models/user.model';
 })
 export class ThreadView implements OnInit, OnDestroy {
   private router = inject(Router);
-  private route = inject(ActivatedRoute); // Route belongs here!
+  private route = inject(ActivatedRoute);
   public chatService = inject(ChatService);
   public userService = inject(UserService);
+
+  private scrollContainer = viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
 
   threadId = signal<string | null>(null);
   currentUid = signal<string | undefined>(undefined);
@@ -34,17 +39,27 @@ export class ThreadView implements OnInit, OnDestroy {
   recipientId = signal<string | null>(null);
   private userMetaSub?: Subscription;
 
+  constructor() {
+    // Automatically scroll to bottom whenever messages signal updates
+    effect(() => {
+      const messages = this.chatService.messages();
+      if (messages.length > 0) {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 50);
+      }
+    });
+  }
+
   async ngOnInit() {
     const currentUser = this.userService.currentUser();
     if (!currentUser) return;
     this.currentUid.set(currentUser.uid);
 
-    // 1. Read route and history state right here in the component
     const threadIdParam = this.route.snapshot.paramMap.get('threadId');
     const rawRecipientId = history.state?.recipientId || null;
     this.recipientId.set(rawRecipientId);
 
-    // 2. Hand them over to the service to process
     const result = await this.chatService.initializeActiveThread(
       threadIdParam,
       rawRecipientId,
@@ -63,9 +78,16 @@ export class ThreadView implements OnInit, OnDestroy {
   private fetchUser(uid: string) {
     this.userMetaSub = this.userService.getUserById?.(uid)?.subscribe((user) => {
       if (user) {
-        this.user.set(user); // Set the whole object directly!
+        this.user.set(user);
       }
     });
+  }
+
+  public scrollToBottom() {
+    const container = this.scrollContainer()?.nativeElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }
 
   onBackClicked() {

@@ -1,11 +1,12 @@
 import { Component, inject, output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconComponent } from '../../../../../components/icon/icon';
 import { ChatService } from '../../../services/chat.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '../../../../../components/icon/icon';
 
 @Component({
   selector: 'app-chat-input',
+  standalone: true,
   imports: [FormsModule, IconComponent, ReactiveFormsModule, TranslatePipe],
   templateUrl: './chat-input.html',
   styleUrl: './chat-input.css',
@@ -14,8 +15,16 @@ export class ChatInput {
   public chatService = inject(ChatService);
   newMessageText = '';
 
-  async handleSendMessage(text: string) {
-    await this.chatService.sendMessage(text);
+  readonly messageSent = output<void>();
+
+  async handleSendMessage() {
+    const text = this.newMessageText.trim();
+    if (!text) return;
+
+    // Clear input immediately so UI updates instantly
     this.newMessageText = '';
+
+    await this.chatService.sendMessage(text);
+    this.messageSent.emit();
   }
 }
