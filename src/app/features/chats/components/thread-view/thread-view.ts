@@ -107,9 +107,10 @@ export class ThreadView implements OnInit, OnDestroy {
     const diff = currentX - this.touchStartX;
 
     if (diff < 0) {
-      const offset = Math.max(diff, -90);
+      // Reduced swipe distance limit from -90 to -45
+      const offset = Math.max(diff, -45);
       this.messageOffsets.update((offsets) => ({ ...offsets, [msgId]: offset }));
-      if (offset < -50) {
+      if (offset < -30) {
         this.activeMessageId.set(msgId);
       }
     }

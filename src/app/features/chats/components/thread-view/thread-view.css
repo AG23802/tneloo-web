@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   width: 100%;
+  overflow: hidden; /* Clips any overflow during drag */
 }
 
 .message-row {
@@ -30,7 +31,8 @@
   transition: transform 0.1s ease-out;
   will-change: transform;
   z-index: 2;
-  background: transparent;
+  /* Solid background using your secondary background color so the timestamp is hidden until swiped */
+  background-color: var(--color-bg-secondary);
 
   &.outgoing {
     justify-content: flex-end;
@@ -63,14 +65,8 @@
 .message-timestamp {
   position: absolute;
   right: 12px;
-  font-size: 0.75rem;
-  color: var(--color-text-secondary, #888);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
   z-index: 1;
   pointer-events: none;
-
-  &.visible {
-    opacity: 1;
-  }
 }

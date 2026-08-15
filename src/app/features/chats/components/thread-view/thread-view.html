@@ -1,24 +1,24 @@
 <app-chat-header (event)="onBackClicked()" [user]="user()" />
 
 <div class="chat-messages" #scrollContainer>
-  @for (msg of chatService.messages(); track msg.id) {
-    <div
-      class="message-row-wrapper"
-      (touchstart)="onTouchStart(msg.id, $event)"
-      (touchmove)="onTouchMove($event)"
-      (touchend)="onTouchEnd()">
+  @for (msg of chatService.messages(); track msg.id || $index) {
+    <div class="message-row-wrapper">
+      <!-- Timestamp positioned behind the row, shown when swiped -->
+      <div class="message-timestamp" [class.visible]="activeMessageId() === msg.id">
+        {{ msg.createdAt?.toDate() | date:'shortTime' }}
+      </div>
 
       <div class="message-row"
            [class.outgoing]="msg.uid === currentUid()"
            [class.incoming]="msg.uid !== currentUid()"
-           [style.transform]="'translateX(' + (msg.id ? (messageOffsets()[msg.id] || 0) : 0) + 'px)'">
+           [style.transform]="'translateX(' + (messageOffsets()[msg.id!] || 0) + 'px)'"
+           (touchstart)="onTouchStart(msg.id, $event)"
+           (touchmove)="onTouchMove($event)"
+           (touchend)="onTouchEnd()">
+
         <div class="message-bubble">
           <p>{{ msg.text }}</p>
         </div>
-      </div>
-
-      <div class="message-timestamp" [class.visible]="(msg.id && activeMessageId() === msg.id) || (msg.id && (messageOffsets()[msg.id] || 0) < -40)">
-        {{ msg.createdAt?.toDate() | date:'shortTime' }}
       </div>
     </div>
   }
