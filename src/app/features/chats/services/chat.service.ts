@@ -167,10 +167,20 @@ export class ChatService {
     });
   }
 
-  async loadMoreMessages(threadId: string): Promise<boolean> {
-    if (this.isLoadingMoreMessages() || !this.hasMoreMessages() || !this.oldestMessageDoc)
-      return false;
+  // Fetches the next older page but does not apply it to `messages` — the
+  // caller (thread-view) is responsible for splicing it in so it can manage
+  // scroll position around the DOM update.
+  async loadMoreMessages(threadId: string): Promise<Message[]> {
+    if (this.isLoadingMoreMessages() || !this.hasMoreMessages() || !this.oldestMessageDoc) {
+      console.log('[chat.service] loadMoreMessages: skipped', {
+        isLoadingMoreMessages: this.isLoadingMoreMessages(),
+        hasMoreMessages: this.hasMoreMessages(),
+        hasOldestMessageDoc: !!this.oldestMessageDoc,
+      });
+      return [];
+    }
     this.isLoadingMoreMessages.set(true);
+    console.log('[chat.service] loadMoreMessages: fetching', { threadId });
     try {
       const q = query(
         collection(this.firestore, 'threads', threadId, 'messages'),
@@ -184,19 +194,26 @@ export class ChatService {
         .reverse();
       this.oldestMessageDoc = snapshot.docs[snapshot.docs.length - 1] ?? this.oldestMessageDoc;
       this.hasMoreMessages.set(snapshot.docs.length === this.messageBatchSize);
-      if (!older.length) return false;
       const ids = new Set(this.messages().map((message) => message.id));
-      this.messages.update((existing) => [
-        ...older.filter((message) => !ids.has(message.id)),
-        ...existing,
-      ]);
-      return true;
+      const deduped = older.filter((message) => !ids.has(message.id));
+      console.log('[chat.service] loadMoreMessages: fetched', {
+        docCount: snapshot.docs.length,
+        dedupedCount: deduped.length,
+        hasMoreMessages: this.hasMoreMessages(),
+      });
+      return deduped;
     } catch (error) {
-      console.error('Error loading more messages:', error);
-      return false;
+      console.error('[chat.service] loadMoreMessages: error', error);
+      return [];
     } finally {
       this.isLoadingMoreMessages.set(false);
     }
+  }
+
+  prependMessages(messages: Message[]): void {
+    if (!messages.length) return;
+    this.messages.update((existing) => [...messages, ...existing]);
+    console.log('[chat.service] prependMessages: applied', { count: messages.length });
   }
 
   clearMessages(): void {

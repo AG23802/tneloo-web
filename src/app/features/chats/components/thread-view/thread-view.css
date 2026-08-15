@@ -6,12 +6,19 @@
   overflow: hidden;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .chat-messages {
   display: block;
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: var(--space-base);
   background: var(--color-bg-secondary);
+  overflow-anchor: none;
 }
 
 .message-row-wrapper {

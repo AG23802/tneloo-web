@@ -1,15 +1,8 @@
 <app-chat-header (event)="onBackClicked()" [user]="user()" />
 
-<cdk-virtual-scroll-viewport
-  #scrollViewport
-  autosize
-  [minBufferPx]="400"
-  [maxBufferPx]="800"
-  class="chat-messages"
-  (scroll)="onViewportScroll($event)"
->
+<div #scrollContainer class="chat-messages" (scroll)="onScroll($event)">
   <div
-    *cdkVirtualFor="let msg of chatService.messages(); trackBy: trackByMessageId"
+    *ngFor="let msg of chatService.messages(); trackBy: trackByMessageId"
     class="message-row-wrapper"
     [attr.data-message-id]="msg.id"
   >
@@ -32,6 +25,6 @@
       </div>
     </div>
   </div>
-</cdk-virtual-scroll-viewport>
+</div>
 
 <app-chat-input (messageSent)="scrollToBottom()" />
