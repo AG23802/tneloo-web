@@ -113,10 +113,17 @@ export class ThreadView implements OnInit, OnDestroy {
     });
   }
 
+  // Triggering right at the edge (e.g. 200px) means the fetch + scroll
+  // corrections always land exactly where the user is currently looking.
+  // Triggering much earlier gives the whole pipeline time to finish before
+  // the user's gesture ever reaches that part of the list, so the messages
+  // are already there — no correction happening under their eyes at all.
+  private readonly loadTriggerDistancePx = 800;
+
   private checkShouldLoadOlder(scrollTop: number): void {
     const threadId = this.threadId();
     if (
-      scrollTop > 200 ||
+      scrollTop > this.loadTriggerDistancePx ||
       !threadId ||
       this.restoringScrollPosition ||
       this.chatService.isLoadingMoreMessages() ||
