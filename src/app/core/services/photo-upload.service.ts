@@ -30,6 +30,7 @@ export class PhotoUploadService {
         await addDoc(collection(this.firestore, 'photos'), {
           uid: userId,
           url: downloadURL,
+          storagePath: filePath,
           createdAt: new Date().toISOString(),
         });
         return downloadURL;

@@ -12,8 +12,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow-y: auto; /* Change from overflow: hidden to allow
-  scrolling */
+  overflow: hidden; /* each routed page scrolls itself, see .view-container below */
 }
 
 .view-container {
@@ -21,7 +20,10 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow-y: auto; /* Change from overflow: hidden to allow scrolling */
+  /* Scrolling now happens inside each routed page (its :host), not here.
+     That way a reused tab (see TabRouteReuseStrategy) keeps its own DOM
+     node - and with it, its own scrollTop - instead of sharing one
+     scroll position across tabs. */
 }
 
 .global-notification-banner {

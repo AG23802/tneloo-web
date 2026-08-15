@@ -34,7 +34,7 @@
   align-items: center;
   gap: var(--space-lg);
   flex-direction: column;
-  padding: var(--space-base);
+  padding: var(--space-base) 0;
 }
 
 .profile-actions {

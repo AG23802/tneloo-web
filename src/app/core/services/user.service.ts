@@ -9,9 +9,7 @@ import {
   getDocs,
   updateDoc,
   limit,
-  startAfter,
   orderBy,
-  QueryDocumentSnapshot,
   onSnapshot,
   deleteDoc,
 } from 'firebase/firestore';
@@ -26,7 +24,6 @@ import { User } from '../models/user.model';
 import { Photo } from '../models/photo.model';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FeedPhoto } from '../models/feed-photo';
 import { LoadingManagerService } from './loading.service';
 
 @Service()
@@ -139,121 +136,27 @@ export class UserService {
     const docSnap = snapshot.docs[0];
     const photoData = docSnap.data() as Photo;
 
+    // Delete the bucket object first — the table row must only be removed
+    // once we know the file is actually gone. If bucket deletion fails, the
+    // row stays so the photo doesn't silently vanish while an orphaned file
+    // (or a file the user thinks is deleted) remains in storage.
+    //
+    // Derived from the download URL rather than photoData.storagePath: the
+    // upload path never actually wrote that field to Firestore, so relying
+    // on it silently skipped bucket deletion for every photo. ref() accepts
+    // an https download URL directly, so this works regardless of whether
+    // storagePath was ever populated.
+    const storageRef = ref(this.storage, photoData.storagePath ?? photoUrl);
+    try {
+      await deleteObject(storageRef);
+    } catch (error) {
+      // Already gone from the bucket (e.g. deleted out-of-band) means the
+      // goal state is already met — anything else should block the row
+      // deletion rather than leave storage/table out of sync.
+      if ((error as { code?: string })?.code !== 'storage/object-not-found') throw error;
+    }
+
     await deleteDoc(doc(this.firestore, 'photos', docSnap.id));
-
-    if (photoData.storagePath) {
-      const storageRef = ref(this.storage, photoData.storagePath);
-      await deleteObject(storageRef).catch((err) => console.warn('Storage delete error:', err));
-    }
-  }
-
-  getSearchGalleryPaged(
-    currentUserId?: string,
-    pageSize = 30,
-    lastVisibleDoc?: QueryDocumentSnapshot,
-  ): Observable<{
-    photos: FeedPhoto[];
-    lastVisible: QueryDocumentSnapshot | null;
-  }> {
-    let photosQuery = query(
-      collection(this.firestore, 'photos'),
-      orderBy('__name__'),
-      limit(pageSize),
-    );
-
-    if (lastVisibleDoc) {
-      photosQuery = query(
-        collection(this.firestore, 'photos'),
-        orderBy('__name__'),
-        startAfter(lastVisibleDoc),
-        limit(pageSize),
-      );
-    }
-
-    return from(
-      Promise.all([getDocs(photosQuery), getDocs(collection(this.firestore, 'users'))]),
-    ).pipe(
-      map(([photoSnapshot, userSnapshot]) => {
-        const lastVisible = photoSnapshot.docs[photoSnapshot.docs.length - 1] || null;
-
-        const usersMap = new Map<string, User>();
-        userSnapshot.docs.forEach((doc) => {
-          usersMap.set(doc.id, { ...(doc.data() as User), uid: doc.id });
-        });
-
-        const photos: FeedPhoto[] = [];
-        photoSnapshot.docs.forEach((doc) => {
-          const photoData = doc.data() as any;
-          const ownerUid = photoData.uid || photoData.userId;
-
-          if (currentUserId && ownerUid === currentUserId) return;
-
-          const owner = usersMap.get(ownerUid);
-          if (owner) {
-            photos.push({
-              id: doc.id,
-              url: photoData.url,
-              uid: owner.uid,
-              username: owner.username,
-              profilePictureURL: owner.profilePictureURL ?? '',
-            });
-          }
-        });
-
-        return { photos, lastVisible };
-      }),
-    );
-  }
-
-  getHomeFeedPaged(
-    currentUserId?: string,
-    pageSize = 10,
-    lastVisibleDoc?: QueryDocumentSnapshot,
-  ): Observable<{ users: User[]; lastVisible: QueryDocumentSnapshot | null }> {
-    let usersQuery = query(
-      collection(this.firestore, 'users'),
-      orderBy('__name__'),
-      limit(pageSize),
-    );
-
-    if (lastVisibleDoc) {
-      usersQuery = query(
-        collection(this.firestore, 'users'),
-        orderBy('__name__'),
-        startAfter(lastVisibleDoc),
-        limit(pageSize),
-      );
-    }
-
-    return from(
-      Promise.all([getDocs(usersQuery), getDocs(collection(this.firestore, 'photos'))]),
-    ).pipe(
-      map(([userSnapshot, photoSnapshot]) => {
-        const lastVisible = userSnapshot.docs[userSnapshot.docs.length - 1] || null;
-
-        let users: User[] = userSnapshot.docs.map((doc) => ({
-          ...(doc.data() as User),
-          uid: doc.id,
-        }));
-
-        const photos: any[] = photoSnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-          uid: (doc.data() as any).uid || (doc.data() as any).userId,
-        }));
-
-        if (currentUserId) {
-          users = users.filter((user) => user.uid !== currentUserId);
-        }
-
-        const usersWithPhotos = users.map((user) => ({
-          ...user,
-          photos: photos.filter((photo) => photo.uid === user.uid),
-        }));
-
-        return { users: usersWithPhotos, lastVisible };
-      }),
-    );
   }
 
   private async fetchUserProfile(uid: string): Promise<void> {

@@ -1,44 +1,45 @@
-import { Component, inject, OnInit, signal, HostListener } from '@angular/core';
+import { Component, inject, signal, HostListener, ElementRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
+import { SearchService } from './services/search.service';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { User } from '../../core/models/user.model';
 import { FeedPhoto } from '../../core/models/feed-photo';
-import { QueryDocumentSnapshot } from 'firebase/firestore';
 import { PhotoViewerModal } from '../../components/photo-viewer-modal/photo-viewer-modal';
 import { TranslatePipe } from '@ngx-translate/core';
+import { PreserveScrollDirective } from '../../core/preserve-scroll.directive';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.html',
   styleUrl: './search.css',
   imports: [FormsModule, RouterLink, PhotoViewerModal, TranslatePipe],
+  hostDirectives: [PreserveScrollDirective],
 })
-export class Search implements OnInit {
+export class Search {
   private userService = inject(UserService);
+  private searchService = inject(SearchService);
   private router = inject(Router);
+  private elementRef = inject(ElementRef<HTMLElement>);
 
   searchQuery = signal<string>('');
-  users = signal<User[]>([]);
-  photos = signal<FeedPhoto[]>([]);
   searchResults = signal<User[]>([]);
+
+  photos = this.searchService.photos;
+  isLoadingMore = this.searchService.loadingMore;
+  hasMorePhotos = this.searchService.hasMore;
 
   // Signal to hold the active photo for the full-screen modal view
   selectedPhoto = signal<FeedPhoto | null>(null);
 
-  isLoadingMore = signal<boolean>(false);
-  hasMorePhotos = signal<boolean>(true);
-  private batchSize = 30;
-  private lastVisibleDoc: QueryDocumentSnapshot | null = null;
-
   isSearchVisible = signal<boolean>(true);
   private lastScrollTop = 0;
 
-  @HostListener('window:scroll', [])
+  @HostListener('scroll', [])
   onWindowScroll() {
-    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    const currentScroll = this.elementRef.nativeElement.scrollTop;
     if (currentScroll <= 50 || this.searchQuery().trim().length > 0) {
       this.isSearchVisible.set(true);
     } else if (currentScroll > this.lastScrollTop) {
@@ -61,49 +62,15 @@ export class Search implements OnInit {
     }),
   );
 
-  ngOnInit() {
-    this.loadInitialPhotos();
+  constructor() {
+    this.searchService.loadIfNeeded();
     this.searchObservable.subscribe((users) => {
       this.searchResults.set(users);
     });
   }
 
-  loadInitialPhotos() {
-    const currentUserId = this.userService.currentUser()?.uid;
-    if (!currentUserId) return;
-
-    this.userService.getSearchGalleryPaged(currentUserId, this.batchSize).subscribe({
-      next: ({ photos, lastVisible }) => {
-        this.photos.set(photos);
-        this.lastVisibleDoc = lastVisible;
-        this.hasMorePhotos.set(photos.length === this.batchSize);
-      },
-    });
-  }
-
-  loadMorePhotos() {
-    if (this.isLoadingMore() || !this.hasMorePhotos()) return;
-
-    this.isLoadingMore.set(true);
-    const currentUserId = this.userService.currentUser()?.uid ?? '';
-
-    this.userService
-      .getSearchGalleryPaged(currentUserId, this.batchSize, this.lastVisibleDoc ?? undefined)
-      .subscribe({
-        next: ({ photos, lastVisible }) => {
-          this.photos.update((existing) => [...existing, ...photos]);
-          this.lastVisibleDoc = lastVisible;
-          this.isLoadingMore.set(false);
-
-          if (photos.length < this.batchSize) {
-            this.hasMorePhotos.set(false);
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          this.isLoadingMore.set(false);
-        },
-      });
+  loadMorePhotos(): void {
+    this.searchService.loadMore();
   }
 
   openPhoto(photo: FeedPhoto) {
