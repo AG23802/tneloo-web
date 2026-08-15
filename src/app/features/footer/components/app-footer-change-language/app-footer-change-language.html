@@ -1,0 +1,21 @@
+<!-- app-footer-change-language.html -->
+<div class="auth-language-dropdown">
+  <button type="button" class="auth-lang-toggle" (click)="toggleLanguageMenu()">
+    @if (languageService.getCurrentLanguage(); as current) {
+      <img [src]="current.flag" alt="" class="flag-icon" />
+      <span>{{ current.label }}</span>
+    }
+    <span class="dropdown-arrow">▼</span>
+  </button>
+
+  @if (isLanguageMenuOpen()) {
+    <div class="auth-lang-menu">
+      @for (lang of languageService.languages; track lang.code) {
+        <button type="button" class="auth-lang-option" [class.active]="languageService.translate.currentLang() === lang.code" (click)="selectLanguage(lang.code)">
+          <img [src]="lang.flag" alt="" class="flag-icon" />
+          <span>{{ lang.label }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

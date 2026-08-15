@@ -1,0 +1,33 @@
+<!-- app-footer.html -->
+<footer class="app-footer">
+  <div class="footer-content">
+
+    <!-- Legal & Links Section -->
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>{{ 'footer.legal' | translate }}</h4>
+        <a href="/imprint">{{ 'footer.imprint' | translate }}</a>
+        <a href="/privacy">{{ 'footer.privacy' | translate }}</a>
+        <a href="/terms">{{ 'footer.terms' | translate }}</a>
+        <a href="/cookies">{{ 'footer.cookieNotice' | translate }}</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>{{ 'footer.support' | translate }}</h4>
+        <a href="/help">{{ 'footer.help' | translate }}</a>
+        <a href="/contact">{{ 'footer.contact' | translate }}</a>
+      </div>
+    </div>
+
+    <!-- Integrated Language Selector Component -->
+    <div class="footer-lang-container">
+      <app-app-footer-change-language />
+    </div>
+
+    <!-- Copyright & Branding -->
+    <div class="footer-bottom">
+      <p>&copy; 2026 tneloo. All rights reserved.</p>
+    </div>
+
+  </div>
+</footer>

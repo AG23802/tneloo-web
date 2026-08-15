@@ -6,20 +6,22 @@ import {
   email as emailValidator,
 } from '@angular/forms/signals';
 import { AuthService } from '../../auth.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { AppFooter } from '../../../footer/components/app-footer/app-footer';
 
 @Component({
   selector: 'app-auth',
-  imports: [FormField, TranslatePipe],
+  imports: [FormField, TranslatePipe, AppFooter],
   templateUrl: './auth.html',
   styleUrl: './auth.css',
 })
 export class Auth {
   authService = inject(AuthService);
+  translate = inject(TranslateService);
 
   // Define the form model as a writable signal
   authModel = signal({
-    email: '',
+    email: 'museum.wuerdig-0s@icloud.com',
     password: '123456',
   });
 

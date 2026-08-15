@@ -4,6 +4,16 @@
     "passwordPlaceholder": "Password",
     "delete": "Elimina"
   },
+  "footer": {
+    "legal": "Note legali",
+    "imprint": "Informazioni legali",
+    "privacy": "Privacy",
+    "terms": "Termini di servizio",
+    "cookieNotice": "Informativa sui cookie",
+    "support": "Supporto",
+    "help": "Aiuto",
+    "contact": "Contatto"
+  },
   "home": {
     "loadingProfiles": "Caricamento profili...",
     "loading": "Caricamento...",

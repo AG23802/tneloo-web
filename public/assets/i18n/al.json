@@ -4,6 +4,16 @@
     "passwordPlaceholder": "Fjalëkalimi",
     "delete": "Fshi"
   },
+  "footer": {
+    "legal": "Ligjore",
+    "imprint": "Impresum",
+    "privacy": "Privatësia",
+    "terms": "Kushtet e shërbimit",
+    "cookieNotice": "Njoftimi për Cookies",
+    "support": "Mbështetja",
+    "help": "Ndihmë",
+    "contact": "Kontakt"
+  },
   "home": {
     "loadingProfiles": "Duke ngarkuar profile...",
     "loading": "Duke u ngarkuar...",

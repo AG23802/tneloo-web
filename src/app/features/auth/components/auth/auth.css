@@ -38,7 +38,6 @@
       background: none;
       border: none;
       border-bottom: 1px solid var(--color-border-light);
-      font-size: var(--font-size-md);
       cursor: pointer;
       text-align: left;
       text-decoration: none;

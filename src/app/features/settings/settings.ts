@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, output, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { IconComponent } from '../../components/icon/icon';
 import { UserService } from '../../core/services/user.service';
 import { Account } from './components/account/account';
@@ -13,8 +13,8 @@ import { PersonalDetails } from './components/account/personal-details/personal-
 import { ChangePassword } from './components/account/change-password/change-password';
 import { MainSettingsView } from './components/main-settings-view/main-settings-view';
 import { SettingsView } from '../../core/models/settings-view.type';
-import { ChangeLanguage } from './components/app-change-language/change-language.component';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { SettingsChangeLanguage } from './components/app-settings-change-language/settings-change-language.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -25,7 +25,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
     PersonalDetails,
     ChangePassword,
     MainSettingsView,
-    ChangeLanguage,
+    SettingsChangeLanguage,
     TranslatePipe,
   ],
   templateUrl: './settings.html',

@@ -98,7 +98,7 @@
     </div>
   } @else if (activeView() === 'language') {
     <!-- SPRACHE SUB-MENU -->
-    <app-change-language (saveChanges)="navigateTo($event)" />
+    <app-settings-change-language (saveChanges)="navigateTo($event)" />
   } @else if (activeView() === 'appearance') {
     <!-- APPEARANCE SUB-MENU -->
     <div class="settings-header">

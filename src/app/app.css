@@ -12,7 +12,8 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow-y: auto; /* Change from overflow: hidden to allow scrolling */
+  overflow-y: auto; /* Change from overflow: hidden to allow
+  scrolling */
 }
 
 .view-container {
