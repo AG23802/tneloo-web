@@ -98,17 +98,23 @@ export class ThreadView implements OnInit, OnDestroy {
     });
   }
 
+  private scrollRafId: number | null = null;
+
+  // Scroll fires far more often than once per frame during a trackpad/wheel
+  // gesture; without throttling every one of those events was doing signal
+  // reads + logging, which is wasted main-thread work during the exact
+  // moment we want scrolling to stay smooth.
   onScroll(event: Event): void {
-    const threadId = this.threadId();
-    const scrollTop = (event.target as HTMLElement).scrollTop;
-
-    console.log('[thread-view] onScroll', {
-      scrollTop,
-      restoringScrollPosition: this.restoringScrollPosition,
-      isLoadingMoreMessages: this.chatService.isLoadingMoreMessages(),
-      hasMoreMessages: this.chatService.hasMoreMessages(),
+    if (this.scrollRafId !== null) return;
+    const target = event.target as HTMLElement;
+    this.scrollRafId = requestAnimationFrame(() => {
+      this.scrollRafId = null;
+      this.checkShouldLoadOlder(target.scrollTop);
     });
+  }
 
+  private checkShouldLoadOlder(scrollTop: number): void {
+    const threadId = this.threadId();
     if (
       scrollTop > 200 ||
       !threadId ||
@@ -119,6 +125,7 @@ export class ThreadView implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('[thread-view] near top, loading older messages', { scrollTop });
     void this.loadOlderMessages(threadId);
   }
 
@@ -210,6 +217,7 @@ export class ThreadView implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.scrollRafId !== null) cancelAnimationFrame(this.scrollRafId);
     this.chatService.clearMessages();
     this.userMetaSub?.unsubscribe();
   }
