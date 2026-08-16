@@ -11,5 +11,6 @@ export const environment = {
   },
   // Publishable key only - safe to ship client-side. Get it from the
   // Stripe Dashboard (Developers -> API keys) and replace this placeholder.
-  stripePublishableKey: 'pk_test_REPLACE_ME',
+  stripePublishableKey:
+    'pk_test_51U58vlE4zcjqKzjqyEQYQUz6HGpzdqVgXCJydmVxltwCYnAOjxjdOz4nvNxiLiUueq5WC0yPUBwTRnUxnlIAnBeP00nEd734rG',
 };
