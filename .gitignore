@@ -11,6 +11,12 @@
 npm-debug.log
 yarn-error.log
 
+# Cloud Functions
+functions/node_modules
+functions/lib
+firebase-debug.log
+.runtimeconfig.json
+
 # IDEs and editors
 .idea/
 .project

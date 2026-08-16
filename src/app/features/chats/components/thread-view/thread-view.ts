@@ -12,14 +12,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { ChatHeader } from '../chat-header/chat-header';
-import { ChatInput } from '../chat-input/chat-input/chat-input';
+import { ChatInput } from '../chat-input/chat-input';
 import { UserService } from '../../../../core/services/user.service';
-import { ChatService } from '../../services/chat.service';
+import { ThreadService } from '../../services/thread.service';
 import { Message } from '../../models/message.model';
-import { User } from '../../../../core/models/user.model';
+import { ThreadParticipantInfo } from '../../models/thread.model';
 
 @Component({
   selector: 'app-thread-view',
@@ -31,7 +30,7 @@ import { User } from '../../../../core/models/user.model';
 export class ThreadView implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  public readonly chatService = inject(ChatService);
+  public readonly threadService = inject(ThreadService);
   public readonly userService = inject(UserService);
   private readonly scrollContainer = viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
   private readonly injector = inject(Injector);
@@ -47,13 +46,15 @@ export class ThreadView implements OnInit, OnDestroy {
     (/iP(hone|od|ad)/.test(navigator.platform) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
 
-  readonly threadId = signal<string | null>(null);
+  // Owned by ThreadService, not a local copy - a thread created mid-session
+  // (first message in a new conversation) updates it in place there, with
+  // no route navigation/remount involved. See ThreadService.sendMessage.
+  readonly threadId = this.threadService.activeThreadId;
   readonly currentUid = signal<string | undefined>(undefined);
-  readonly user = signal<User | null>(null);
+  readonly user = signal<ThreadParticipantInfo | null>(null);
   readonly activeMessageId = signal<string | null>(null);
   readonly messageOffsets = signal<Record<string, number>>({});
 
-  private userMetaSub?: Subscription;
   private touchStartX = 0;
   private readonly currentDraggingId = signal<string | null>(null);
   private restoringScrollPosition = false;
@@ -68,7 +69,7 @@ export class ThreadView implements OnInit, OnDestroy {
 
   private readonly initialScrollEffect = effect(() => {
     const threadId = this.threadId();
-    if (!threadId || !this.chatService.initialMessagesLoaded()) return;
+    if (!threadId || !this.threadService.initialMessagesLoaded()) return;
     if (this.initiallyScrolledThreadId === threadId) return;
 
     this.initiallyScrolledThreadId = threadId;
@@ -86,28 +87,21 @@ export class ThreadView implements OnInit, OnDestroy {
     this.currentUid.set(currentUser.uid);
     const recipientId = history.state?.recipientUser?.uid ?? null;
     // The chats list and profile "Message" button already have this user's
-    // doc loaded — they pass it through router state so we can show the
-    // header immediately instead of re-fetching it. Only a bare reload (no
-    // router state at all) falls back to fetchUser.
-    const passedUser = (history.state?.recipientUser as User | null | undefined) ?? null;
-    const result = await this.chatService.initializeActiveThread(
+    // doc loaded - they pass it through router state so we can show the
+    // header immediately with zero reads. Anything else (e.g. a bare reload
+    // of /thread/:id, with no router state) falls back to the thread's own
+    // denormalized participantsInfo, resolved as part of initializeActiveThread.
+    const passedUser =
+      (history.state?.recipientUser as ThreadParticipantInfo | null | undefined) ?? null;
+    const result = await this.threadService.initializeActiveThread(
       this.route.snapshot.paramMap.get('threadId'),
       recipientId,
       currentUser.uid,
     );
 
-    this.threadId.set(result.threadId);
-    if (passedUser) {
-      this.user.set(passedUser);
-    } else if (result.targetUid) {
-      this.fetchUser(result.targetUid);
-    }
-  }
-
-  private fetchUser(uid: string): void {
-    this.userMetaSub = this.userService.getUserById?.(uid)?.subscribe((user) => {
-      if (user) this.user.set(user);
-    });
+    // threadId is already updated - initializeActiveThread sets it on
+    // ThreadService directly.
+    this.user.set(passedUser ?? result.targetUser);
   }
 
   // Setting scrollTop here fires a native 'scroll' event just like a user
@@ -191,8 +185,8 @@ export class ThreadView implements OnInit, OnDestroy {
       scrollTop > this.loadTriggerDistancePx ||
       !threadId ||
       this.restoringScrollPosition ||
-      this.chatService.isLoadingMoreMessages() ||
-      !this.chatService.hasMoreMessages() ||
+      this.threadService.isLoadingMoreMessages() ||
+      !this.threadService.hasMoreMessages() ||
       performance.now() - this.lastLoadCompletedAt < this.minLoadIntervalMs
     ) {
       return;
@@ -247,7 +241,7 @@ export class ThreadView implements OnInit, OnDestroy {
     this.log('loadOlderMessages: start', { threadId });
     this.restoringScrollPosition = true;
     try {
-      const older = await this.chatService.loadMoreMessages(threadId);
+      const older = await this.threadService.loadMoreMessages(threadId);
       if (!older.length) {
         this.log('loadOlderMessages: nothing returned');
         return;
@@ -268,7 +262,7 @@ export class ThreadView implements OnInit, OnDestroy {
         // the user can keep scrolling during the await, so an earlier
         // snapshot of scrollTop goes stale and produces the wrong correction.
         const previousScrollHeight = container.scrollHeight;
-        this.chatService.prependMessages(chunk);
+        this.threadService.prependMessages(chunk);
 
         let targetScrollTop = 0;
         await this.afterNextRenderWrite(() => {
@@ -397,7 +391,6 @@ export class ThreadView implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.scrollRafId !== null) cancelAnimationFrame(this.scrollRafId);
-    this.chatService.clearMessages();
-    this.userMetaSub?.unsubscribe();
+    this.threadService.clearMessages();
   }
 }

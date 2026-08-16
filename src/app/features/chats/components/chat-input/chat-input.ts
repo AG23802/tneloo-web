@@ -1,8 +1,8 @@
 import { Component, inject, output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ChatService } from '../../../services/chat.service';
+import { ThreadService } from '../../services/thread.service';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IconComponent } from '../../../../../components/icon/icon';
+import { IconComponent } from '../../../../components/icon/icon';
 
 @Component({
   selector: 'app-chat-input',
@@ -12,7 +12,7 @@ import { IconComponent } from '../../../../../components/icon/icon';
   styleUrl: './chat-input.css',
 })
 export class ChatInput {
-  public chatService = inject(ChatService);
+  public threadService = inject(ThreadService);
   newMessageText = '';
 
   readonly messageSent = output<void>();
@@ -24,7 +24,7 @@ export class ChatInput {
     // Clear input immediately so UI updates instantly
     this.newMessageText = '';
 
-    await this.chatService.sendMessage(text);
+    await this.threadService.sendMessage(text);
     this.messageSent.emit();
   }
 }

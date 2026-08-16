@@ -8,7 +8,7 @@
   (touchend)="onContainerTouchEnd($event)"
 >
   <div
-    *ngFor="let msg of chatService.messages(); trackBy: trackByMessageId"
+    *ngFor="let msg of threadService.messages(); trackBy: trackByMessageId"
     class="message-row-wrapper"
     [attr.data-message-id]="msg.id"
   >

@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { IconComponent } from '../../../../components/icon/icon';
 import { Avatar } from '../../../../components/avatar/avatar.component';
-import { User } from '../../../../core/models/user.model';
+import { ThreadParticipantInfo } from '../../models/thread.model';
 
 @Component({
   selector: 'app-chat-header',
@@ -10,6 +10,6 @@ import { User } from '../../../../core/models/user.model';
   styleUrl: './chat-header.css',
 })
 export class ChatHeader {
-  user = input<User | null>();
+  user = input<ThreadParticipantInfo | null>();
   event = output();
 }
