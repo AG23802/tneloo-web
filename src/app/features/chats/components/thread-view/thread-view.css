@@ -79,7 +79,12 @@
   display: block;
   width: 100%;
   max-width: 240px;
-  max-height: 320px;
+  /* Fixed (not max-) height: app-video-player is a div, not a replaced
+     element like <img>, so it doesn't get the browser's built-in
+     intrinsic-aspect-ratio-within-max-height sizing. A definite height
+     here is what the video-player component fills, and keeps image and
+     video bubbles the same size regardless of source aspect ratio. */
+  height: 200px;
   border-radius: var(--radius-md);
   object-fit: cover;
 }
@@ -96,3 +101,75 @@
 }
 
 .message-timestamp.visible { opacity: 1; }
+
+.menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.confirmation-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-bg-primary);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  width: 85%;
+  max-width: 320px;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 var(--space-sm) var(--space-xl) rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.confirmation-modal h3 {
+  margin: 0 0 var(--space-sm) 0;
+  color: var(--color-text-main);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.confirmation-modal p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xl);
+}
+
+.confirmation-modal .modal-actions {
+  display: flex;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.confirmation-modal .modal-actions button {
+  flex: 1;
+  padding: var(--space-sm) var(--space-base);
+  border-radius: var(--radius-md);
+  border: none;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.confirmation-modal .btn-cancel {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-main);
+}
+
+.confirmation-modal .btn-delete {
+  background: var(--color-danger);
+  color: var(--color-white);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

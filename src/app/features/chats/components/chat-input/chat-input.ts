@@ -1,5 +1,6 @@
-import { Component, ElementRef, inject, output, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, inject, output, signal, viewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 import { ThreadService } from '../../services/thread.service';
 import { MediaUploadService } from '../../../../core/services/media-upload.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -19,25 +20,26 @@ export class ChatInput {
   private notificationService = inject(NotificationService);
 
   newMessageText = '';
-  isUploadingMedia = signal(false);
+
+  // Selecting a file only stages it here - it's not uploaded until the user
+  // actually hits send, same as text. Lets them attach media with no
+  // caption, add a caption after picking, or back out via removePendingMedia
+  // without anything ever having been uploaded.
+  pendingFile = signal<File | null>(null);
+  pendingPreviewUrl = signal<string | null>(null);
+  isPendingVideo = computed(() => this.pendingFile()?.type.startsWith('video/') ?? false);
+
+  isSending = signal(false);
+  canSend = computed(
+    () => (!!this.newMessageText.trim() || !!this.pendingFile()) && !this.isSending(),
+  );
 
   private mediaInput = viewChild<ElementRef<HTMLInputElement>>('mediaInput');
 
   readonly messageSent = output<void>();
 
-  async handleSendMessage() {
-    const text = this.newMessageText.trim();
-    if (!text) return;
-
-    // Clear input immediately so UI updates instantly
-    this.newMessageText = '';
-
-    await this.threadService.sendMessage(text);
-    this.messageSent.emit();
-  }
-
   triggerMediaPicker(): void {
-    if (this.isUploadingMedia()) return;
+    if (this.isSending()) return;
     this.mediaInput()?.nativeElement.click();
   }
 
@@ -47,24 +49,54 @@ export class ChatInput {
     input.value = '';
     if (!file) return;
 
-    this.isUploadingMedia.set(true);
-    this.mediaUploadService.uploadMedia(file, 'chat-media').subscribe({
-      next: async (uploaded) => {
-        await this.threadService.sendMessage('', {
+    this.setPendingFile(file);
+  }
+
+  removePendingMedia(): void {
+    this.setPendingFile(null);
+  }
+
+  private setPendingFile(file: File | null): void {
+    const previousUrl = this.pendingPreviewUrl();
+    if (previousUrl) URL.revokeObjectURL(previousUrl);
+
+    this.pendingFile.set(file);
+    this.pendingPreviewUrl.set(file ? URL.createObjectURL(file) : null);
+  }
+
+  async handleSendMessage(): Promise<void> {
+    if (!this.canSend()) return;
+    const text = this.newMessageText.trim();
+    const file = this.pendingFile();
+
+    this.isSending.set(true);
+    try {
+      let media;
+      if (file) {
+        const uploaded = await firstValueFrom(
+          this.mediaUploadService.uploadMedia(file, 'chat-media'),
+        );
+        media = {
           url: uploaded.url,
           type: uploaded.type,
           thumbnailUrl: uploaded.thumbnailUrl,
           duration: uploaded.duration,
-        });
-        this.isUploadingMedia.set(false);
-        this.messageSent.emit();
-      },
-      error: (error: unknown) => {
-        this.isUploadingMedia.set(false);
-        this.notificationService.show(
-          error instanceof Error ? error.message : 'Error uploading media.',
-        );
-      },
-    });
+        };
+      }
+
+      await this.threadService.sendMessage(text, media);
+
+      // Only clear once we know it actually went through - on failure the
+      // draft and attachment stay put so the user can just hit send again.
+      this.newMessageText = '';
+      this.setPendingFile(null);
+      this.messageSent.emit();
+    } catch (error: unknown) {
+      this.notificationService.show(
+        error instanceof Error ? error.message : 'Error uploading media.',
+      );
+    } finally {
+      this.isSending.set(false);
+    }
   }
 }

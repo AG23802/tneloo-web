@@ -2,10 +2,11 @@ import { Component, input, signal } from '@angular/core';
 import { Media } from '../../../../../../core/models/media.model';
 import { User } from '../../../../../../core/models/user.model';
 import { TranslatePipe } from '@ngx-translate/core';
+import { VideoPlayer } from '../../../../../../components/video-player/video-player';
 
 @Component({
   selector: 'app-media-slider',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, VideoPlayer],
   templateUrl: './media-slider.html',
   styleUrl: './media-slider.css',
 })

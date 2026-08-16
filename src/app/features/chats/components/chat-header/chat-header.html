@@ -4,5 +4,5 @@
     <app-avatar [url]="user()?.profilePictureURL" />
     <span class="thread-title">{{ user()?.displayName }}</span>
   </div>
-  <div></div>
+  <app-icon class="info-icon" name="info" (click)="showVideos.emit()" />
 </header>

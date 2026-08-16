@@ -4,11 +4,12 @@ import { Avatar } from '../avatar/avatar.component';
 import { FeedMedia } from '../../core/models/feed-media';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../icon/icon';
+import { VideoPlayer } from '../video-player/video-player';
 
 @Component({
   selector: 'app-media-viewer-modal',
   standalone: true,
-  imports: [Avatar, CommonModule, IconComponent],
+  imports: [Avatar, CommonModule, IconComponent, VideoPlayer],
   templateUrl: './media-viewer-modal.html',
   styleUrl: './media-viewer-modal.css',
 })

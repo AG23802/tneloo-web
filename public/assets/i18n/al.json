@@ -131,7 +131,13 @@
     "typeMessage": "Shkruaj një mesazh...",
     "noConversations": "Ende nuk ka biseda.",
     "unknownUser": "Përdorues i panjohur",
-    "startedConversation": "Filloi një bisedë"
+    "startedConversation": "Filloi një bisedë",
+    "videosTitle": "Videot",
+    "noVideos": "Ende nuk ka video.",
+    "deleteMessageTitle": "Fshi mesazhin?",
+    "deleteMessageDesc": "A jeni i sigurt që dëshironi ta fshini këtë mesazh?",
+    "cancel": "Anulo",
+    "delete": "Fshi"
   },
   "search": {
     "placeholder": "Kërko...",

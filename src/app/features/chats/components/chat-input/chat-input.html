@@ -1,17 +1,33 @@
-<form class="chat-input-form" (submit)="$event.preventDefault(); handleSendMessage()">
-  <button type="button" class="chat-input-attach-btn" (click)="triggerMediaPicker()" [disabled]="isUploadingMedia()">
-    <app-icon name="camera" />
-  </button>
-  <input #mediaInput type="file" hidden accept="image/*,video/*" (change)="onMediaSelected($event)" />
+<div class="chat-input-wrapper">
+  @if (pendingPreviewUrl(); as previewUrl) {
+    <div class="chat-input-pending-media">
+      @if (isPendingVideo()) {
+        <video [src]="previewUrl" muted></video>
+      } @else {
+        <img [src]="previewUrl" alt="" />
+      }
+      <button type="button" class="chat-input-pending-media__remove" (click)="removePendingMedia()" [disabled]="isSending()">
+        <app-icon name="close" [size]="14" />
+      </button>
+    </div>
+  }
 
-  <input
-    type="text"
-    [(ngModel)]="newMessageText"
-    name="newMessageText"
-    [placeholder]="'chats.typeMessage' | translate"
-    autocomplete="off"
-  />
-  <button type="submit" [disabled]="!newMessageText || !newMessageText.trim()">
-    <app-icon name="share" />
-  </button>
-</form>
+  <form class="chat-input-form" (submit)="$event.preventDefault(); handleSendMessage()">
+    <button type="button" class="chat-input-attach-btn" (click)="triggerMediaPicker()" [disabled]="isSending()">
+      <app-icon name="camera" />
+    </button>
+    <input #mediaInput type="file" hidden accept="image/*,video/*" (change)="onMediaSelected($event)" />
+
+    <input
+      type="text"
+      [(ngModel)]="newMessageText"
+      name="newMessageText"
+      [placeholder]="'chats.typeMessage' | translate"
+      autocomplete="off"
+      [disabled]="isSending()"
+    />
+    <button type="submit" [disabled]="!canSend()">
+      <app-icon name="share" />
+    </button>
+  </form>
+</div>

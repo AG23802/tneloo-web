@@ -1,0 +1,28 @@
+<div class="thread-videos-header">
+  <app-icon name="back" class="back-icon" (click)="goBack()" />
+  <h3>{{ 'chats.videosTitle' | translate }}</h3>
+  <div></div>
+</div>
+
+<div class="thread-videos-body">
+  @if (!isLoading() && videos().length === 0) {
+    <p class="no-videos">{{ 'chats.noVideos' | translate }}</p>
+  }
+
+  <div class="thread-videos-grid">
+    @for (video of videos(); track video.id) {
+      <button type="button" class="thread-videos-grid__item" (click)="openVideo(video)">
+        @if (video.thumbnailUrl) {
+          <img [src]="video.thumbnailUrl" alt="" />
+        } @else {
+          <div class="thread-videos-grid__placeholder"></div>
+        }
+        <app-icon name="play" class="thread-videos-grid__badge" />
+      </button>
+    }
+  </div>
+</div>
+
+@if (selectedVideo(); as video) {
+  <app-media-viewer-modal [media]="video" (close)="closeVideo()" />
+}

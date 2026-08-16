@@ -12,7 +12,7 @@
     </div>
 
     @if (media().type === 'video') {
-      <video class="main-media" [src]="media().url" [poster]="media().thumbnailUrl ?? ''" controls autoplay playsinline></video>
+      <app-video-player class="main-media" [src]="media().url" [poster]="media().thumbnailUrl" [autoplay]="true" fit="height" />
     } @else {
       <img class="main-media" [src]="media().url" [alt]="'Posted by ' + media().username" />
     }

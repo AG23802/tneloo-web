@@ -49,4 +49,14 @@
       color: var(--color-text-main);
     }
   }
+
+  .info-icon {
+    color: var(--color-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 }

@@ -17,8 +17,8 @@
           </span>
         </div>
       } @else if (item.type === 'video') {
-        <video [src]="item.url" [poster]="item.thumbnailUrl ?? ''" controls muted playsinline
-               [preload]="$index === 0 ? 'metadata' : 'none'" (error)="itemFailed($index)"></video>
+        <app-video-player [src]="item.url" [poster]="item.thumbnailUrl"
+               [preload]="$index === 0 ? 'metadata' : 'none'" (error)="itemFailed($index)" />
       } @else {
         <img [src]="item.url" [loading]="$index === 0 ? 'eager' : 'lazy'" alt="" (error)="itemFailed($index)" />
       }

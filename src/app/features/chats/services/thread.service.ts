@@ -2,6 +2,7 @@ import { inject, Service, signal } from '@angular/core';
 import {
   QueryDocumentSnapshot,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -15,6 +16,7 @@ import {
   startAfter,
   where,
 } from 'firebase/firestore';
+import { deleteObject, getStorage, ref } from 'firebase/storage';
 import { Location } from '@angular/common';
 import app from '../../../core/firebase';
 import { UserService } from '../../../core/services/user.service';
@@ -29,6 +31,7 @@ import { Message, MessageMedia } from '../models/message.model';
 @Service()
 export class ThreadService {
   private readonly firestore = getFirestore(app);
+  private readonly storage = getStorage(app);
   private readonly location = inject(Location);
   private readonly userService = inject(UserService);
   private readonly messageBatchSize = 15;
@@ -195,6 +198,34 @@ export class ThreadService {
     }
   }
 
+  // Bucket file(s) first, Firestore doc only after - matches
+  // UserService.deleteMediaByUrl's ordering so a failed storage delete never
+  // leaves a message pointing at nothing, and a storage delete never
+  // silently orphans a still-visible message.
+  async deleteMessage(threadId: string, message: Message): Promise<void> {
+    if (!message.id) return;
+
+    if (message.media) {
+      await this.deleteStorageObject(message.media.url);
+      if (message.media.thumbnailUrl) {
+        await this.deleteStorageObject(message.media.thumbnailUrl);
+      }
+    }
+
+    await deleteDoc(doc(this.firestore, 'threads', threadId, 'messages', message.id));
+    this.messages.update((existing) => existing.filter((m) => m.id !== message.id));
+  }
+
+  private async deleteStorageObject(url: string): Promise<void> {
+    try {
+      // ref() accepts a full https download URL directly, so no separate
+      // storagePath needs to be stored on MessageMedia.
+      await deleteObject(ref(this.storage, url));
+    } catch (error) {
+      if ((error as { code?: string })?.code !== 'storage/object-not-found') throw error;
+    }
+  }
+
   private previewTextFor(media: MessageMedia | undefined): string {
     return media?.type === 'video' ? '🎥 Video' : '📷 Photo';
   }
@@ -243,6 +274,29 @@ export class ThreadService {
   private async getOrFindThread(threadId: string): Promise<Thread | null> {
     const snap = await getDoc(doc(this.firestore, 'threads', threadId));
     return snap.exists() ? ({ id: snap.id, ...snap.data() } as Thread) : null;
+  }
+
+  // Same lookup, exposed for read-only views (e.g. the thread's video list)
+  // that need the thread doc but shouldn't touch activeThreadId/messages -
+  // those are this session's "currently open conversation" state.
+  getThread(threadId: string): Promise<Thread | null> {
+    return this.getOrFindThread(threadId);
+  }
+
+  // One-shot, not realtime - this is a "view once" gallery. Filtering
+  // client-side for media.type === 'video' avoids needing a composite
+  // index just for this, since the messages collection is already small
+  // per-thread and fully fetched here regardless.
+  async getThreadVideos(threadId: string): Promise<Message[]> {
+    const snapshot = await getDocs(
+      query(
+        collection(this.firestore, 'threads', threadId, 'messages'),
+        orderBy('createdAt', 'desc'),
+      ),
+    );
+    return snapshot.docs
+      .map((snap) => ({ id: snap.id, ...snap.data() }) as Message)
+      .filter((message) => message.media?.type === 'video');
   }
 
   async findExistingThread(userA: string, userB: string): Promise<string | null> {

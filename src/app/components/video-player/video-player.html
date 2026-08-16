@@ -1,0 +1,35 @@
+<div class="video-player" [class.video-player--fit-height]="fit() === 'height'">
+  <video
+    #videoEl
+    [src]="src()"
+    [poster]="poster() ?? ''"
+    [autoplay]="autoplay()"
+    [preload]="preload()"
+    [muted]="isMuted()"
+    playsinline
+    disablePictureInPicture
+    disableRemotePlayback
+    (play)="onPlay()"
+    (pause)="onPause()"
+    (ended)="onPause()"
+    (error)="onError()"
+    (click)="togglePlay($event)"
+  ></video>
+
+  <button
+    type="button"
+    class="video-player__toggle"
+    [class.video-player__toggle--hidden]="isPlaying()"
+    (click)="togglePlay($event)"
+  >
+    <app-icon [name]="isPlaying() ? 'pause' : 'play'" [size]="28" />
+  </button>
+
+  <button
+    type="button"
+    class="video-player__mute"
+    (click)="toggleMute($event)"
+  >
+    <app-icon [name]="isMuted() ? 'volume' : 'volumeMute'" [size]="14" />
+  </button>
+</div>

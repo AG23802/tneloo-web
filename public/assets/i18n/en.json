@@ -131,7 +131,13 @@
     "typeMessage": "Type a message...",
     "noConversations": "No conversations yet.",
     "unknownUser": "Unknown user",
-    "startedConversation": "Started a conversation"
+    "startedConversation": "Started a conversation",
+    "videosTitle": "Videos",
+    "noVideos": "No videos yet.",
+    "deleteMessageTitle": "Delete message?",
+    "deleteMessageDesc": "Are you sure you want to delete this message?",
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "search": {
     "placeholder": "Search...",

@@ -12,4 +12,5 @@ import { ThreadParticipantInfo } from '../../models/thread.model';
 export class ChatHeader {
   user = input<ThreadParticipantInfo | null>();
   event = output();
+  showVideos = output<void>();
 }

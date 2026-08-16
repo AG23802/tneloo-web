@@ -42,7 +42,7 @@
 /* Normal image/video */
 
 .media-wrapper img,
-.media-wrapper video {
+.media-wrapper app-video-player {
 
   width:100%;
 

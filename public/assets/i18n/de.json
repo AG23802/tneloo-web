@@ -131,7 +131,13 @@
     "typeMessage": "Schreibe eine Nachricht...",
     "noConversations": "Noch keine Unterhaltungen.",
     "unknownUser": "Unbekannter Benutzer",
-    "startedConversation": "Unterhaltung begonnen"
+    "startedConversation": "Unterhaltung begonnen",
+    "videosTitle": "Videos",
+    "noVideos": "Noch keine Videos.",
+    "deleteMessageTitle": "Nachricht löschen?",
+    "deleteMessageDesc": "Möchtest du diese Nachricht wirklich löschen?",
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
   },
   "search": {
     "placeholder": "Suchen...",

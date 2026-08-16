@@ -1,4 +1,4 @@
-<app-chat-header (event)="onBackClicked()" [user]="user()" />
+<app-chat-header (event)="onBackClicked()" [user]="user()" (showVideos)="goToVideoList()" />
 
 <div
   #scrollContainer
@@ -18,7 +18,7 @@
         [class.outgoing]="msg.uid === currentUid()"
         [class.incoming]="msg.uid !== currentUid()"
         [style.transform]="'translateX(' + (messageOffsets()[msg.id!] || 0) + 'px)'"
-        (touchstart)="onTouchStart(msg.id, $event)"
+        (touchstart)="onTouchStart(msg, $event)"
         (touchmove)="onTouchMove($event)"
         (touchend)="onTouchEnd()"
         (touchcancel)="onTouchEnd()"
@@ -26,7 +26,8 @@
         <div class="message-bubble" [class.message-bubble--media]="!!msg.media">
           @if (msg.media; as media) {
             @if (media.type === 'video') {
-              <video class="message-media" [src]="media.url" [poster]="media.thumbnailUrl ?? ''" controls playsinline></video>
+              <app-video-player class="message-media" [src]="media.url" [poster]="media.thumbnailUrl"
+                [expandOnTap]="true" (expand)="openMediaViewer(msg)" />
             } @else {
               <img class="message-media" [src]="media.url" alt="" />
             }
@@ -41,3 +42,23 @@
 </div>
 
 <app-chat-input (messageSent)="scrollService.scrollToBottom()" />
+
+@if (viewerMedia(); as item) {
+  <app-media-viewer-modal [media]="item" (close)="closeMediaViewer()" />
+}
+
+@if (messagePendingDeletion()) {
+  <div class="menu-backdrop" (click)="cancelDeleteMessage()"></div>
+  <div class="confirmation-modal">
+    <h3>{{ 'chats.deleteMessageTitle' | translate }}</h3>
+    <p>{{ 'chats.deleteMessageDesc' | translate }}</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" [disabled]="isDeletingMessage()" (click)="cancelDeleteMessage()">
+        {{ 'chats.cancel' | translate }}
+      </button>
+      <button class="btn-delete" [disabled]="isDeletingMessage()" (click)="confirmDeleteMessage()">
+        {{ 'chats.delete' | translate }}
+      </button>
+    </div>
+  </div>
+}

@@ -131,7 +131,13 @@
     "typeMessage": "Écrivez un message...",
     "noConversations": "Aucune conversation pour le moment.",
     "unknownUser": "Utilisateur inconnu",
-    "startedConversation": "A commencé une conversation"
+    "startedConversation": "A commencé une conversation",
+    "videosTitle": "Vidéos",
+    "noVideos": "Aucune vidéo pour le moment.",
+    "deleteMessageTitle": "Supprimer le message ?",
+    "deleteMessageDesc": "Voulez-vous vraiment supprimer ce message ?",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
   },
   "search": {
     "placeholder": "Rechercher...",
