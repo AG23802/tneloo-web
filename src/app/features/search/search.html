@@ -22,18 +22,23 @@
 
   @if (searchQuery().trim().length === 0) {
     <div class="search-page__photo-grid">
-      @for (photo of photos(); track photo.id) {
-        <div class="search-page__photo-card" (click)="openPhoto(photo)" (keydown.enter)="openPhoto(photo)"
-             (keydown.space)="openPhoto(photo)" tabindex="0" role="button">
-          <img [src]="photo.url" [alt]="'Photo ' + photo.id" />
+      @for (item of media(); track item.id) {
+        <div class="search-page__photo-card" (click)="openMedia(item)" (keydown.enter)="openMedia(item)"
+             (keydown.space)="openMedia(item)" tabindex="0" role="button">
+          @if (item.type === 'video') {
+            <video [src]="item.url" [poster]="item.thumbnailUrl ?? ''" muted playsinline preload="none"></video>
+            <app-icon name="play" class="search-page__video-badge" />
+          } @else {
+            <img [src]="item.url" [alt]="'Media ' + item.id" />
+          }
         </div>
       }
     </div>
 
     <!-- Load More Section / End Message -->
     <div class="search-page__footer">
-      @if (hasMorePhotos()) {
-        <button class="search-page__load-more-btn" (click)="loadMorePhotos()" [disabled]="isLoadingMore()">
+      @if (hasMoreMedia()) {
+        <button class="search-page__load-more-btn" (click)="loadMoreMedia()" [disabled]="isLoadingMore()">
           @if (isLoadingMore()) {
             {{ 'search.loading' | translate }}
           } @else {
@@ -51,6 +56,6 @@
 </div>
 
 <!-- Reusable Full-Screen Modal Component -->
-@if (selectedPhoto(); as photo) {
-  <app-photo-viewer-modal [photo]="photo" (close)="closePhoto()" />
+@if (selectedMedia(); as item) {
+  <app-media-viewer-modal [media]="item" (close)="closeMedia()" />
 }

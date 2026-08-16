@@ -1,4 +1,9 @@
 <form class="chat-input-form" (submit)="$event.preventDefault(); handleSendMessage()">
+  <button type="button" class="chat-input-attach-btn" (click)="triggerMediaPicker()" [disabled]="isUploadingMedia()">
+    <app-icon name="camera" />
+  </button>
+  <input #mediaInput type="file" hidden accept="image/*,video/*" (change)="onMediaSelected($event)" />
+
   <input
     type="text"
     [(ngModel)]="newMessageText"

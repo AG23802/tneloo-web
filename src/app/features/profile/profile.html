@@ -2,7 +2,7 @@
   @if (activeProfileView() === 'main') {
     <div class="profile-top-nav">
       @if (isOwnProfile()) {
-        <app-upload container="photos" (fileSelected)="onFileSelected($event)" />
+        <app-upload container="media" (fileSelected)="onFileSelected($event)" />
       } @else {
         <app-icon name="back" (click)="goBack()" />
       }
@@ -74,14 +74,23 @@
 
       <div class="gallery-section">
         <div class="photo-grid">
-          @for (photo of photos(); track $index) {
+          @for (item of media(); track item.id) {
             <button type="button" class="photo-item"
-                    (click)="openPhoto(photo)"
-                    (pointerdown)="startLongPress(photo, $event)"
+                    (click)="openMedia(item)"
+                    (pointerdown)="startLongPress(item, $event)"
                     (pointerup)="cancelLongPress()"
                     (pointercancel)="cancelLongPress()"
                     (pointerleave)="cancelLongPress()">
-              <img [src]="photo" alt="" />
+              @if (item.type === 'video') {
+                @if (item.thumbnailUrl) {
+                  <img [src]="item.thumbnailUrl" alt="" />
+                } @else {
+                  <div class="photo-item__video-placeholder"></div>
+                }
+                <app-icon name="play" class="photo-item__video-badge" />
+              } @else {
+                <img [src]="item.url" alt="" />
+              }
             </button>
           }
         </div>
@@ -108,14 +117,14 @@
     </div>
   }
 
-  @if (selectedPhotoForDeletion()) {
+  @if (mediaPendingDeletion()) {
     <div class="menu-backdrop" (click)="cancelDelete()"></div>
     <div class="confirmation-modal">
-      <h3>{{ 'profile.deletePhotoTitle' | translate }}</h3>
-      <p>{{ 'profile.deletePhotoDesc' | translate }}</p>
+      <h3>{{ 'profile.deleteMediaTitle' | translate }}</h3>
+      <p>{{ 'profile.deleteMediaDesc' | translate }}</p>
       <div class="modal-actions">
         <button class="btn-cancel" (click)="cancelDelete()">{{ 'profile.cancel' | translate }}</button>
-        <button class="btn-delete" (click)="confirmDeletePhoto()">{{ 'profile.delete' | translate }}</button>
+        <button class="btn-delete" (click)="confirmDeleteMedia()">{{ 'profile.delete' | translate }}</button>
       </div>
     </div>
   }
@@ -126,12 +135,14 @@
   </div>
 }
 
-@if (selectedPhotoUrl(); as photoUrl) {
-  <app-photo-viewer-modal [photo]="{
-      id: 'profile-gallery-photo',
-      url: photoUrl,
+@if (selectedMediaItem(); as item) {
+  <app-media-viewer-modal [media]="{
+      id: item.id ?? 'profile-gallery-media',
+      type: item.type,
+      url: item.url,
+      thumbnailUrl: item.thumbnailUrl,
       uid: profileUser()?.uid ?? '',
       username: profileUser()?.username ?? '',
       profilePictureURL: profileUser()?.profilePictureURL ?? ''
-    }" (close)="closePhoto()" />
+    }" (close)="closeMedia()" />
 }

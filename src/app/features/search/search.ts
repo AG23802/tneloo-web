@@ -6,16 +6,17 @@ import { SearchService } from './services/search.service';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { User } from '../../core/models/user.model';
-import { FeedPhoto } from '../../core/models/feed-photo';
-import { PhotoViewerModal } from '../../components/photo-viewer-modal/photo-viewer-modal';
+import { FeedMedia } from '../../core/models/feed-media';
+import { MediaViewerModal } from '../../components/media-viewer-modal/media-viewer-modal';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PreserveScrollDirective } from '../../core/preserve-scroll.directive';
+import { IconComponent } from '../../components/icon/icon';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.html',
   styleUrl: './search.css',
-  imports: [FormsModule, RouterLink, PhotoViewerModal, TranslatePipe],
+  imports: [FormsModule, RouterLink, MediaViewerModal, TranslatePipe, IconComponent],
   hostDirectives: [PreserveScrollDirective],
 })
 export class Search {
@@ -27,12 +28,12 @@ export class Search {
   searchQuery = signal<string>('');
   searchResults = signal<User[]>([]);
 
-  photos = this.searchService.photos;
+  media = this.searchService.media;
   isLoadingMore = this.searchService.loadingMore;
-  hasMorePhotos = this.searchService.hasMore;
+  hasMoreMedia = this.searchService.hasMore;
 
-  // Signal to hold the active photo for the full-screen modal view
-  selectedPhoto = signal<FeedPhoto | null>(null);
+  // Signal to hold the active item for the full-screen modal view
+  selectedMedia = signal<FeedMedia | null>(null);
 
   isSearchVisible = signal<boolean>(true);
   private lastScrollTop = 0;
@@ -69,16 +70,16 @@ export class Search {
     });
   }
 
-  loadMorePhotos(): void {
+  loadMoreMedia(): void {
     this.searchService.loadMore();
   }
 
-  openPhoto(photo: FeedPhoto) {
-    this.selectedPhoto.set(photo);
+  openMedia(item: FeedMedia) {
+    this.selectedMedia.set(item);
   }
 
-  closePhoto() {
-    this.selectedPhoto.set(null);
+  closeMedia() {
+    this.selectedMedia.set(null);
   }
 
   openProfile(username: string) {

@@ -1,25 +1,25 @@
 import { Component, input, signal } from '@angular/core';
-import { Photo } from '../../../../../../core/models/photo.model';
+import { Media } from '../../../../../../core/models/media.model';
 import { User } from '../../../../../../core/models/user.model';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-photo-slider',
+  selector: 'app-media-slider',
   imports: [TranslatePipe],
-  templateUrl: './photo-slider.html',
-  styleUrl: './photo-slider.css',
+  templateUrl: './media-slider.html',
+  styleUrl: './media-slider.css',
 })
-export class PhotoSlider {
-  photos = input<Photo[]>([]);
+export class MediaSlider {
+  media = input<Media[]>([]);
   user = input<User | null>(null);
 
   currentSlide = signal(0);
 
-  // If using a Set for tracking failed images by index:
-  failedImages = new Set<number>();
+  // If using a Set for tracking failed items by index:
+  failedItems = new Set<number>();
 
-  imageFailed(index: number) {
-    this.failedImages.add(index);
+  itemFailed(index: number) {
+    this.failedItems.add(index);
   }
 
   onGalleryScroll(event: Event) {

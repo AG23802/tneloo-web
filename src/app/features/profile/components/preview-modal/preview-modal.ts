@@ -1,5 +1,7 @@
-import { Component, inject, input, output, signal } from '@angular/core';
-import { PhotoUploadService } from '../../../../core/services/photo-upload.service';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Observable } from 'rxjs';
+import { MediaUploadService } from '../../../../core/services/media-upload.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -11,22 +13,28 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class PreviewModal {
   previewUrlInput = input<string | null>('');
   selectedFile = input<File | null>(null);
-  container = input<string>('photos');
+  container = input<string>('media');
+
+  isVideo = computed(() => this.selectedFile()?.type.startsWith('video/') ?? false);
+  // Only the avatar picker crops into a circle - gallery uploads keep
+  // whatever shape the source media actually is (square, portrait, ...).
+  isAvatar = computed(() => this.container() === 'profile-pictures');
 
   closed = output<void>();
   isUploading = signal(false);
 
-  private uploadService = inject(PhotoUploadService);
+  private uploadService = inject(MediaUploadService);
+  private notificationService = inject(NotificationService);
 
-  savePhoto() {
+  saveMedia() {
     const file = this.selectedFile();
     if (!file || this.isUploading()) return;
 
     this.isUploading.set(true);
 
-    const uploadObservable =
-      this.container() === 'photos'
-        ? this.uploadService.uploadPhoto(file, this.container())
+    const uploadObservable: Observable<unknown> =
+      this.container() === 'media'
+        ? this.uploadService.uploadMedia(file, this.container())
         : this.uploadService.uploadProfilePicture(file);
 
     uploadObservable.subscribe({
@@ -34,9 +42,12 @@ export class PreviewModal {
         this.isUploading.set(false);
         this.closed.emit();
       },
-      error: (error) => {
+      error: (error: unknown) => {
         this.isUploading.set(false);
-        console.error('Error uploading photo:', error);
+        this.notificationService.show(
+          error instanceof Error ? error.message : 'Error uploading media.',
+        );
+        console.error('Error uploading media:', error);
       },
     });
   }

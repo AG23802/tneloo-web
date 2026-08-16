@@ -1,22 +1,22 @@
 import { Component, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Avatar } from '../avatar/avatar.component';
-import { FeedPhoto } from '../../core/models/feed-photo';
+import { FeedMedia } from '../../core/models/feed-media';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../icon/icon';
 
 @Component({
-  selector: 'app-photo-viewer-modal',
+  selector: 'app-media-viewer-modal',
   standalone: true,
   imports: [Avatar, CommonModule, IconComponent],
-  templateUrl: './photo-viewer-modal.html',
-  styleUrl: './photo-viewer-modal.css',
+  templateUrl: './media-viewer-modal.html',
+  styleUrl: './media-viewer-modal.css',
 })
-export class PhotoViewerModal {
-  photo = input.required<FeedPhoto>();
+export class MediaViewerModal {
+  media = input.required<FeedMedia>();
   close = output<void>();
 
-  private router = inject(Router); // Make sure inject is imported from '@angular/core'
+  private router = inject(Router);
 
   openProfile(username: string) {
     this.router.navigate(['/', username]);

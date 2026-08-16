@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Service, signal } from '@angular/core';
 import {
   QueryDocumentSnapshot,
   collection,
@@ -20,13 +20,13 @@ import app from '../../../core/firebase';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../core/models/user.model';
 import { Thread, ThreadParticipantInfo, getOtherParticipantUid } from '../models/thread.model';
-import { Message } from '../models/message.model';
+import { Message, MessageMedia } from '../models/message.model';
 
 // A single open conversation: resolving which thread that is, its messages,
 // and sending. Doesn't touch the threads list at all (see ChatService for
 // that) - ThreadView only ever needs a thread id (or a recipient id to
 // start one), not the whole chat list.
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ThreadService {
   private readonly firestore = getFirestore(app);
   private readonly location = inject(Location);
@@ -144,10 +144,10 @@ export class ThreadService {
     this.messagesUnsubscribe = null;
   }
 
-  async sendMessage(textInput: string): Promise<string | null> {
+  async sendMessage(textInput: string, media?: MessageMedia): Promise<string | null> {
     const text = textInput.trim();
     const user = this.userService.currentUser();
-    if (!text || !user) return null;
+    if ((!text && !media) || !user) return null;
     try {
       let threadId = this.activeThreadId();
       let recipientId = this.currentRecipientId;
@@ -158,7 +158,7 @@ export class ThreadService {
       }
       if (!recipientId) return null;
       if (!threadId) {
-        threadId = await this.createNewThread(user.uid, recipientId, text);
+        threadId = await this.createNewThread(user.uid, recipientId);
         this.activeThreadId.set(threadId);
         // Give the URL a real thread id (bookmarkable, survives a reload)
         // without going through the router - the /thread and /thread/:id
@@ -169,18 +169,22 @@ export class ThreadService {
       }
       const threadRef = doc(this.firestore, 'threads', threadId);
       const messageRef = doc(collection(threadRef, 'messages'));
+
+      const messageData: Record<string, unknown> = {
+        id: messageRef.id,
+        threadId,
+        uid: user.uid,
+        receiverId: recipientId,
+        createdAt: serverTimestamp(),
+      };
+      if (text) messageData['text'] = text;
+      if (media) messageData['media'] = media;
+
       await Promise.all([
-        setDoc(messageRef, {
-          id: messageRef.id,
-          threadId,
-          uid: user.uid,
-          receiverId: recipientId,
-          text,
-          createdAt: serverTimestamp(),
-        }),
+        setDoc(messageRef, messageData),
         setDoc(
           threadRef,
-          { lastMessage: text, lastMessageTime: serverTimestamp() },
+          { lastMessage: text || this.previewTextFor(media), lastMessageTime: serverTimestamp() },
           { merge: true },
         ),
       ]);
@@ -191,11 +195,11 @@ export class ThreadService {
     }
   }
 
-  private async createNewThread(
-    currentUserId: string,
-    recipientId: string,
-    text: string,
-  ): Promise<string> {
+  private previewTextFor(media: MessageMedia | undefined): string {
+    return media?.type === 'video' ? '🎥 Video' : '📷 Photo';
+  }
+
+  private async createNewThread(currentUserId: string, recipientId: string): Promise<string> {
     const ref = doc(collection(this.firestore, 'threads'));
     const currentUser = this.userService.currentUser();
     const recipientSnap = await getDoc(doc(this.firestore, 'users', recipientId));

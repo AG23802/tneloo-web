@@ -3,34 +3,41 @@
 <div
   #scrollContainer
   class="chat-messages"
-  (scroll)="onScroll($event)"
-  (touchstart)="onContainerTouchStart($event)"
-  (touchend)="onContainerTouchEnd($event)"
+  (scroll)="scrollService.onScroll($event)"
+  (touchstart)="scrollService.onContainerTouchStart($event)"
+  (touchend)="scrollService.onContainerTouchEnd($event)"
 >
-  <div
-    *ngFor="let msg of threadService.messages(); trackBy: trackByMessageId"
-    class="message-row-wrapper"
-    [attr.data-message-id]="msg.id"
-  >
-    <div class="message-timestamp" [class.visible]="activeMessageId() === msg.id">
-      {{ msg.createdAt?.toDate() | date: 'shortTime' }}
-    </div>
+  @for (msg of threadService.messages(); track msg.id ?? $index) {
+    <div class="message-row-wrapper" [attr.data-message-id]="msg.id">
+      <div class="message-timestamp" [class.visible]="activeMessageId() === msg.id">
+        {{ msg.createdAt?.toDate() | date: 'shortTime' }}
+      </div>
 
-    <div
-      class="message-row"
-      [class.outgoing]="msg.uid === currentUid()"
-      [class.incoming]="msg.uid !== currentUid()"
-      [style.transform]="'translateX(' + (messageOffsets()[msg.id!] || 0) + 'px)'"
-      (touchstart)="onTouchStart(msg.id, $event)"
-      (touchmove)="onTouchMove($event)"
-      (touchend)="onTouchEnd()"
-      (touchcancel)="onTouchEnd()"
-    >
-      <div class="message-bubble">
-        <p>{{ msg.text }}</p>
+      <div
+        class="message-row"
+        [class.outgoing]="msg.uid === currentUid()"
+        [class.incoming]="msg.uid !== currentUid()"
+        [style.transform]="'translateX(' + (messageOffsets()[msg.id!] || 0) + 'px)'"
+        (touchstart)="onTouchStart(msg.id, $event)"
+        (touchmove)="onTouchMove($event)"
+        (touchend)="onTouchEnd()"
+        (touchcancel)="onTouchEnd()"
+      >
+        <div class="message-bubble" [class.message-bubble--media]="!!msg.media">
+          @if (msg.media; as media) {
+            @if (media.type === 'video') {
+              <video class="message-media" [src]="media.url" [poster]="media.thumbnailUrl ?? ''" controls playsinline></video>
+            } @else {
+              <img class="message-media" [src]="media.url" alt="" />
+            }
+          }
+          @if (msg.text) {
+            <p>{{ msg.text }}</p>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>
 
-<app-chat-input (messageSent)="scrollToBottom()" />
+<app-chat-input (messageSent)="scrollService.scrollToBottom()" />

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PhotoSlider } from './photo-slider';
+import { MediaSlider } from './media-slider';
 
-describe('PhotoSlider', () => {
-  let component: PhotoSlider;
-  let fixture: ComponentFixture<PhotoSlider>;
+describe('MediaSlider', () => {
+  let component: MediaSlider;
+  let fixture: ComponentFixture<MediaSlider>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PhotoSlider],
+      imports: [MediaSlider],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PhotoSlider);
+    fixture = TestBed.createComponent(MediaSlider);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

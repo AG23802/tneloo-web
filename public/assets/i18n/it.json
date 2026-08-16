@@ -109,12 +109,12 @@
     "follow": "Segui",
     "message": "Messaggio",
     "edit": "Modifica",
-    "deletePhotoTitle": "Eliminare la foto?",
-    "deletePhotoDesc": "Sei sicuro di voler eliminare questa foto?",
+    "deleteMediaTitle": "Eliminare il contenuto?",
+    "deleteMediaDesc": "Sei sicuro di voler eliminare questo contenuto?",
     "cancel": "Annulla",
     "delete": "Elimina",
     "pageNotFound": "Pagina non trovata.",
-    "uploadPhoto": "Carica foto",
+    "uploadMedia": "Carica contenuto",
     "editProfile": {
       "title": "Modifica profilo",
       "save": "Salva",
@@ -130,7 +130,7 @@
   "chats": {
     "typeMessage": "Scrivi un messaggio...",
     "noConversations": "Nessuna conversazione ancora.",
-    "loading": "Caricamento...",
+    "unknownUser": "Utente sconosciuto",
     "startedConversation": "Ha iniziato una conversazione"
   },
   "search": {
@@ -141,14 +141,14 @@
     "seenAllFiles": "Hai visto tutti i file"
   },
   "modals": {
-    "previewPhoto": {
-      "title": "Anteprima foto",
+    "previewMedia": {
+      "title": "Anteprima contenuto",
       "cancel": "Annulla",
       "uploading": "Caricamento...",
       "save": "Salva"
     }
   },
-  "photoSlider": {
-    "imageUnavailable": "Immagine non disponibile"
+  "mediaSlider": {
+    "imageUnavailable": "Contenuto non disponibile"
   }
 }

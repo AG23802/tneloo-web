@@ -1,0 +1,35 @@
+<div class="media-slider" (scroll)="onGalleryScroll($event)">
+  @for (item of media(); track $index) {
+    <div class="media-wrapper">
+      @if (failedItems.has($index)) {
+        <div class="media-error">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="M21 15l-5-5L5 21" />
+            <line x1="4" y1="4" x2="20" y2="20" />
+          </svg>
+
+
+          <span>
+            {{ 'mediaSlider.imageUnavailable' | translate }}
+          </span>
+        </div>
+      } @else if (item.type === 'video') {
+        <video [src]="item.url" [poster]="item.thumbnailUrl ?? ''" controls muted playsinline
+               [preload]="$index === 0 ? 'metadata' : 'none'" (error)="itemFailed($index)"></video>
+      } @else {
+        <img [src]="item.url" [loading]="$index === 0 ? 'eager' : 'lazy'" alt="" (error)="itemFailed($index)" />
+      }
+    </div>
+  }
+</div>
+
+@if (media().length > 1) {
+  <div class="media-dots">
+    @for (item of media(); track $index; let i = $index) {
+      <span class="dot" [class.active]="getCurrentSlide() === i"></span>
+    }
+  </div>
+}

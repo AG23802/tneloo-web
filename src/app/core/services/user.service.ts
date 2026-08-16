@@ -21,7 +21,7 @@ import {
 import { getStorage, ref, deleteObject } from 'firebase/storage';
 import app from '../firebase';
 import { User } from '../models/user.model';
-import { Photo } from '../models/photo.model';
+import { Media } from '../models/media.model';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LoadingManagerService } from './loading.service';
@@ -81,19 +81,21 @@ export class UserService {
     );
   }
 
-  getUserPhotos(userId: string): Observable<Photo[]> {
+  getUserMedia(userId: string): Observable<Media[]> {
     return new Observable((observer) => {
-      const photosQuery = query(
-        collection(this.firestore, 'photos'),
-        where('uid', '==', userId),
+      const mediaQuery = query(
+        collection(this.firestore, 'media'),
+        where('ownerId', '==', userId),
         orderBy('createdAt', 'desc'),
       );
 
       const unsubscribe = onSnapshot(
-        photosQuery,
+        mediaQuery,
         (snapshot) => {
-          const photos = snapshot.docs.map((doc) => doc.data() as Photo);
-          observer.next(photos);
+          const media = snapshot.docs.map(
+            (doc) => ({ ...doc.data(), id: doc.id }) as Media,
+          );
+          observer.next(media);
         },
         (error) => {
           observer.error(error);
@@ -126,37 +128,39 @@ export class UserService {
     });
   }
 
-  async deletePhotoByUrl(photoUrl: string): Promise<void> {
-    const photosRef = collection(this.firestore, 'photos');
-    const q = query(photosRef, where('url', '==', photoUrl), limit(1));
+  async deleteMediaByUrl(mediaUrl: string): Promise<void> {
+    const mediaRef = collection(this.firestore, 'media');
+    const q = query(mediaRef, where('url', '==', mediaUrl), limit(1));
     const snapshot = await getDocs(q);
 
-    if (snapshot.empty) throw new Error('Photo not found in database');
+    if (snapshot.empty) throw new Error('Media not found in database');
 
     const docSnap = snapshot.docs[0];
-    const photoData = docSnap.data() as Photo;
+    const mediaData = docSnap.data() as Media;
 
-    // Delete the bucket object first — the table row must only be removed
-    // once we know the file is actually gone. If bucket deletion fails, the
-    // row stays so the photo doesn't silently vanish while an orphaned file
-    // (or a file the user thinks is deleted) remains in storage.
-    //
-    // Derived from the download URL rather than photoData.storagePath: the
-    // upload path never actually wrote that field to Firestore, so relying
-    // on it silently skipped bucket deletion for every photo. ref() accepts
-    // an https download URL directly, so this works regardless of whether
-    // storagePath was ever populated.
-    const storageRef = ref(this.storage, photoData.storagePath ?? photoUrl);
+    // Delete the bucket object(s) first — the table row must only be
+    // removed once we know the file is actually gone. If bucket deletion
+    // fails, the row stays so the item doesn't silently vanish while an
+    // orphaned file (or a file the user thinks is deleted) remains in
+    // storage. ref() also accepts an https download URL directly, so this
+    // still works for any legacy row that predates storagePath.
+    await this.deleteStorageObject(mediaData.storagePath ?? mediaUrl);
+    if (mediaData.thumbnailUrl) {
+      await this.deleteStorageObject(`${mediaData.storagePath}_thumb.jpg`);
+    }
+
+    await deleteDoc(doc(this.firestore, 'media', docSnap.id));
+  }
+
+  private async deleteStorageObject(path: string): Promise<void> {
     try {
-      await deleteObject(storageRef);
+      await deleteObject(ref(this.storage, path));
     } catch (error) {
       // Already gone from the bucket (e.g. deleted out-of-band) means the
       // goal state is already met — anything else should block the row
       // deletion rather than leave storage/table out of sync.
       if ((error as { code?: string })?.code !== 'storage/object-not-found') throw error;
     }
-
-    await deleteDoc(doc(this.firestore, 'photos', docSnap.id));
   }
 
   private async fetchUserProfile(uid: string): Promise<void> {

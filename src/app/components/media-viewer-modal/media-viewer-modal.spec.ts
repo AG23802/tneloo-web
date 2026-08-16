@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PhotoViewerModal } from './photo-viewer-modal';
+import { MediaViewerModal } from './media-viewer-modal';
 
-describe('PhotoViewerModal', () => {
-  let component: PhotoViewerModal;
-  let fixture: ComponentFixture<PhotoViewerModal>;
+describe('MediaViewerModal', () => {
+  let component: MediaViewerModal;
+  let fixture: ComponentFixture<MediaViewerModal>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PhotoViewerModal],
+      imports: [MediaViewerModal],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PhotoViewerModal);
+    fixture = TestBed.createComponent(MediaViewerModal);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
+import { Service, inject, signal, effect } from '@angular/core';
 import {
   getFirestore,
   collection,
@@ -12,15 +12,15 @@ import {
 import app from '../../../core/firebase';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../core/models/user.model';
-import { FeedPhoto } from '../../../core/models/feed-photo';
+import { FeedMedia } from '../../../core/models/feed-media';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SearchService {
   private readonly firestore = getFirestore(app);
   private readonly userService = inject(UserService);
   private readonly batchSize = 30;
 
-  readonly photos = signal<FeedPhoto[]>([]);
+  readonly media = signal<FeedMedia[]>([]);
   readonly loadingMore = signal(false);
   readonly hasMore = signal(true);
   private requested = false;
@@ -45,10 +45,10 @@ export class SearchService {
     this.requested = true;
 
     this.fetchPage(currentUserId)
-      .then(({ photos, lastVisible }) => {
-        this.photos.set(photos);
+      .then(({ media, lastVisible }) => {
+        this.media.set(media);
         this.lastVisibleDoc = lastVisible;
-        this.hasMore.set(photos.length === this.batchSize);
+        this.hasMore.set(media.length === this.batchSize);
       })
       .catch((err) => {
         console.error('Error loading search gallery:', err);
@@ -62,11 +62,11 @@ export class SearchService {
     const currentUserId = this.userService.currentUser()?.uid ?? '';
 
     this.fetchPage(currentUserId, this.lastVisibleDoc ?? undefined)
-      .then(({ photos, lastVisible }) => {
-        this.photos.update((existing) => [...existing, ...photos]);
+      .then(({ media, lastVisible }) => {
+        this.media.update((existing) => [...existing, ...media]);
         this.lastVisibleDoc = lastVisible;
         this.loadingMore.set(false);
-        if (photos.length < this.batchSize) this.hasMore.set(false);
+        if (media.length < this.batchSize) this.hasMore.set(false);
       })
       .catch((err) => {
         console.error('Error loading more of the search gallery:', err);
@@ -75,7 +75,7 @@ export class SearchService {
   }
 
   private clear(): void {
-    this.photos.set([]);
+    this.media.set([]);
     this.hasMore.set(true);
     this.loadingMore.set(false);
     this.lastVisibleDoc = null;
@@ -85,45 +85,48 @@ export class SearchService {
   private async fetchPage(
     currentUserId: string,
     lastVisibleDoc?: QueryDocumentSnapshot,
-  ): Promise<{ photos: FeedPhoto[]; lastVisible: QueryDocumentSnapshot | null }> {
-    let photosQuery = query(
-      collection(this.firestore, 'photos'),
+  ): Promise<{ media: FeedMedia[]; lastVisible: QueryDocumentSnapshot | null }> {
+    let mediaQuery = query(
+      collection(this.firestore, 'media'),
       orderBy('__name__'),
       limit(this.batchSize),
     );
     if (lastVisibleDoc) {
-      photosQuery = query(
-        collection(this.firestore, 'photos'),
+      mediaQuery = query(
+        collection(this.firestore, 'media'),
         orderBy('__name__'),
         startAfter(lastVisibleDoc),
         limit(this.batchSize),
       );
     }
 
-    const [photoSnapshot, userSnapshot] = await Promise.all([
-      getDocs(photosQuery),
+    const [mediaSnapshot, userSnapshot] = await Promise.all([
+      getDocs(mediaQuery),
       getDocs(collection(this.firestore, 'users')),
     ]);
 
-    const lastVisible = photoSnapshot.docs[photoSnapshot.docs.length - 1] || null;
+    const lastVisible = mediaSnapshot.docs[mediaSnapshot.docs.length - 1] || null;
 
     const usersMap = new Map<string, User>();
     userSnapshot.docs.forEach((doc) => {
       usersMap.set(doc.id, { ...(doc.data() as User), uid: doc.id });
     });
 
-    const photos: FeedPhoto[] = [];
-    photoSnapshot.docs.forEach((doc) => {
-      const photoData = doc.data() as any;
-      const ownerUid = photoData.uid || photoData.userId;
+    const media: FeedMedia[] = [];
+    mediaSnapshot.docs.forEach((doc) => {
+      const mediaData = doc.data() as any;
+      const ownerUid = mediaData.ownerId;
 
       if (currentUserId && ownerUid === currentUserId) return;
 
       const owner = usersMap.get(ownerUid);
       if (owner) {
-        photos.push({
+        media.push({
           id: doc.id,
-          url: photoData.url,
+          type: mediaData.type ?? 'image',
+          url: mediaData.url,
+          thumbnailUrl: mediaData.thumbnailUrl ?? null,
+          duration: mediaData.duration ?? null,
           uid: owner.uid,
           username: owner.username,
           profilePictureURL: owner.profilePictureURL ?? '',
@@ -131,6 +134,6 @@ export class SearchService {
       }
     });
 
-    return { photos, lastVisible };
+    return { media, lastVisible };
   }
 }

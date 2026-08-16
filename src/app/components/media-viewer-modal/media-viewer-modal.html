@@ -1,0 +1,20 @@
+<div class="viewer-modal-overlay">
+  <div class="viewer">
+    <div class="viewer-header">
+
+      <app-icon name="back" class="back-icon" (click)="close.emit()" />
+
+      <div class="viewer-user" (click)="openProfile(media().username)" (keydown.enter)="openProfile(media().username)"
+           (keydown.space)="openProfile(media().username)" tabindex="0" role="button">
+        <app-avatar [url]="media()?.profilePictureURL" />
+        <span class="username">{{ media().username }}</span>
+      </div>
+    </div>
+
+    @if (media().type === 'video') {
+      <video class="main-media" [src]="media().url" [poster]="media().thumbnailUrl ?? ''" controls autoplay playsinline></video>
+    } @else {
+      <img class="main-media" [src]="media().url" [alt]="'Posted by ' + media().username" />
+    }
+  </div>
+</div>

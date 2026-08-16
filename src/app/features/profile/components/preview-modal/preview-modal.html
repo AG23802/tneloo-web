@@ -1,16 +1,20 @@
 <div class="modal-backdrop">
   <div class="preview-modal">
-    <h3>{{ 'modals.previewPhoto.title' | translate }}</h3>
-    <div class="preview-image-container">
-      <img [src]="previewUrlInput()" alt="Preview" />
+    <h3>{{ 'modals.previewMedia.title' | translate }}</h3>
+    <div class="preview-image-container" [class.preview-image-container--gallery]="!isAvatar()">
+      @if (isVideo()) {
+        <video [src]="previewUrlInput()" controls muted playsinline></video>
+      } @else {
+        <img [src]="previewUrlInput()" alt="Preview" />
+      }
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" (click)="cancelPreview()" [disabled]="isUploading()">{{ 'modals.previewPhoto.cancel' | translate }}</button>
-      <button class="btn-save" (click)="savePhoto()" [disabled]="isUploading()">
+      <button class="btn-cancel" (click)="cancelPreview()" [disabled]="isUploading()">{{ 'modals.previewMedia.cancel' | translate }}</button>
+      <button class="btn-save" (click)="saveMedia()" [disabled]="isUploading()">
         @if (isUploading()) {
-          {{ 'modals.previewPhoto.uploading' | translate }}
+          {{ 'modals.previewMedia.uploading' | translate }}
         } @else {
-          {{ 'modals.previewPhoto.save' | translate }}
+          {{ 'modals.previewMedia.save' | translate }}
         }
       </button>
     </div>

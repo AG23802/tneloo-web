@@ -41,4 +41,9 @@
       opacity: 0.85;
     }
   }
+
+  .chat-input-attach-btn {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-main);
+  }
 }

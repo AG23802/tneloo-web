@@ -14,7 +14,7 @@
       </div>
       <div class="thread-info">
         <div class="thread-top">
-          <span class="thread-title">{{ threadMeta?.displayName || ('chats.loading' | translate) }}</span>
+          <span class="thread-title">{{ threadMeta?.displayName || ('chats.unknownUser' | translate) }}</span>
           @if (chat.lastMessageTime) {
             <span class="thread-time">{{ chat.lastMessageTime?.toDate() | date:'shortTime' }}</span>
           }

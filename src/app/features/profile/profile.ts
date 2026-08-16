@@ -10,8 +10,9 @@ import { CommonModule } from '@angular/common';
 import { PreviewModal } from './components/preview-modal/preview-modal';
 import { EditProfileComponent } from './components/edit-profile/edit-profile';
 import { User } from '../../core/models/user.model';
+import { Media } from '../../core/models/media.model';
 import { Upload } from './components/upload/upload';
-import { PhotoViewerModal } from '../../components/photo-viewer-modal/photo-viewer-modal';
+import { MediaViewerModal } from '../../components/media-viewer-modal/media-viewer-modal';
 import { TranslatePipe } from '@ngx-translate/core';
 
 interface UserProfileDetails {
@@ -32,7 +33,7 @@ interface UserProfileDetails {
     EditProfileComponent,
     Upload,
     RouterModule,
-    PhotoViewerModal,
+    MediaViewerModal,
     TranslatePipe
   ],
 })
@@ -44,13 +45,13 @@ export class Profile {
   routeUsername = computed(() => this.routeParamMap()?.get('username') ?? null);
 
   profileUser = signal<User | null>(null);
-  photosList = signal<string[]>([]);
+  mediaList = signal<Media[]>([]);
   isMenuOpen = signal<boolean>(false);
 
   selectedFile = signal<File | null>(null);
   previewUrl = signal<string | null>(null);
-  selectedPhotoUrl = signal<string | null>(null);
-  selectedPhotoForDeletion = signal<string | null>(null);
+  selectedMediaItem = signal<Media | null>(null);
+  mediaPendingDeletion = signal<Media | null>(null);
 
   private pressTimer: any = null;
 
@@ -88,16 +89,16 @@ export class Profile {
       const user = this.profileUser();
       if (!user || !user.uid) return;
 
-      const subscription = this.userService.getUserPhotos(user.uid).subscribe({
-        next: (photos) => this.photosList.set(photos.map((p) => p.url)),
-        error: (err) => console.error('Error fetching photos:', err),
+      const subscription = this.userService.getUserMedia(user.uid).subscribe({
+        next: (media) => this.mediaList.set(media),
+        error: (err) => console.error('Error fetching media:', err),
       });
 
       onCleanup(() => subscription.unsubscribe());
     });
   }
 
-  uploadContainer = signal<string>('photos');
+  uploadContainer = signal<string>('media');
 
   onFileSelected(data: { file: File; previewUrl: string; container: string }) {
     this.selectedFile.set(data.file);
@@ -105,12 +106,12 @@ export class Profile {
     this.uploadContainer.set(data.container);
   }
 
-  startLongPress(photoUrl: string, event: MouseEvent | TouchEvent) {
+  startLongPress(item: Media, event: MouseEvent | TouchEvent) {
     if (!this.isOwnProfile()) return;
     event.preventDefault();
 
     this.pressTimer = setTimeout(() => {
-      this.selectedPhotoForDeletion.set(photoUrl);
+      this.mediaPendingDeletion.set(item);
     }, 600);
   }
 
@@ -121,20 +122,20 @@ export class Profile {
     }
   }
 
-  async confirmDeletePhoto() {
-    const photoUrl = this.selectedPhotoForDeletion();
-    if (!photoUrl) return;
+  async confirmDeleteMedia() {
+    const item = this.mediaPendingDeletion();
+    if (!item) return;
 
     try {
-      await this.userService.deletePhotoByUrl(photoUrl);
-      this.selectedPhotoForDeletion.set(null);
+      await this.userService.deleteMediaByUrl(item.url);
+      this.mediaPendingDeletion.set(null);
     } catch (err) {
-      console.error('Error deleting photo:', err);
+      console.error('Error deleting media:', err);
     }
   }
 
   cancelDelete() {
-    this.selectedPhotoForDeletion.set(null);
+    this.mediaPendingDeletion.set(null);
   }
 
   isOwnProfile = computed(() => {
@@ -161,19 +162,19 @@ export class Profile {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   });
 
-  photos = computed(() => this.photosList());
+  media = computed(() => this.mediaList());
 
   cancelPreview() {
     this.selectedFile.set(null);
     this.previewUrl.set(null);
   }
 
-  openPhoto(photoUrl: string) {
-    this.selectedPhotoUrl.set(photoUrl);
+  openMedia(item: Media) {
+    this.selectedMediaItem.set(item);
   }
 
-  closePhoto() {
-    this.selectedPhotoUrl.set(null);
+  closeMedia() {
+    this.selectedMediaItem.set(null);
   }
 
   activeProfileView = signal<'main' | 'edit'>('main');

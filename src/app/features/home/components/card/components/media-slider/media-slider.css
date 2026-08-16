@@ -1,6 +1,6 @@
 /* Gallery */
 
-.photo-slider {
+.media-slider {
 
   display: flex;
 
@@ -14,17 +14,17 @@
 }
 
 
-.photo-slider::-webkit-scrollbar {
+.media-slider::-webkit-scrollbar {
   display: none;
 }
 
 
 /*
  Each wrapper is one Instagram slide.
- Never remove it when image fails.
+ Never remove it when the item fails.
 */
 
-.photo-wrapper {
+.media-wrapper {
 
   width: 100%;
 
@@ -39,9 +39,10 @@
 }
 
 
-/* Normal image */
+/* Normal image/video */
 
-.photo-wrapper img {
+.media-wrapper img,
+.media-wrapper video {
 
   width:100%;
 
@@ -54,9 +55,9 @@
 }
 
 
-/* Failed image placeholder */
+/* Failed item placeholder */
 
-.photo-error {
+.media-error {
 
   width:100%;
 
@@ -81,7 +82,7 @@
 }
 
 
-.photo-error svg {
+.media-error svg {
 
   width:50px;
 
@@ -92,7 +93,7 @@
 
 /* Dots */
 
-.photo-dots {
+.media-dots {
 
   display:flex;
 

@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  computed,
   inject,
   input,
   output,
@@ -16,7 +17,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './upload.css',
 })
 export class Upload {
-  container = input<string>('photos');
+  container = input<string>('media');
+
+  // Avatars must be a still image; the gallery ('media') accepts either.
+  accept = computed(() => (this.container() === 'media' ? 'image/*,video/*' : 'image/*'));
 
   fileSelected = output<{
     file: File;

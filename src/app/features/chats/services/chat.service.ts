@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Service, signal } from '@angular/core';
 import {
   QueryDocumentSnapshot,
   collection,
@@ -18,7 +18,7 @@ import { Thread, getOtherParticipantUid } from '../models/thread.model';
 // The threads list only - opening/messaging within a specific conversation
 // is ThreadService's job (see thread.service.ts). Chats (the list view)
 // depends on this; ThreadView depends on ThreadService instead.
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ChatService {
   private readonly firestore = getFirestore(app);
   private readonly userService = inject(UserService);

@@ -1,3 +1,10 @@
+@if (notificationService.message(); as message) {
+  <div class="global-notification-banner" [class.success]="notificationService.type() === 'success'">
+    <span>{{ message }}</span>
+    <button type="button" class="close-btn" (click)="notificationService.clear()">&times;</button>
+  </div>
+}
+
 @if (loadingManager.isLoading()) {
   <!-- Shows ONLY on page refresh while waiting for Firebase/initial auth -->
   <app-spinner />

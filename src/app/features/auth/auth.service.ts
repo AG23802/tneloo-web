@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Service, signal } from '@angular/core';
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -9,9 +9,7 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import app from '../../core/firebase';
 import { NotificationService } from '../../core/services/notification.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AuthService {
   private auth = getAuth(app);
   private firestore = getFirestore(app);

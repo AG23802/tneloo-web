@@ -67,6 +67,23 @@
 
 .message-bubble p { margin: 0; }
 
+.message-bubble--media {
+  padding: var(--space-2xs);
+
+  p {
+    padding: var(--space-2xs) var(--space-xs) 0;
+  }
+}
+
+.message-media {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  max-height: 320px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
 .message-timestamp {
   position: absolute;
   z-index: 1;

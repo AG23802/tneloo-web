@@ -109,12 +109,12 @@
     "follow": "Follow",
     "message": "Message",
     "edit": "Edit",
-    "deletePhotoTitle": "Delete Photo?",
-    "deletePhotoDesc": "Are you sure you want to delete this photo?",
+    "deleteMediaTitle": "Delete Media?",
+    "deleteMediaDesc": "Are you sure you want to delete this item?",
     "cancel": "Cancel",
     "delete": "Delete",
     "pageNotFound": "Page not found.",
-    "uploadPhoto": "Upload Photo",
+    "uploadMedia": "Upload Media",
     "editProfile": {
       "title": "Edit Profile",
       "save": "Save",
@@ -130,7 +130,7 @@
   "chats": {
     "typeMessage": "Type a message...",
     "noConversations": "No conversations yet.",
-    "loading": "Loading...",
+    "unknownUser": "Unknown user",
     "startedConversation": "Started a conversation"
   },
   "search": {
@@ -141,14 +141,14 @@
     "seenAllFiles": "You've seen all files"
   },
   "modals": {
-    "previewPhoto": {
-      "title": "Preview Photo",
+    "previewMedia": {
+      "title": "Preview Media",
       "cancel": "Cancel",
       "uploading": "Uploading...",
       "save": "Save"
     }
   },
-  "photoSlider": {
-    "imageUnavailable": "Image unavailable"
+  "mediaSlider": {
+    "imageUnavailable": "Media unavailable"
   }
 }

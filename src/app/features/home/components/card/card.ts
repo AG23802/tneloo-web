@@ -1,13 +1,13 @@
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Avatar } from '../../../../components/avatar/avatar.component';
-import { PhotoSlider } from './components/photo-slider/photo-slider';
+import { MediaSlider } from './components/media-slider/media-slider';
 import { CardActions } from './components/card-actions/card-actions';
 import { User } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-card',
-  imports: [Avatar, PhotoSlider, CardActions],
+  imports: [Avatar, MediaSlider, CardActions],
   templateUrl: './card.html',
   styleUrl: './card.css',
 })

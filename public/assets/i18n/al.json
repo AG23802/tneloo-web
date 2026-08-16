@@ -109,12 +109,12 @@
     "follow": "Niq",
     "message": "Mesazh",
     "edit": "Ndrysho",
-    "deletePhotoTitle": "Fshi foton?",
-    "deletePhotoDesc": "A jeni i sigurt që dëshironi ta fshini këtë foto?",
+    "deleteMediaTitle": "Fshi median?",
+    "deleteMediaDesc": "A jeni i sigurt që dëshironi ta fshini këtë media?",
     "cancel": "Anulo",
     "delete": "Fshi",
     "pageNotFound": "Faqja nuk u gjet.",
-    "uploadPhoto": "Ngarko foto",
+    "uploadMedia": "Ngarko media",
     "editProfile": {
       "title": "Ndrysho profilin",
       "save": "Ruaj",
@@ -130,7 +130,7 @@
   "chats": {
     "typeMessage": "Shkruaj një mesazh...",
     "noConversations": "Ende nuk ka biseda.",
-    "loading": "Duke u ngarkuar...",
+    "unknownUser": "Përdorues i panjohur",
     "startedConversation": "Filloi një bisedë"
   },
   "search": {
@@ -141,14 +141,14 @@
     "seenAllFiles": "I keni parë të gjithë skedarët"
   },
   "modals": {
-    "previewPhoto": {
-      "title": "Parapamja e fotos",
+    "previewMedia": {
+      "title": "Parapamja e medias",
       "cancel": "Anulo",
       "uploading": "Duke u ngarkuar...",
       "save": "Ruaj"
     }
   },
-  "photoSlider": {
-    "imageUnavailable": "Imazhi i padisponueshëm"
+  "mediaSlider": {
+    "imageUnavailable": "Media e padisponueshme"
   }
 }

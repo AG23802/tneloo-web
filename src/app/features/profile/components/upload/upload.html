@@ -1,7 +1,7 @@
 <div class="upload-container">
-  <button class="nav-icon-btn upload-trigger-btn" (click)="triggerUpload()" [title]="'profile.uploadPhoto' | translate">
+  <button class="nav-icon-btn upload-trigger-btn" (click)="triggerUpload()" [title]="'profile.uploadMedia' | translate">
     <app-icon name="camera" />
   </button>
 
-  <input #fileInput type="file" hidden accept="image/*" (change)="onFilesSelected($event)" />
+  <input #fileInput type="file" hidden [attr.accept]="accept()" (change)="onFilesSelected($event)" />
 </div>

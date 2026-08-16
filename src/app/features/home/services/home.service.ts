@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
+import { Service, inject, signal, effect } from '@angular/core';
 import {
   getFirestore,
   collection,
@@ -12,8 +12,9 @@ import {
 import app from '../../../core/firebase';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../core/models/user.model';
+import { Media } from '../../../core/models/media.model';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class HomeService {
   private readonly firestore = getFirestore(app);
   private readonly userService = inject(UserService);
@@ -101,9 +102,9 @@ export class HomeService {
       );
     }
 
-    const [userSnapshot, photoSnapshot] = await Promise.all([
+    const [userSnapshot, mediaSnapshot] = await Promise.all([
       getDocs(usersQuery),
-      getDocs(collection(this.firestore, 'photos')),
+      getDocs(collection(this.firestore, 'media')),
     ]);
 
     const lastVisible = userSnapshot.docs[userSnapshot.docs.length - 1] || null;
@@ -113,21 +114,19 @@ export class HomeService {
       uid: doc.id,
     }));
 
-    const photos: any[] = photoSnapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-      uid: (doc.data() as any).uid || (doc.data() as any).userId,
-    }));
+    const media: Media[] = mediaSnapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id }) as Media,
+    );
 
     if (currentUserId) {
       users = users.filter((user) => user.uid !== currentUserId);
     }
 
-    const usersWithPhotos = users.map((user) => ({
+    const usersWithMedia = users.map((user) => ({
       ...user,
-      photos: photos.filter((photo) => photo.uid === user.uid),
+      media: media.filter((item) => item.ownerId === user.uid),
     }));
 
-    return { users: usersWithPhotos, lastVisible };
+    return { users: usersWithMedia, lastVisible };
   }
 }
