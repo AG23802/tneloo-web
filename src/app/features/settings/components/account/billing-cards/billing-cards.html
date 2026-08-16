@@ -1,0 +1,94 @@
+<div class="settings-header">
+  <app-icon (click)="goBack()" name="back" />
+  <h3>{{ 'settings.billingCards' | translate }}</h3>
+  <div></div>
+</div>
+
+<div class="settings-body">
+  @if (errorMessage()) {
+    <div class="error-banner">{{ errorMessage() }}</div>
+  }
+
+  <div class="settings-section">
+    @if (isLoading()) {
+      <div class="setting-item">{{ 'settings.cards.loading' | translate }}</div>
+    } @else if (paymentMethods().length === 0) {
+      <div class="setting-item">{{ 'settings.cards.noCards' | translate }}</div>
+    } @else {
+      @for (pm of paymentMethods(); track pm.id) {
+        <div class="card-item">
+          <div class="card-item-info">
+            <app-icon name="card" />
+            <div class="card-item-text">
+              <span class="card-item-brand">
+                {{ pm.brand }} •••• {{ pm.last4 }}
+                @if (pm.isDefault) {
+                  <span class="card-item-badge">{{ 'settings.cards.default' | translate }}</span>
+                }
+              </span>
+              <span class="card-item-expiry">
+                {{ 'settings.cards.expires' | translate }} {{ pm.expMonth }}/{{ pm.expYear }}
+              </span>
+            </div>
+          </div>
+          <div class="card-item-actions">
+            @if (!pm.isDefault) {
+              <button
+                class="btn-primary"
+                [disabled]="!!mutatingId()"
+                (click)="makeDefault(pm)"
+              >
+                {{ 'settings.cards.setDefault' | translate }}
+              </button>
+            }
+            <button
+              class="btn-primary-danger"
+              [disabled]="!!mutatingId()"
+              (click)="startDeleteCard(pm)"
+            >
+              {{ 'settings.cards.delete' | translate }}
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  @if (!isAddingCard()) {
+    <button class="btn-secondary add-card-btn" (click)="showAddCardForm()">
+      + {{ 'settings.cards.addCard' | translate }}
+    </button>
+  } @else {
+    <div class="settings-section add-card-form">
+      <div #paymentElement></div>
+      <div class="add-card-actions">
+        <button class="btn-secondary" [disabled]="isSavingCard()" (click)="cancelAddCard()">
+          {{ 'settings.cards.cancel' | translate }}
+        </button>
+        <button class="btn-primary" [disabled]="isSavingCard()" (click)="saveCard()">
+          @if (isSavingCard()) {
+            {{ 'settings.cards.saving' | translate }}
+          } @else {
+            {{ 'settings.cards.save' | translate }}
+          }
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+@if (cardPendingDeletion()) {
+  <div class="menu-backdrop" (click)="cancelDeleteCard()"></div>
+  <div class="confirmation-modal">
+    <h3>{{ 'settings.cards.deleteTitle' | translate }}</h3>
+    <p>{{ 'settings.cards.deleteDesc' | translate }}</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" [disabled]="!!mutatingId()" (click)="cancelDeleteCard()">
+        {{ 'settings.cards.cancel' | translate }}
+      </button>
+      <button class="btn-delete" [disabled]="!!mutatingId()" (click)="confirmDeleteCard()">
+        {{ 'settings.cards.delete' | translate }}
+      </button>
+    </div>
+  </div>
+}

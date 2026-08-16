@@ -1,0 +1,98 @@
+<div class="settings-header">
+  <app-icon (click)="goBack()" name="back" />
+  <h3>{{ 'settings.tokens' | translate }}</h3>
+  <div></div>
+</div>
+
+<div class="settings-body">
+  <div class="token-balance">
+    <app-icon name="token" />
+    <span>{{ currentUser()?.tokens ?? 0 }}</span>
+    <span class="token-balance-label">{{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-banner">{{ errorMessage() }}</div>
+  }
+  @if (successMessage()) {
+    <div class="success-message">{{ 'settings.tokensPurchase.purchaseSuccess' | translate }}</div>
+  }
+
+  @if (!selectedPack()) {
+    <div class="settings-section">
+      @if (isLoading()) {
+        <div class="setting-item">{{ 'settings.cards.loading' | translate }}</div>
+      } @else if (packs().length === 0) {
+        <div class="setting-item">{{ 'settings.tokensPurchase.noPacks' | translate }}</div>
+      } @else {
+        @for (pack of packs(); track pack.priceId) {
+          <button type="button" class="setting-item" (click)="selectPack(pack)">
+            <div class="setting-item-content">
+              <app-icon name="token" />
+              <span>{{ pack.tokens }} {{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
+            </div>
+            <span class="pack-price">
+              {{ (pack.amount ?? 0) / 100 | number: '1.2-2' }} {{ pack.currency.toUpperCase() }}
+            </span>
+          </button>
+        }
+      }
+    </div>
+  } @else {
+    <div class="settings-section purchase-panel">
+      <div class="purchase-summary">
+        <span>{{ selectedPack()!.tokens }} {{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
+        <span class="pack-price">
+          {{ (selectedPack()!.amount ?? 0) / 100 | number: '1.2-2' }} {{ selectedPack()!.currency.toUpperCase() }}
+        </span>
+      </div>
+
+      <div class="payment-method-list">
+        @for (pm of paymentMethods(); track pm.id) {
+          <button
+            type="button"
+            class="payment-method-item"
+            [class.selected]="selectedMethod() === pm.id"
+            (click)="selectMethod(pm.id)"
+          >
+            <app-icon name="card" />
+            <span>{{ pm.brand }} •••• {{ pm.last4 }}</span>
+            <div class="radio-indicator" [class.checked]="selectedMethod() === pm.id"></div>
+          </button>
+        }
+
+        <button
+          type="button"
+          class="payment-method-item"
+          [class.selected]="selectedMethod() === 'new'"
+          (click)="selectMethod('new')"
+        >
+          <app-icon name="card" />
+          <span>{{ 'settings.tokensPurchase.newCard' | translate }}</span>
+          <div class="radio-indicator" [class.checked]="selectedMethod() === 'new'"></div>
+        </button>
+      </div>
+
+      @if (selectedMethod() === 'new') {
+        <div #paymentElement class="payment-element"></div>
+        <label class="save-card-checkbox">
+          <input type="checkbox" [checked]="saveNewCard()" (change)="saveNewCard.set(!saveNewCard())" />
+          {{ 'settings.tokensPurchase.saveCard' | translate }}
+        </label>
+      }
+
+      <div class="purchase-actions">
+        <button class="btn-secondary" [disabled]="isPurchasing()" (click)="cancelPurchase()">
+          {{ 'settings.cards.cancel' | translate }}
+        </button>
+        <button class="btn-primary" [disabled]="isPurchasing()" (click)="pay()">
+          @if (isPurchasing()) {
+            {{ 'settings.tokensPurchase.paying' | translate }}
+          } @else {
+            {{ 'settings.tokensPurchase.pay' | translate }}
+          }
+        </button>
+      </div>
+    </div>
+  }
+</div>

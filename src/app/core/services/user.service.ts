@@ -59,6 +59,15 @@ export class UserService {
     this.currentUserSignal.set(user);
   }
 
+  // Re-reads the signed-in user's own doc - for fields a Cloud Function
+  // writes server-side (e.g. tokens, credited by the Stripe webhook) where
+  // the client has no local write to optimistically apply instead.
+  async refreshCurrentUser(): Promise<void> {
+    const uid = this.currentUserSignal()?.uid;
+    if (!uid) return;
+    await this.fetchUserProfile(uid);
+  }
+
   async updateEmail(newEmail: string): Promise<void> {
     const firebaseUser = this.auth.currentUser;
     if (!firebaseUser) throw new Error('No authenticated user found');

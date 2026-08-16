@@ -11,6 +11,8 @@ import {
 import app from '../../core/firebase';
 import { PersonalDetails } from './components/account/personal-details/personal-details';
 import { ChangePassword } from './components/account/change-password/change-password';
+import { BillingCards } from './components/account/billing-cards/billing-cards';
+import { TokensPurchase } from './components/account/tokens/tokens';
 import { MainSettingsView } from './components/main-settings-view/main-settings-view';
 import { SettingsView } from '../../core/models/settings-view.type';
 import { SettingsChangeLanguage } from './components/app-settings-change-language/settings-change-language.component';
@@ -25,6 +27,8 @@ import { ThemePreference, ThemeService } from '../../core/services/theme.service
     FormsModule,
     PersonalDetails,
     ChangePassword,
+    BillingCards,
+    TokensPurchase,
     MainSettingsView,
     SettingsChangeLanguage,
     TranslatePipe,

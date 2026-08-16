@@ -1,0 +1,99 @@
+.token-balance {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-base);
+  margin-bottom: var(--space-base);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+}
+
+.token-balance-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+}
+
+.pack-price {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.purchase-panel {
+  padding: var(--space-base);
+}
+
+.purchase-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-base);
+}
+
+.payment-method-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-base);
+}
+
+.payment-method-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-base);
+  width: 100%;
+  padding: var(--space-sm) var(--space-base);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-main);
+  cursor: pointer;
+  text-align: left;
+
+  span { flex: 1; text-transform: capitalize; }
+}
+
+.payment-method-item.selected {
+  border-color: var(--color-primary);
+}
+
+.radio-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: var(--border-width-thick) solid var(--color-text-muted);
+}
+
+.radio-indicator.checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.payment-element {
+  margin-bottom: var(--space-base);
+}
+
+.save-card-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-base);
+  cursor: pointer;
+
+  input { width: auto; }
+}
+
+.purchase-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}

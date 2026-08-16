@@ -23,24 +23,10 @@
     </div>
   } @else if (activeView() === 'billing-cards') {
     <!-- BILLING CARDS SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('account')" name="back" />
-      <h3>{{ 'settings.billingCards' | translate }}</h3>
-      <div></div>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.manageCards' | translate }}</div>
-    </div>
+    <app-billing-cards (navigateBack)="navigateTo('account')" />
   } @else if (activeView() === 'tokens') {
     <!-- TOKENS SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('account')" name="back" />
-      <h3>{{ 'settings.tokens' | translate }}</h3>
-      <div></div>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.tokensFlow' | translate }}</div>
-    </div>
+    <app-tokens-purchase (navigateBack)="navigateTo('account')" />
   } @else if (activeView() === 'delete-account') {
     <!-- DELETE ACCOUNT SUB-MENU -->
     <div class="settings-header">
