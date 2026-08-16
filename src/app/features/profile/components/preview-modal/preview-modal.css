@@ -62,7 +62,7 @@
 
 .btn-cancel {
   background: var(--color-border-light);
-  color: var(--color-black);
+  color: var(--color-text-main);
 }
 
 .btn-save {

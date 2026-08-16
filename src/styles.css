@@ -5,12 +5,19 @@
   --nav-height: 48px;
 }
 
+html {
+  /* Fills the iOS Safari notch/home-indicator safe areas, which otherwise
+     stay the browser's default white regardless of the app's theme. */
+  background: var(--color-bg-primary);
+}
+
 body {
   font-family: var(--font-family-base), sans-serif;
   font-size: var(--font-size-base);
   max-width: 500px;
   margin: auto;
   height: 100dvh;
+  background: var(--color-bg-primary);
 
   *, *::before, *::after {
     box-sizing: border-box;

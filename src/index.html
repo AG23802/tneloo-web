@@ -4,8 +4,12 @@
   <meta charset="utf-8">
   <title>TnelooWeb</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Colors the iOS Safari notch/home-indicator safe areas and the browser
+       chrome strip. Kept in sync with the resolved theme by ThemeService;
+       this initial value just avoids a flash before Angular boots. -->
+  <meta name="theme-color" content="#ffffff">
   <script>
     // Applied before Angular bootstraps so an explicit light/dark choice
     // doesn't flash the wrong theme for a frame. 'system' needs no attribute -
@@ -15,6 +19,9 @@
       if (theme === 'light' || theme === 'dark') {
         document.documentElement.setAttribute('data-theme', theme);
       }
+      var isDark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', isDark ? '#000000' : '#ffffff');
     })();
   </script>
 </head>
