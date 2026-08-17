@@ -108,5 +108,39 @@
         font-weight: var(--font-weight-medium);
       }
     }
+
+    .role-picker {
+      padding: var(--space-md) var(--space-base);
+      border-bottom: 1px solid var(--color-border-light);
+
+      .role-picker__label {
+        display: block;
+        margin-bottom: var(--space-sm);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+      }
+
+      .role-picker__options {
+        display: flex;
+        gap: var(--space-sm);
+      }
+
+      .role-picker__option {
+        flex: 1;
+        padding: var(--space-sm) var(--space-base);
+        border-radius: var(--radius-md, 8px);
+        border: 1px solid var(--color-border-light);
+        background: none;
+        color: var(--color-text-main);
+        font-family: inherit;
+        font-weight: var(--font-weight-medium);
+        cursor: pointer;
+
+        &.selected {
+          border-color: var(--color-primary);
+          color: var(--color-primary);
+        }
+      }
+    }
   }
 }

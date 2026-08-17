@@ -4,9 +4,22 @@ import { TranslatePipe } from '@ngx-translate/core';
 import type { StripeElements } from '@stripe/stripe-js';
 import { IconComponent } from '../../../../../components/icon/icon';
 import { UserService } from '../../../../../core/services/user.service';
-import { SavedPaymentMethod, StripeService, TokenPack } from '../../../../../core/services/stripe.service';
+import {
+  Bundle,
+  BundleSize,
+  SavedPaymentMethod,
+  StripeService,
+} from '../../../../../core/services/stripe.service';
 
 const NEW_CARD = 'new' as const;
+const COUNTRY_CODES = ['CH', 'DE', 'AT'] as const;
+
+interface SelectedBundle {
+  size: BundleSize;
+  price: number;
+  tokens: number;
+  currency: string;
+}
 
 @Component({
   selector: 'app-tokens-purchase',
@@ -22,10 +35,16 @@ export class TokensPurchase {
   navigateBack = output<void>();
 
   readonly currentUser = this.userService.currentUser;
-  readonly packs = signal<TokenPack[]>([]);
+  readonly countryCodes = COUNTRY_CODES;
+  // `country` is otherwise only ever set server-side after a first
+  // purchase (see the Stripe webhook) - a brand-new buyer needs to pick
+  // one upfront just to see prices/VAT for their own purchase.
+  readonly selectedCountry = signal<string | null>(this.currentUser()?.country ?? null);
+  readonly bundles = signal<Record<BundleSize, Bundle> | null>(null);
+  readonly currency = signal<string>('');
   readonly paymentMethods = signal<SavedPaymentMethod[]>([]);
-  readonly isLoading = signal(true);
-  readonly selectedPack = signal<TokenPack | null>(null);
+  readonly isLoading = signal(false);
+  readonly selectedBundle = signal<SelectedBundle | null>(null);
   readonly selectedMethod = signal<string | null>(null);
   readonly saveNewCard = signal(false);
   readonly isPurchasing = signal(false);
@@ -39,17 +58,18 @@ export class TokensPurchase {
 
   // Whenever "pay with a new card" is selected, make sure there's a
   // PaymentIntent (and thus a clientSecret) to mount the Payment Element
-  // against - re-runs if the pack or the "save this card" choice changes,
-  // since both are baked into the PaymentIntent at creation time.
+  // against - re-runs if the bundle or the "save this card" choice
+  // changes, since both are baked into the PaymentIntent at creation time.
   private readonly ensureIntentEffect = effect(() => {
-    const pack = this.selectedPack();
+    const bundle = this.selectedBundle();
     const method = this.selectedMethod();
     const save = this.saveNewCard();
-    if (!pack || method !== NEW_CARD) return;
-    const key = `${pack.priceId}:${save}`;
+    const country = this.selectedCountry();
+    if (!bundle || !country || method !== NEW_CARD) return;
+    const key = `${bundle.size}:${save}`;
     if (this.intentKey === key) return;
     this.intentKey = key;
-    void this.createNewCardIntent(pack.priceId, save);
+    void this.createNewCardIntent(country, bundle.size, save);
   });
 
   private readonly mountEffect = effect(() => {
@@ -61,40 +81,59 @@ export class TokensPurchase {
   });
 
   constructor() {
-    void this.loadData();
+    if (this.selectedCountry()) void this.loadData();
+    void this.loadPaymentMethods();
   }
 
   goBack(): void {
     this.navigateBack.emit();
   }
 
+  chooseCountry(code: string): void {
+    this.selectedCountry.set(code);
+    void this.loadData();
+  }
+
+  private async loadPaymentMethods(): Promise<void> {
+    try {
+      this.paymentMethods.set(await this.stripeService.listPaymentMethods());
+    } catch (error) {
+      console.error('Error loading payment methods:', error);
+    }
+  }
+
   private async loadData(): Promise<void> {
+    const country = this.selectedCountry();
+    if (!country) return;
     this.isLoading.set(true);
     try {
-      const [packs, paymentMethods] = await Promise.all([
-        this.stripeService.listTokenPacks(),
-        this.stripeService.listPaymentMethods(),
-      ]);
-      this.packs.set(packs);
-      this.paymentMethods.set(paymentMethods);
+      const { currency, bundles } = await this.stripeService.listBundles(country);
+      this.currency.set(currency);
+      this.bundles.set(bundles);
     } catch (error) {
-      console.error('Error loading token packs:', error);
-      this.errorMessage.set('Could not load token packs.');
+      console.error('Error loading bundles:', error);
+      this.errorMessage.set('Could not load token bundles.');
     } finally {
       this.isLoading.set(false);
     }
   }
 
-  selectPack(pack: TokenPack): void {
+  bundleSizes(): BundleSize[] {
+    return this.bundles() ? (Object.keys(this.bundles()!) as BundleSize[]) : [];
+  }
+
+  selectBundle(size: BundleSize): void {
+    const bundle = this.bundles()?.[size];
+    if (!bundle) return;
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    this.selectedPack.set(pack);
+    this.selectedBundle.set({ size, ...bundle, currency: this.currency() });
     const defaultMethod = this.paymentMethods().find((pm) => pm.isDefault);
     this.selectedMethod.set(defaultMethod?.id ?? (this.paymentMethods()[0]?.id || NEW_CARD));
   }
 
   cancelPurchase(): void {
-    this.selectedPack.set(null);
+    this.selectedBundle.set(null);
     this.selectedMethod.set(null);
     this.saveNewCard.set(false);
     this.clientSecret.set(null);
@@ -107,14 +146,20 @@ export class TokensPurchase {
     this.selectedMethod.set(id);
   }
 
-  private async createNewCardIntent(priceId: string, save: boolean): Promise<void> {
+  private async createNewCardIntent(
+    countryCode: string,
+    bundleSize: BundleSize,
+    save: boolean,
+  ): Promise<void> {
     this.clientSecret.set(null);
     this.elements = null;
     this.mountedFor = null;
     try {
-      const { clientSecret } = await this.stripeService.createPaymentIntent(priceId, {
-        savePaymentMethod: save,
-      });
+      const { clientSecret } = await this.stripeService.createPaymentIntent(
+        countryCode,
+        bundleSize,
+        { savePaymentMethod: save },
+      );
       this.clientSecret.set(clientSecret);
     } catch (error) {
       console.error('Error creating payment intent:', error);
@@ -130,16 +175,19 @@ export class TokensPurchase {
   }
 
   async pay(): Promise<void> {
-    const pack = this.selectedPack();
+    const bundle = this.selectedBundle();
     const method = this.selectedMethod();
-    if (!pack || !method || this.isPurchasing()) return;
+    const country = this.selectedCountry();
+    if (!bundle || !method || !country || this.isPurchasing()) return;
 
     this.isPurchasing.set(true);
     this.errorMessage.set(null);
     try {
       const succeeded =
-        method === NEW_CARD ? await this.payWithNewCard() : await this.payWithSavedCard(pack, method);
-      if (succeeded) await this.onPurchaseSucceeded(pack);
+        method === NEW_CARD
+          ? await this.payWithNewCard()
+          : await this.payWithSavedCard(country, bundle, method);
+      if (succeeded) await this.onPurchaseSucceeded(bundle);
     } finally {
       this.isPurchasing.set(false);
     }
@@ -161,10 +209,16 @@ export class TokensPurchase {
     return false;
   }
 
-  private async payWithSavedCard(pack: TokenPack, paymentMethodId: string): Promise<boolean> {
-    const { clientSecret, status } = await this.stripeService.createPaymentIntent(pack.priceId, {
-      paymentMethodId,
-    });
+  private async payWithSavedCard(
+    countryCode: string,
+    bundle: SelectedBundle,
+    paymentMethodId: string,
+  ): Promise<boolean> {
+    const { clientSecret, status } = await this.stripeService.createPaymentIntent(
+      countryCode,
+      bundle.size,
+      { paymentMethodId },
+    );
     if (status === 'succeeded') return true;
 
     if (status === 'requires_action') {
@@ -185,13 +239,13 @@ export class TokensPurchase {
   // The webhook that credits tokens runs asynchronously after Stripe
   // confirms the charge, so the balance may not be updated the instant
   // this resolves - poll briefly rather than showing a stale number.
-  private async onPurchaseSucceeded(pack: TokenPack): Promise<void> {
+  private async onPurchaseSucceeded(bundle: SelectedBundle): Promise<void> {
     this.successMessage.set('purchased');
-    const before = this.currentUser()?.tokens ?? 0;
+    const before = this.currentUser()?.tokenBalance ?? 0;
     this.cancelPurchase();
     for (let attempt = 0; attempt < 5; attempt++) {
       await this.userService.refreshCurrentUser();
-      if ((this.currentUser()?.tokens ?? 0) >= before + pack.tokens) return;
+      if ((this.currentUser()?.tokenBalance ?? 0) >= before + bundle.tokens) return;
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }

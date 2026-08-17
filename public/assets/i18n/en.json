@@ -20,17 +20,31 @@
     "loadMore": "Load More",
     "seenAllFiles": "You've seen all files"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "pendingEarnings": "Pending earnings",
+    "paidOut": "Paid out",
+    "comingSoon": "Coming soon",
+    "contentCount": "Content items",
+    "recentUnlocks": "Recent unlocks",
+    "noUnlocksYet": "No unlocks yet."
+  },
   "auth": {
     "welcome": "Welcome",
     "shareWhatMatters": "Share what matters",
     "communitySubtitle": "Post updates, discover people, and keep up with your community.",
     "signingIn": "Opening sign in…",
     "logIn": "Log in",
-    "createAccount": "Create new account"
+    "createAccount": "Create new account",
+    "registerAs": "Sign up as",
+    "roleBuyer": "Buyer",
+    "roleCreator": "Creator"
   },
   "settings": {
     "verification": "Identity Verification",
     "verificationFlow": "Third-party verification flow...",
+    "payoutDetails": "Payout Details",
+    "payoutDetailsFlow": "Manage where your earnings are paid out...",
     "billingCards": "Cards & Payment",
     "manageCards": "Manage cards...",
     "cards": {
@@ -51,6 +65,7 @@
     "tokensFlow": "Buy tokens and view history...",
     "tokensPurchase": {
       "tokensLabel": "tokens",
+      "chooseCountry": "Choose your country to see prices",
       "noPacks": "No token packs available.",
       "newCard": "New card",
       "saveCard": "Save this card for future purchases",
@@ -120,6 +135,7 @@
       "verification": "Identity Verification",
       "billingCards": "Cards & Payment",
       "tokens": "Token Balance & History",
+      "payoutDetails": "Payout Details",
       "deleteAccount": "Delete Account"
     },
     "changeLanguage": {

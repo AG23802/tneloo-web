@@ -8,6 +8,7 @@ import {
 import { AuthService } from '../../auth.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AppFooter } from '../../../footer/components/app-footer/app-footer';
+import { UserRole } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-auth',
@@ -25,6 +26,10 @@ export class Auth {
     password: '123456',
   });
 
+  // Only relevant for registering a brand-new account - an existing
+  // account's role is already set, so login ignores this.
+  registerRole = signal<UserRole>('buyer');
+
   // Create the Signal Form with validation rules
   authForm = form(this.authModel, (path) => {
     required(path.email);
@@ -41,6 +46,6 @@ export class Auth {
   async onRegister() {
     if (!this.authForm().valid()) return;
     const { email, password } = this.authModel();
-    await this.authService.register(email, password);
+    await this.authService.register(email, password, this.registerRole());
   }
 }

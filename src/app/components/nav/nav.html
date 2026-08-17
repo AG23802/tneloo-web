@@ -1,14 +1,11 @@
 <nav class="bottom-nav">
-  @let username = userService.currentUser()?.username;
-
-  @for (item of navItems; track item.label) {
+  @for (item of navItems(); track item.label) {
     <a
-      [routerLink]="item.route(username)"
+      [routerLink]="item.route"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: !!item.exact }"
       #rla="routerLinkActive"
       class="nav-item"
-      [class.disabled]="item.needsUsername && !username"
       [attr.aria-label]="item.label"
     >
       <app-icon

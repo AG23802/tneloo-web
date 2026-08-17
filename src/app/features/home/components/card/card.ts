@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Avatar } from '../../../../components/avatar/avatar.component';
 import { MediaSlider } from './components/media-slider/media-slider';
 import { CardActions } from './components/card-actions/card-actions';
-import { User } from '../../../../core/models/user.model';
+import { CreatorFeedEntry } from '../../services/home.service';
 
 @Component({
   selector: 'app-card',
@@ -12,7 +12,7 @@ import { User } from '../../../../core/models/user.model';
   styleUrl: './card.css',
 })
 export class Card {
-  user = input.required<User>();
+  user = input.required<CreatorFeedEntry>();
 
   private router = inject(Router);
 

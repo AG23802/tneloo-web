@@ -20,17 +20,31 @@
     "loadMore": "Charger plus",
     "seenAllFiles": "Vous avez vu tous les fichiers"
   },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "pendingEarnings": "Gains en attente",
+    "paidOut": "Versés",
+    "comingSoon": "Bientôt disponible",
+    "contentCount": "Éléments de contenu",
+    "recentUnlocks": "Déblocages récents",
+    "noUnlocksYet": "Aucun déblocage pour le moment."
+  },
   "auth": {
     "welcome": "Bienvenue",
     "shareWhatMatters": "Partagez ce qui compte",
     "communitySubtitle": "Publiez des actualités, découvrez des personnes et restez en contact avec votre communauté.",
     "signingIn": "Ouverture de la session…",
     "logIn": "Se connecter",
-    "createAccount": "Créer un nouveau compte"
+    "createAccount": "Créer un nouveau compte",
+    "registerAs": "S'inscrire en tant que",
+    "roleBuyer": "Acheteur",
+    "roleCreator": "Créatrice"
   },
   "settings": {
     "verification": "Vérification d'identité",
     "verificationFlow": "Flux de vérification tiers...",
+    "payoutDetails": "Détails de paiement",
+    "payoutDetailsFlow": "Gérez où vos revenus sont versés...",
     "billingCards": "Cartes et paiements",
     "manageCards": "Gérer les cartes...",
     "cards": {
@@ -51,6 +65,7 @@
     "tokensFlow": "Acheter des jetons et afficher l'historique...",
     "tokensPurchase": {
       "tokensLabel": "jetons",
+      "chooseCountry": "Choisissez votre pays pour voir les prix",
       "noPacks": "Aucun pack de jetons disponible.",
       "newCard": "Nouvelle carte",
       "saveCard": "Enregistrer cette carte pour les prochains achats",
@@ -120,6 +135,7 @@
       "verification": "Vérification d'identité",
       "billingCards": "Cartes et paiements",
       "tokens": "Solde de jetons et historique",
+      "payoutDetails": "Détails de paiement",
       "deleteAccount": "Supprimer le compte"
     },
     "changeLanguage": {

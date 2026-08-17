@@ -199,8 +199,8 @@ export class ThreadService {
   }
 
   // Bucket file(s) first, Firestore doc only after - matches
-  // UserService.deleteMediaByUrl's ordering so a failed storage delete never
-  // leaves a message pointing at nothing, and a storage delete never
+  // UserService.deleteContentByUrl's ordering so a failed storage delete
+  // never leaves a message pointing at nothing, and a storage delete never
   // silently orphans a still-visible message.
   async deleteMessage(threadId: string, message: Message): Promise<void> {
     if (!message.id) return;

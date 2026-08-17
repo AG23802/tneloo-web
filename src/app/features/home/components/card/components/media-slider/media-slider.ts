@@ -1,5 +1,5 @@
 import { Component, input, signal } from '@angular/core';
-import { Media } from '../../../../../../core/models/media.model';
+import { Content } from '../../../../../../core/models/content.model';
 import { User } from '../../../../../../core/models/user.model';
 import { TranslatePipe } from '@ngx-translate/core';
 import { VideoPlayer } from '../../../../../../components/video-player/video-player';
@@ -11,7 +11,7 @@ import { VideoPlayer } from '../../../../../../components/video-player/video-pla
   styleUrl: './media-slider.css',
 })
 export class MediaSlider {
-  media = input<Media[]>([]);
+  media = input<Content[]>([]);
   user = input<User | null>(null);
 
   currentSlide = signal(0);

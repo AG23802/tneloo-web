@@ -87,13 +87,13 @@ export class SearchService {
     lastVisibleDoc?: QueryDocumentSnapshot,
   ): Promise<{ media: FeedMedia[]; lastVisible: QueryDocumentSnapshot | null }> {
     let mediaQuery = query(
-      collection(this.firestore, 'media'),
+      collection(this.firestore, 'content'),
       orderBy('__name__'),
       limit(this.batchSize),
     );
     if (lastVisibleDoc) {
       mediaQuery = query(
-        collection(this.firestore, 'media'),
+        collection(this.firestore, 'content'),
         orderBy('__name__'),
         startAfter(lastVisibleDoc),
         limit(this.batchSize),

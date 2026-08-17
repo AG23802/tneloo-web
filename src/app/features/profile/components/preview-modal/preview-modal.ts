@@ -13,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class PreviewModal {
   previewUrlInput = input<string | null>('');
   selectedFile = input<File | null>(null);
-  container = input<string>('media');
+  container = input<string>('content');
 
   isVideo = computed(() => this.selectedFile()?.type.startsWith('video/') ?? false);
   // Only the avatar picker crops into a circle - gallery uploads keep
@@ -33,8 +33,8 @@ export class PreviewModal {
     this.isUploading.set(true);
 
     const uploadObservable: Observable<unknown> =
-      this.container() === 'media'
-        ? this.uploadService.uploadMedia(file, this.container())
+      this.container() === 'content'
+        ? this.uploadService.uploadContent(file)
         : this.uploadService.uploadProfilePicture(file);
 
     uploadObservable.subscribe({

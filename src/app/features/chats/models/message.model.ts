@@ -1,4 +1,4 @@
-import { MediaType } from '../../../core/models/media.model';
+import { MediaType } from '../../../core/models/content.model';
 
 export interface MessageMedia {
   url: string;

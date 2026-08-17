@@ -8,6 +8,7 @@ import {
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import app from '../../core/firebase';
 import { NotificationService } from '../../core/services/notification.service';
+import { UserRole } from '../../core/models/user.model';
 
 @Service()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
     }
   }
 
-  async register(email: string, pass: string) {
+  async register(email: string, pass: string, role: UserRole) {
     this.interactionInProgress.set(true);
     this.errorMessage.set(null);
     try {
@@ -45,13 +46,16 @@ export class AuthService {
 
       // 2. Create the missing Firestore user profile document
       const userDocRef = doc(this.firestore, 'users', firebaseUser.uid);
+      // tokenBalance/country/stripeCustomerId/pendingEarnings are
+      // Cloud-Function-only (see firestore.rules) - omitted here entirely
+      // rather than set to 0, every read of them falls back to `?? 0`.
       await setDoc(userDocRef, {
         uid: firebaseUser.uid,
+        role,
         email: email,
         username: email.split('@')[0], // Default username from email prefix
         displayName: email.split('@')[0],
         createdAt: new Date().toISOString(),
-        tokens: 0,
       });
     } catch (err: any) {
       this.errorMessage.set(this.formatFirebaseError(err.code));

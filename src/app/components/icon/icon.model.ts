@@ -138,6 +138,11 @@ export const ICONS = {
   report: `
     <path d="M18.001 1h-12a5.006 5.006 0 0 0-5 5v9.005a5.006 5.006 0 0 0 5 5h2.514l2.789 2.712a1 1 0 0 0 1.394 0l2.787-2.712h2.516a5.006 5.006 0 0 0 5-5V6a5.006 5.006 0 0 0-5-5Zm3 14.005a3.003 3.003 0 0 1-3 3h-2.936a1 1 0 0 0-.79.387l-2.274 2.212-2.276-2.212a1 1 0 0 0-.79-.387H6a3.003 3.003 0 0 1-3-3V6a3.003 3.003 0 0 1 3-3h12a3.003 3.003 0 0 1 3 3Zm-9-1.66a1.229 1.229 0 1 0 1.228 1.228A1.23 1.23 0 0 0 12 13.344Zm0-8.117a1.274 1.274 0 0 0-.933.396 1.108 1.108 0 0 0-.3.838l.347 4.861a.892.892 0 0 0 1.77 0l.348-4.86a1.106 1.106 0 0 0-.3-.838A1.272 1.272 0 0 0 12 5.228Z"></path>
   `,
+  dashboard: `
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="6" x2="6" y1="20" y2="12"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="12" x2="12" y1="20" y2="6"></line>
+    <line fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" x1="18" x2="18" y1="20" y2="14"></line>
+  `,
   volume: `
     <path d="M3 9v6h4l5 5V4L7 9H3Z" fill="currentColor"></path>
     <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 8.5a5 5 0 0 1 0 7"></path>

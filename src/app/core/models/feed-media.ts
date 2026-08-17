@@ -1,4 +1,4 @@
-import { MediaType } from './media.model';
+import { MediaType } from './content.model';
 
 // A media item annotated with its owner's display info, for feeds (search
 // grid) that show media from many different users at once.

@@ -7,7 +7,7 @@
 <div class="settings-body">
   <div class="token-balance">
     <app-icon name="token" />
-    <span>{{ currentUser()?.tokens ?? 0 }}</span>
+    <span>{{ currentUser()?.tokenBalance ?? 0 }}</span>
     <span class="token-balance-label">{{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
   </div>
 
@@ -18,21 +18,30 @@
     <div class="success-message">{{ 'settings.tokensPurchase.purchaseSuccess' | translate }}</div>
   }
 
-  @if (!selectedPack()) {
+  @if (!selectedCountry()) {
+    <div class="settings-section">
+      <div class="setting-item">{{ 'settings.tokensPurchase.chooseCountry' | translate }}</div>
+      @for (code of countryCodes; track code) {
+        <button type="button" class="setting-item" (click)="chooseCountry(code)">
+          <span>{{ code }}</span>
+        </button>
+      }
+    </div>
+  } @else if (!selectedBundle()) {
     <div class="settings-section">
       @if (isLoading()) {
         <div class="setting-item">{{ 'settings.cards.loading' | translate }}</div>
-      } @else if (packs().length === 0) {
+      } @else if (bundleSizes().length === 0) {
         <div class="setting-item">{{ 'settings.tokensPurchase.noPacks' | translate }}</div>
       } @else {
-        @for (pack of packs(); track pack.priceId) {
-          <button type="button" class="setting-item" (click)="selectPack(pack)">
+        @for (size of bundleSizes(); track size) {
+          <button type="button" class="setting-item" (click)="selectBundle(size)">
             <div class="setting-item-content">
               <app-icon name="token" />
-              <span>{{ pack.tokens }} {{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
+              <span>{{ bundles()![size].tokens }} {{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
             </div>
             <span class="pack-price">
-              {{ (pack.amount ?? 0) / 100 | number: '1.2-2' }} {{ pack.currency.toUpperCase() }}
+              {{ bundles()![size].price | number: '1.2-2' }} {{ currency().toUpperCase() }}
             </span>
           </button>
         }
@@ -41,9 +50,9 @@
   } @else {
     <div class="settings-section purchase-panel">
       <div class="purchase-summary">
-        <span>{{ selectedPack()!.tokens }} {{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
+        <span>{{ selectedBundle()!.tokens }} {{ 'settings.tokensPurchase.tokensLabel' | translate }}</span>
         <span class="pack-price">
-          {{ (selectedPack()!.amount ?? 0) / 100 | number: '1.2-2' }} {{ selectedPack()!.currency.toUpperCase() }}
+          {{ selectedBundle()!.price | number: '1.2-2' }} {{ selectedBundle()!.currency.toUpperCase() }}
         </span>
       </div>
 

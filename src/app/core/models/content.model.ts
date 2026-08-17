@@ -1,6 +1,9 @@
 export type MediaType = 'image' | 'video';
 
-export interface Media {
+// A creator's own teaser/portfolio upload - publicly browsable (Home/Search),
+// never the paid product itself. Collection: `content`, role-gated to
+// creators only (see firestore.rules).
+export interface Content {
   id?: string;
   ownerId: string;
   type: MediaType;

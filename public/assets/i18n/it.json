@@ -20,17 +20,31 @@
     "loadMore": "Carica altro",
     "seenAllFiles": "Hai visto tutti i file"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "pendingEarnings": "Guadagni in sospeso",
+    "paidOut": "Pagati",
+    "comingSoon": "Prossimamente",
+    "contentCount": "Contenuti",
+    "recentUnlocks": "Sblocchi recenti",
+    "noUnlocksYet": "Nessuno sblocco ancora."
+  },
   "auth": {
     "welcome": "Benvenuto",
     "shareWhatMatters": "Condividi ciò che conta",
     "communitySubtitle": "Pubblica aggiornamenti, scopri persone e rimani in contatto con la tua community.",
     "signingIn": "Apertura accesso...",
     "logIn": "Accedi",
-    "createAccount": "Crea un nuovo account"
+    "createAccount": "Crea un nuovo account",
+    "registerAs": "Registrati come",
+    "roleBuyer": "Acquirente",
+    "roleCreator": "Creator"
   },
   "settings": {
     "verification": "Verifica dell'identità",
     "verificationFlow": "Processo di verifica di terze parti...",
+    "payoutDetails": "Dettagli di pagamento",
+    "payoutDetailsFlow": "Gestisci dove vengono versati i tuoi guadagni...",
     "billingCards": "Carte e pagamenti",
     "manageCards": "Gestisci carte...",
     "cards": {
@@ -51,6 +65,7 @@
     "tokensFlow": "Acquista token e visualizza la cronologia...",
     "tokensPurchase": {
       "tokensLabel": "token",
+      "chooseCountry": "Scegli il tuo paese per vedere i prezzi",
       "noPacks": "Nessun pacchetto di token disponibile.",
       "newCard": "Nuova carta",
       "saveCard": "Salva questa carta per acquisti futuri",
@@ -120,6 +135,7 @@
       "verification": "Verifica dell'identità",
       "billingCards": "Carte e pagamenti",
       "tokens": "Saldo token e cronologia",
+      "payoutDetails": "Dettagli di pagamento",
       "deleteAccount": "Elimina account"
     },
     "changeLanguage": {

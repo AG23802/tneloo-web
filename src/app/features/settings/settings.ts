@@ -1,7 +1,6 @@
 import { Component, inject, output, signal } from '@angular/core';
 import { IconComponent } from '../../components/icon/icon';
 import { UserService } from '../../core/services/user.service';
-import { Account } from './components/account/account';
 import { FormsModule } from '@angular/forms';
 import {
   getAuth,
@@ -23,7 +22,6 @@ import { ThemePreference, ThemeService } from '../../core/services/theme.service
   selector: 'app-settings',
   imports: [
     IconComponent,
-    Account,
     FormsModule,
     PersonalDetails,
     ChangePassword,

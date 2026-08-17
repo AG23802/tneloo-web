@@ -3,6 +3,7 @@ import {
   getFirestore,
   collection,
   query,
+  where,
   orderBy,
   limit,
   startAfter,
@@ -12,7 +13,14 @@ import {
 import app from '../../../core/firebase';
 import { UserService } from '../../../core/services/user.service';
 import { User } from '../../../core/models/user.model';
-import { Media } from '../../../core/models/media.model';
+import { Content } from '../../../core/models/content.model';
+
+// The buyer swiper needs each creator's teaser content alongside her user
+// doc - this is a view-model composed here, not part of the User model
+// itself (a creator's content is never actually stored on her user doc).
+export interface CreatorFeedEntry extends User {
+  content: Content[];
+}
 
 @Service()
 export class HomeService {
@@ -20,7 +28,7 @@ export class HomeService {
   private readonly userService = inject(UserService);
   private readonly batchSize = 10;
 
-  readonly users = signal<User[]>([]);
+  readonly users = signal<CreatorFeedEntry[]>([]);
   readonly initialLoading = signal(true);
   readonly loadingMore = signal(false);
   readonly hasMore = signal(true);
@@ -85,26 +93,31 @@ export class HomeService {
 
   private async fetchPage(
     lastVisibleDoc?: QueryDocumentSnapshot,
-  ): Promise<{ users: User[]; lastVisible: QueryDocumentSnapshot | null }> {
+  ): Promise<{ users: CreatorFeedEntry[]; lastVisible: QueryDocumentSnapshot | null }> {
     const currentUserId = this.userService.currentUser()?.uid ?? '';
 
+    // The buyer swiper only ever shows creators - without this filter,
+    // once buyers are a real cohort they'd start showing up in each
+    // other's feed too.
     let usersQuery = query(
       collection(this.firestore, 'users'),
+      where('role', '==', 'creator'),
       orderBy('__name__'),
       limit(this.batchSize),
     );
     if (lastVisibleDoc) {
       usersQuery = query(
         collection(this.firestore, 'users'),
+        where('role', '==', 'creator'),
         orderBy('__name__'),
         startAfter(lastVisibleDoc),
         limit(this.batchSize),
       );
     }
 
-    const [userSnapshot, mediaSnapshot] = await Promise.all([
+    const [userSnapshot, contentSnapshot] = await Promise.all([
       getDocs(usersQuery),
-      getDocs(collection(this.firestore, 'media')),
+      getDocs(collection(this.firestore, 'content')),
     ]);
 
     const lastVisible = userSnapshot.docs[userSnapshot.docs.length - 1] || null;
@@ -114,19 +127,19 @@ export class HomeService {
       uid: doc.id,
     }));
 
-    const media: Media[] = mediaSnapshot.docs.map(
-      (doc) => ({ ...doc.data(), id: doc.id }) as Media,
+    const content: Content[] = contentSnapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id }) as Content,
     );
 
     if (currentUserId) {
       users = users.filter((user) => user.uid !== currentUserId);
     }
 
-    const usersWithMedia = users.map((user) => ({
+    const usersWithContent: CreatorFeedEntry[] = users.map((user) => ({
       ...user,
-      media: media.filter((item) => item.ownerId === user.uid),
+      content: content.filter((item) => item.ownerId === user.uid),
     }));
 
-    return { users: usersWithMedia, lastVisible };
+    return { users: usersWithContent, lastVisible };
   }
 }

@@ -1,0 +1,23 @@
+<div class="dashboard">
+  <h2>{{ 'dashboard.title' | translate }}</h2>
+
+  <div class="stat-card">
+    <span class="stat-card__label">{{ 'dashboard.pendingEarnings' | translate }}</span>
+    <span class="stat-card__value">{{ userService.currentUser()?.pendingEarnings ?? 0 }}</span>
+  </div>
+
+  <div class="stat-card">
+    <span class="stat-card__label">{{ 'dashboard.paidOut' | translate }}</span>
+    <span class="stat-card__value stat-card__value--muted">{{ 'dashboard.comingSoon' | translate }}</span>
+  </div>
+
+  <div class="stat-card">
+    <span class="stat-card__label">{{ 'dashboard.contentCount' | translate }}</span>
+    <span class="stat-card__value">{{ contentCount() ?? '—' }}</span>
+  </div>
+
+  <div class="recent-unlocks">
+    <h3>{{ 'dashboard.recentUnlocks' | translate }}</h3>
+    <p class="empty-state">{{ 'dashboard.noUnlocksYet' | translate }}</p>
+  </div>
+</div>

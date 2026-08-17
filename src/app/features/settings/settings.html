@@ -2,19 +2,16 @@
   @if (activeView() === 'main') {
     <!-- MAIN SETTINGS VIEW -->
     <app-main-settings-view (navigateTo)="navigateTo($event)" (close)="onClose()" />
-  } @else if (activeView() === 'account') {
-    <!-- ACCOUNT SUB-MENU -->
-    <app-account (saveChanges)="navigateTo($event)" />
   } @else if (activeView() === 'personal-details') {
     <!-- PERSONAL DETAILS SUB-MENU -->
-    <app-personal-details (navigateBack)="navigateTo('account')" />
+    <app-personal-details (navigateBack)="navigateTo('main')" />
   } @else if (activeView() === 'change-password') {
     <!-- CHANGE PASSWORD SUB-MENU -->
-    <app-change-password (navigateBack)="navigateTo('account')" />
+    <app-change-password (navigateBack)="navigateTo('main')" />
   } @else if (activeView() === 'verification') {
     <!-- VERIFICATION SUB-MENU -->
     <div class="settings-header">
-      <app-icon (click)="navigateTo('account')" name="back" />
+      <app-icon (click)="navigateTo('main')" name="back" />
       <h3>{{ 'settings.verification' | translate }}</h3>
       <div></div>
     </div>
@@ -23,64 +20,29 @@
     </div>
   } @else if (activeView() === 'billing-cards') {
     <!-- BILLING CARDS SUB-MENU -->
-    <app-billing-cards (navigateBack)="navigateTo('account')" />
+    <app-billing-cards (navigateBack)="navigateTo('main')" />
   } @else if (activeView() === 'tokens') {
     <!-- TOKENS SUB-MENU -->
-    <app-tokens-purchase (navigateBack)="navigateTo('account')" />
+    <app-tokens-purchase (navigateBack)="navigateTo('main')" />
+  } @else if (activeView() === 'payout-details') {
+    <!-- PAYOUT DETAILS SUB-MENU -->
+    <div class="settings-header">
+      <app-icon (click)="navigateTo('main')" name="back" />
+      <h3>{{ 'settings.payoutDetails' | translate }}</h3>
+      <div></div>
+    </div>
+    <div class="settings-section">
+      <div class="setting-item">{{ 'settings.payoutDetailsFlow' | translate }}</div>
+    </div>
   } @else if (activeView() === 'delete-account') {
     <!-- DELETE ACCOUNT SUB-MENU -->
     <div class="settings-header">
-      <app-icon (click)="navigateTo('account')" name="back" />
+      <app-icon (click)="navigateTo('main')" name="back" />
       <h3>{{ 'settings.deleteAccount' | translate }}</h3>
       <button class="btn-primary-danger">{{ 'common.delete' | translate }}</button>
     </div>
     <div class="settings-section">
       <div class="setting-item">{{ 'settings.deleteAccountWarning' | translate }}</div>
-    </div>
-  } @else if (activeView() === 'bookmark') {
-    <!-- GESPEICHERT SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>{{ 'settings.bookmark' | translate }}</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.bookmarkDesc' | translate }}</div>
-    </div>
-  } @else if (activeView() === 'archive') {
-    <!-- ARCHIV SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>{{ 'settings.archive' | translate }}</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.archiveDesc' | translate }}</div>
-    </div>
-  } @else if (activeView() === 'notifications') {
-    <!-- BENACHRICHTIGUNGEN SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>{{ 'settings.notifications' | translate }}</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.notificationsDesc' | translate }}</div>
-    </div>
-  } @else if (activeView() === 'privacy') {
-    <!-- PRIVATSPHÄRE SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>{{ 'settings.privacy' | translate }}</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.privacyDesc' | translate }}</div>
-    </div>
-  } @else if (activeView() === 'blocked') {
-    <!-- BLOCKIERT SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>{{ 'settings.blocked' | translate }}</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.blockedDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'language') {
     <!-- SPRACHE SUB-MENU -->
@@ -111,15 +73,6 @@
           }
         </button>
       }
-    </div>
-  } @else if (activeView() === 'accessibility') {
-    <!-- ACCESSIBILITY SUB-MENU -->
-    <div class="settings-header">
-      <app-icon (click)="navigateTo('main')" name="back" />
-      <h3>{{ 'settings.accessibility' | translate }}</h3>
-    </div>
-    <div class="settings-section">
-      <div class="setting-item">{{ 'settings.accessibilityDesc' | translate }}</div>
     </div>
   } @else if (activeView() === 'help') {
     <!-- HILFE & SUPPORT SUB-MENU -->

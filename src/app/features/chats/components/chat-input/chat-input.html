@@ -20,7 +20,8 @@
 
     <input
       type="text"
-      [(ngModel)]="newMessageText"
+      [ngModel]="newMessageText()"
+      (ngModelChange)="newMessageText.set($event)"
       name="newMessageText"
       [placeholder]="'chats.typeMessage' | translate"
       autocomplete="off"

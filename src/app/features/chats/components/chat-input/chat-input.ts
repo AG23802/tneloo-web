@@ -19,7 +19,7 @@ export class ChatInput {
   private mediaUploadService = inject(MediaUploadService);
   private notificationService = inject(NotificationService);
 
-  newMessageText = '';
+  newMessageText = signal('');
 
   // Selecting a file only stages it here - it's not uploaded until the user
   // actually hits send, same as text. Lets them attach media with no
@@ -31,7 +31,7 @@ export class ChatInput {
 
   isSending = signal(false);
   canSend = computed(
-    () => (!!this.newMessageText.trim() || !!this.pendingFile()) && !this.isSending(),
+    () => (!!this.newMessageText().trim() || !!this.pendingFile()) && !this.isSending(),
   );
 
   private mediaInput = viewChild<ElementRef<HTMLInputElement>>('mediaInput');
@@ -66,7 +66,7 @@ export class ChatInput {
 
   async handleSendMessage(): Promise<void> {
     if (!this.canSend()) return;
-    const text = this.newMessageText.trim();
+    const text = this.newMessageText().trim();
     const file = this.pendingFile();
 
     this.isSending.set(true);
@@ -74,7 +74,7 @@ export class ChatInput {
       let media;
       if (file) {
         const uploaded = await firstValueFrom(
-          this.mediaUploadService.uploadMedia(file, 'chat-media'),
+          this.mediaUploadService.uploadChatAttachment(file),
         );
         media = {
           url: uploaded.url,
@@ -88,7 +88,7 @@ export class ChatInput {
 
       // Only clear once we know it actually went through - on failure the
       // draft and attachment stay put so the user can just hit send again.
-      this.newMessageText = '';
+      this.newMessageText.set('');
       this.setPendingFile(null);
       this.messageSent.emit();
     } catch (error: unknown) {

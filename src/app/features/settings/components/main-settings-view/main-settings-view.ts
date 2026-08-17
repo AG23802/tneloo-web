@@ -1,7 +1,8 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, computed, inject, output } from '@angular/core';
 import { IconComponent } from '../../../../components/icon/icon';
 import { SettingsHeader } from '../settings-header/settings-header';
 import { AuthService } from '../../../auth/auth.service';
+import { UserService } from '../../../../core/services/user.service';
 import { SettingsView } from '../../../../core/models/settings-view.type';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,6 +14,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class MainSettingsView {
   authService = inject(AuthService);
+  private userService = inject(UserService);
+
+  readonly isCreator = computed(() => this.userService.currentUser()?.role === 'creator');
 
   navigateTo = output<SettingsView>();
   close = output<void>();

@@ -26,6 +26,28 @@
       <input class="auth-input-item" type="password" [formField]="authForm.password" [placeholder]="'common.passwordPlaceholder' | translate" />
     </div>
 
+    <div class="role-picker">
+      <span class="role-picker__label">{{ 'auth.registerAs' | translate }}</span>
+      <div class="role-picker__options">
+        <button
+          type="button"
+          class="role-picker__option"
+          [class.selected]="registerRole() === 'buyer'"
+          (click)="registerRole.set('buyer')"
+        >
+          {{ 'auth.roleBuyer' | translate }}
+        </button>
+        <button
+          type="button"
+          class="role-picker__option"
+          [class.selected]="registerRole() === 'creator'"
+          (click)="registerRole.set('creator')"
+        >
+          {{ 'auth.roleCreator' | translate }}
+        </button>
+      </div>
+    </div>
+
     <button class="auth-item" [disabled]="authService.interactionInProgress()" (click)="onLogin()">
       <div class="auth-item-content">
         <span>{{ (authService.interactionInProgress() ? 'auth.signingIn' : 'auth.logIn') | translate }}</span>

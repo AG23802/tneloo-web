@@ -20,17 +20,31 @@
     "loadMore": "Mehr laden",
     "seenAllFiles": "Du hast alle Dateien gesehen"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "pendingEarnings": "Ausstehende Einnahmen",
+    "paidOut": "Ausgezahlt",
+    "comingSoon": "Demnächst verfügbar",
+    "contentCount": "Inhalte",
+    "recentUnlocks": "Letzte Freischaltungen",
+    "noUnlocksYet": "Noch keine Freischaltungen."
+  },
   "auth": {
     "welcome": "Willkommen",
     "shareWhatMatters": "Teile, was zählt",
     "communitySubtitle": "Veröffentliche Updates, entdecke Leute und bleibe mit deiner Community in Verbindung.",
     "signingIn": "Anmeldung wird geöffnet…",
     "logIn": "Anmelden",
-    "createAccount": "Neues Konto erstellen"
+    "createAccount": "Neues Konto erstellen",
+    "registerAs": "Registrieren als",
+    "roleBuyer": "Käufer",
+    "roleCreator": "Creator"
   },
   "settings": {
     "verification": "Identitätsprüfung",
     "verificationFlow": "Drittanbieter-Verifizierungsablauf...",
+    "payoutDetails": "Auszahlungsdetails",
+    "payoutDetailsFlow": "Verwalte, wohin deine Einnahmen ausgezahlt werden...",
     "billingCards": "Gespeicherte Karten & Zahlung",
     "manageCards": "Karten verwalten...",
     "cards": {
@@ -51,6 +65,7 @@
     "tokensFlow": "Token kaufen und Verlauf anzeigen...",
     "tokensPurchase": {
       "tokensLabel": "Token",
+      "chooseCountry": "Wähle dein Land, um Preise zu sehen",
       "noPacks": "Keine Token-Pakete verfügbar.",
       "newCard": "Neue Karte",
       "saveCard": "Diese Karte für zukünftige Käufe speichern",
@@ -120,6 +135,7 @@
       "verification": "Identitätsprüfung",
       "billingCards": "Gespeicherte Karten & Zahlung",
       "tokens": "Token-Guthaben & Verlauf",
+      "payoutDetails": "Auszahlungsdetails",
       "deleteAccount": "Konto löschen"
     },
     "changeLanguage": {

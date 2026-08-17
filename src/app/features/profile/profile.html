@@ -1,134 +1,70 @@
 @if (profileUser()) {
-  @if (activeProfileView() === 'main') {
-    <div class="profile-top-nav">
-      @if (isOwnProfile()) {
-        <app-upload container="media" (fileSelected)="onFileSelected($event)" />
-      } @else {
-        <app-icon name="back" (click)="goBack()" />
-      }
+  <div class="profile-top-nav">
+    <app-icon name="back" (click)="goBack()" />
+    {{ profileUser()?.username }}
+    <div></div>
+  </div>
 
-      {{ profileUser()?.username }}
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="profile-actions">
+        <div class="avatar-upload-wrapper">
+          <app-profile-avatar [profilePictureURL]="profileUser()?.profilePictureURL" />
+        </div>
 
-      @if (isOwnProfile()) {
-        <button class="mobile-menu" (click)="toggleMenu()">
-          <app-icon name="hamburger" />
-        </button>
-      } @else {
-        <div></div>
-      }
-    </div>
+        <div class="user-info">
+          <h2 class="display-name">{{ profileUser()?.displayName }}</h2>
 
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="profile-actions">
-          <div class="avatar-upload-wrapper">
-            <div [class.avatar-upload-trigger]="isOwnProfile()"
-                 (click)="isOwnProfile() && avatarUpload.triggerUpload()">
-              <app-profile-avatar [isOwnProfile]="isOwnProfile()"
-                                  [profilePictureURL]="profileUser()?.profilePictureURL" />
-            </div>
-
-            <app-upload #avatarUpload container="profile-pictures" (fileSelected)="onFileSelected($event)"
-                        style="display: none;" />
-          </div>
-
-          <div class="user-info">
-            <h2 class="display-name">{{ profileUser()?.displayName }}</h2>
-
-            <div class="meta-badges">
-              @if (userAge()) {
-                <div class="badge">
-                  <strong>{{ userAge() }}</strong>
-                  <span>{{ 'profile.age' | translate }}</span>
-                </div>
-              }
+          <div class="meta-badges">
+            @if (userAge()) {
               <div class="badge">
-                <strong>{{ livingCanton() }}</strong>
-                <span>{{ 'profile.canton' | translate }}</span>
+                <strong>{{ userAge() }}</strong>
+                <span>{{ 'profile.age' | translate }}</span>
               </div>
+            }
+            <div class="badge">
+              <strong>{{ livingCanton() }}</strong>
+              <span>{{ 'profile.canton' | translate }}</span>
             </div>
           </div>
         </div>
-
-        @if (!isOwnProfile()) {
-          <div class="profile-buttons">
-            <span class="badge">
-              <strong>{{ 'profile.follow' | translate }}</strong>
-            </span>
-            <a [routerLink]="['/thread']"
-               [state]="{ recipientUser: profileUser() }"
-               class="badge message-btn">
-              <strong>{{ 'profile.message' | translate }}</strong>
-            </a>
-          </div>
-        } @else {
-          <div class="profile-buttons">
-            <button class="btn-secondary" (click)="setProfileView('edit')">{{ 'profile.edit' | translate }}</button>
-          </div>
-        }
-
-        <div class="description">
-          {{ profileUser()?.description }}
-        </div>
       </div>
 
-      <div class="gallery-section">
-        <div class="photo-grid">
-          @for (item of media(); track item.id) {
-            <button type="button" class="photo-item"
-                    (click)="openMedia(item)"
-                    (pointerdown)="startLongPress(item, $event)"
-                    (pointerup)="cancelLongPress()"
-                    (pointercancel)="cancelLongPress()"
-                    (pointerleave)="cancelLongPress()">
-              @if (item.type === 'video') {
-                @if (item.thumbnailUrl) {
-                  <img [src]="item.thumbnailUrl" alt="" />
-                } @else {
-                  <div class="photo-item__video-placeholder"></div>
-                }
-                <app-icon name="play" class="photo-item__video-badge" />
+      <div class="profile-buttons">
+        <span class="badge">
+          <strong>{{ 'profile.follow' | translate }}</strong>
+        </span>
+        <a [routerLink]="['/thread']"
+           [state]="{ recipientUser: profileUser() }"
+           class="badge message-btn">
+          <strong>{{ 'profile.message' | translate }}</strong>
+        </a>
+      </div>
+
+      <div class="description">
+        {{ profileUser()?.description }}
+      </div>
+    </div>
+
+    <div class="gallery-section">
+      <div class="photo-grid">
+        @for (item of media(); track item.id) {
+          <button type="button" class="photo-item" (click)="openMedia(item)">
+            @if (item.type === 'video') {
+              @if (item.thumbnailUrl) {
+                <img [src]="item.thumbnailUrl" alt="" />
               } @else {
-                <img [src]="item.url" alt="" />
+                <div class="photo-item__video-placeholder"></div>
               }
-            </button>
-          }
-        </div>
+              <app-icon name="play" class="photo-item__video-badge" />
+            } @else {
+              <img [src]="item.url" alt="" />
+            }
+          </button>
+        }
       </div>
     </div>
-  }
-
-  @if (activeProfileView() === 'edit') {
-    <div class="menu-backdrop" (click)="setProfileView('main')"></div>
-    <div class="slide-menu">
-      <app-edit-profile [user]="profileUser()" (goBack)="setProfileView('main')" (saveChanges)="saveProfile($event)" />
-    </div>
-  }
-
-  @if (previewUrl()) {
-    <app-preview-modal [previewUrlInput]="previewUrl()" [selectedFile]="selectedFile()" [container]="uploadContainer()"
-                       (closed)="cancelPreview()" />
-  }
-
-  @if (isMenuOpen()) {
-    <div class="menu-backdrop" (click)="toggleMenu()"></div>
-    <div class="slide-menu">
-      <app-settings (closeMenu)="toggleMenu()" />
-    </div>
-  }
-
-  @if (mediaPendingDeletion()) {
-    <div class="menu-backdrop" (click)="cancelDelete()"></div>
-    <div class="confirmation-modal">
-      <h3>{{ 'profile.deleteMediaTitle' | translate }}</h3>
-      <p>{{ 'profile.deleteMediaDesc' | translate }}</p>
-      <div class="modal-actions">
-        <button class="btn-cancel" (click)="cancelDelete()">{{ 'profile.cancel' | translate }}</button>
-        <button class="btn-delete" (click)="confirmDeleteMedia()">{{ 'profile.delete' | translate }}</button>
-      </div>
-    </div>
-  }
-
+  </div>
 } @else {
   <div class="error-banner">
     {{ 'profile.pageNotFound' | translate }}

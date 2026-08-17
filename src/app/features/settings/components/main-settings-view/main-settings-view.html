@@ -1,48 +1,56 @@
-<app-settings-header [title]="'settings.mainSettings.title' | translate" icon="close" (back)="close.emit()" />
+<app-settings-header [title]="'settings.mainSettings.title' | translate" />
 
 <div class="settings-section">
-  <button class="setting-item" (click)="navigateTo.emit('account')">
+  <button class="setting-item" (click)="navigateTo.emit('personal-details')">
     <div class="setting-item-content">
       <app-icon name="person" />
-      <span>{{ 'settings.mainSettings.account' | translate }}</span>
+      <span>{{ 'settings.account.personalDetails' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
-  <button class="setting-item" (click)="navigateTo.emit('bookmark')">
+
+  <button class="setting-item" (click)="navigateTo.emit('change-password')">
     <div class="setting-item-content">
-      <app-icon name="bookmark" />
-      <span>{{ 'settings.mainSettings.bookmark' | translate }}</span>
+      <app-icon name="lock" />
+      <span>{{ 'settings.account.changePassword' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
-  <button class="setting-item" (click)="navigateTo.emit('archive')">
+
+  <button class="setting-item" (click)="navigateTo.emit('verification')">
     <div class="setting-item-content">
-      <app-icon name="archive" />
-      <span>{{ 'settings.mainSettings.archive' | translate }}</span>
+      <app-icon name="verified" />
+      <span>{{ 'settings.account.verification' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
-  <button class="setting-item" (click)="navigateTo.emit('notifications')">
-    <div class="setting-item-content">
-      <app-icon name="notifications" />
-      <span>{{ 'settings.mainSettings.notifications' | translate }}</span>
-    </div>
-    <app-icon class="forward-icon" name="back" />
-  </button>
-  <button class="setting-item" (click)="navigateTo.emit('privacy')">
-    <div class="setting-item-content">
-      <app-icon name="privacy" />
-      <span>{{ 'settings.mainSettings.privacy' | translate }}</span>
-    </div>
-    <app-icon class="forward-icon" name="back" />
-  </button>
-  <button class="setting-item" (click)="navigateTo.emit('blocked')">
-    <div class="setting-item-content">
-      <app-icon name="blocked" />
-      <span>{{ 'settings.mainSettings.blocked' | translate }}</span>
-    </div>
-    <app-icon class="forward-icon" name="back" />
-  </button>
+
+  @if (!isCreator()) {
+    <button class="setting-item" (click)="navigateTo.emit('billing-cards')">
+      <div class="setting-item-content">
+        <app-icon name="card" />
+        <span>{{ 'settings.account.billingCards' | translate }}</span>
+      </div>
+      <app-icon class="forward-icon" name="back" />
+    </button>
+
+    <button class="setting-item" (click)="navigateTo.emit('tokens')">
+      <div class="setting-item-content">
+        <app-icon name="token" />
+        <span>{{ 'settings.account.tokens' | translate }}</span>
+      </div>
+      <app-icon class="forward-icon" name="back" />
+    </button>
+  } @else {
+    <button class="setting-item" (click)="navigateTo.emit('payout-details')">
+      <div class="setting-item-content">
+        <app-icon name="card" />
+        <span>{{ 'settings.account.payoutDetails' | translate }}</span>
+      </div>
+      <app-icon class="forward-icon" name="back" />
+    </button>
+  }
+
   <button class="setting-item" (click)="navigateTo.emit('language')">
     <div class="setting-item-content">
       <app-icon name="language" />
@@ -50,6 +58,7 @@
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
+
   <button class="setting-item" (click)="navigateTo.emit('appearance')">
     <div class="setting-item-content">
       <app-icon name="moon" />
@@ -57,17 +66,19 @@
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>
-  <button class="setting-item" (click)="navigateTo.emit('accessibility')">
-    <div class="setting-item-content">
-      <app-icon name="accessibility" />
-      <span>{{ 'settings.mainSettings.accessibility' | translate }}</span>
-    </div>
-    <app-icon class="forward-icon" name="back" />
-  </button>
+
   <button class="setting-item" (click)="navigateTo.emit('help')">
     <div class="setting-item-content">
       <app-icon name="help" />
       <span>{{ 'settings.mainSettings.help' | translate }}</span>
+    </div>
+    <app-icon class="forward-icon" name="back" />
+  </button>
+
+  <button class="setting-item" (click)="navigateTo.emit('delete-account')">
+    <div class="setting-item-content">
+      <app-icon name="home" />
+      <span>{{ 'settings.account.deleteAccount' | translate }}</span>
     </div>
     <app-icon class="forward-icon" name="back" />
   </button>

@@ -4,7 +4,7 @@ import { getFirestore, doc, updateDoc, collection, addDoc } from 'firebase/fires
 import { UserService } from './user.service';
 import app from '../firebase';
 import { from, Observable, switchMap } from 'rxjs';
-import { Media, MediaType } from '../models/media.model';
+import { Content, MediaType } from '../models/content.model';
 
 @Service()
 export class MediaUploadService {
@@ -15,18 +15,32 @@ export class MediaUploadService {
   // Videos longer than this are rejected rather than uploaded.
   readonly maxVideoDurationSeconds = 60;
 
-  uploadMedia(file: File, container: string): Observable<Media> {
+  // A creator's teaser/portfolio upload - publicly browsable (Home/Search),
+  // so it gets a `content` doc.
+  uploadContent(file: File): Observable<Content> {
     const userId = this.userService.currentUser()?.uid;
     if (!userId) throw new Error('No authenticated user found');
 
     const type: MediaType = file.type.startsWith('video/') ? 'video' : 'image';
 
-    return from(this.buildMediaPayload(file, type, userId, container)).pipe(
+    return from(this.buildMediaPayload(file, type, userId, 'content')).pipe(
       switchMap(async (payload) => {
-        const ref = await addDoc(collection(this.firestore, 'media'), payload);
+        const ref = await addDoc(collection(this.firestore, 'content'), payload);
         return { ...payload, id: ref.id };
       }),
     );
+  }
+
+  // A private chat attachment - Storage-only, no `content` doc, so it never
+  // shows up in the public Home/Search feeds (it used to, via the shared
+  // `media` collection - this split is the fix for that).
+  uploadChatAttachment(file: File): Observable<Content> {
+    const userId = this.userService.currentUser()?.uid;
+    if (!userId) throw new Error('No authenticated user found');
+
+    const type: MediaType = file.type.startsWith('video/') ? 'video' : 'image';
+
+    return from(this.buildMediaPayload(file, type, userId, 'chat-media'));
   }
 
   uploadProfilePicture(file: File): Observable<string> {
@@ -49,7 +63,7 @@ export class MediaUploadService {
     type: MediaType,
     userId: string,
     container: string,
-  ): Promise<Media> {
+  ): Promise<Content> {
     const filePath = `${container}/${userId}/${Date.now()}_${file.name}`;
 
     if (type === 'video') {

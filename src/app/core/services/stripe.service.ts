@@ -13,11 +13,16 @@ export interface SavedPaymentMethod {
   isDefault: boolean;
 }
 
-export interface TokenPack {
-  priceId: string;
+export type BundleSize = 'small' | 'medium' | 'large';
+
+export interface Bundle {
+  price: number;
   tokens: number;
-  amount: number | null;
+}
+
+export interface CountryBundles {
   currency: string;
+  bundles: Record<BundleSize, Bundle>;
 }
 
 // Thin wrapper around the Cloud Functions that talk to Stripe - everything
@@ -67,19 +72,28 @@ export class StripeService {
     await call({ paymentMethodId });
   }
 
-  async listTokenPacks(): Promise<TokenPack[]> {
-    const call = httpsCallable<void, { packs: TokenPack[] }>(this.functions, 'listTokenPacks');
-    return (await call()).data.packs;
+  async listBundles(countryCode: string): Promise<CountryBundles> {
+    const call = httpsCallable<{ countryCode: string }, CountryBundles>(
+      this.functions,
+      'listBundles',
+    );
+    return (await call({ countryCode })).data;
   }
 
   async createPaymentIntent(
-    priceId: string,
+    countryCode: string,
+    bundleSize: BundleSize,
     options?: { paymentMethodId?: string; savePaymentMethod?: boolean },
   ): Promise<{ clientSecret: string; status: string }> {
     const call = httpsCallable<
-      { priceId: string; paymentMethodId?: string; savePaymentMethod?: boolean },
+      {
+        countryCode: string;
+        bundleSize: BundleSize;
+        paymentMethodId?: string;
+        savePaymentMethod?: boolean;
+      },
       { clientSecret: string; status: string }
     >(this.functions, 'createPaymentIntent');
-    return (await call({ priceId, ...options })).data;
+    return (await call({ countryCode, bundleSize, ...options })).data;
   }
 }

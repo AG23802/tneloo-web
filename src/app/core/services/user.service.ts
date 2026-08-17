@@ -21,7 +21,7 @@ import {
 import { getStorage, ref, deleteObject } from 'firebase/storage';
 import app from '../firebase';
 import { User } from '../models/user.model';
-import { Media } from '../models/media.model';
+import { Content } from '../models/content.model';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LoadingManagerService } from './loading.service';
@@ -60,8 +60,8 @@ export class UserService {
   }
 
   // Re-reads the signed-in user's own doc - for fields a Cloud Function
-  // writes server-side (e.g. tokens, credited by the Stripe webhook) where
-  // the client has no local write to optimistically apply instead.
+  // writes server-side (e.g. tokenBalance, credited by the Stripe webhook)
+  // where the client has no local write to optimistically apply instead.
   async refreshCurrentUser(): Promise<void> {
     const uid = this.currentUserSignal()?.uid;
     if (!uid) return;
@@ -90,21 +90,21 @@ export class UserService {
     );
   }
 
-  getUserMedia(userId: string): Observable<Media[]> {
+  getUserContent(userId: string): Observable<Content[]> {
     return new Observable((observer) => {
-      const mediaQuery = query(
-        collection(this.firestore, 'media'),
+      const contentQuery = query(
+        collection(this.firestore, 'content'),
         where('ownerId', '==', userId),
         orderBy('createdAt', 'desc'),
       );
 
       const unsubscribe = onSnapshot(
-        mediaQuery,
+        contentQuery,
         (snapshot) => {
-          const media = snapshot.docs.map(
-            (doc) => ({ ...doc.data(), id: doc.id }) as Media,
+          const content = snapshot.docs.map(
+            (doc) => ({ ...doc.data(), id: doc.id }) as Content,
           );
-          observer.next(media);
+          observer.next(content);
         },
         (error) => {
           observer.error(error);
@@ -137,15 +137,15 @@ export class UserService {
     });
   }
 
-  async deleteMediaByUrl(mediaUrl: string): Promise<void> {
-    const mediaRef = collection(this.firestore, 'media');
-    const q = query(mediaRef, where('url', '==', mediaUrl), limit(1));
+  async deleteContentByUrl(contentUrl: string): Promise<void> {
+    const contentRef = collection(this.firestore, 'content');
+    const q = query(contentRef, where('url', '==', contentUrl), limit(1));
     const snapshot = await getDocs(q);
 
-    if (snapshot.empty) throw new Error('Media not found in database');
+    if (snapshot.empty) throw new Error('Content not found in database');
 
     const docSnap = snapshot.docs[0];
-    const mediaData = docSnap.data() as Media;
+    const contentData = docSnap.data() as Content;
 
     // Delete the bucket object(s) first — the table row must only be
     // removed once we know the file is actually gone. If bucket deletion
@@ -153,12 +153,12 @@ export class UserService {
     // orphaned file (or a file the user thinks is deleted) remains in
     // storage. ref() also accepts an https download URL directly, so this
     // still works for any legacy row that predates storagePath.
-    await this.deleteStorageObject(mediaData.storagePath ?? mediaUrl);
-    if (mediaData.thumbnailUrl) {
-      await this.deleteStorageObject(`${mediaData.storagePath}_thumb.jpg`);
+    await this.deleteStorageObject(contentData.storagePath ?? contentUrl);
+    if (contentData.thumbnailUrl) {
+      await this.deleteStorageObject(`${contentData.storagePath}_thumb.jpg`);
     }
 
-    await deleteDoc(doc(this.firestore, 'media', docSnap.id));
+    await deleteDoc(doc(this.firestore, 'content', docSnap.id));
   }
 
   private async deleteStorageObject(path: string): Promise<void> {

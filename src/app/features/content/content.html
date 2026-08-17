@@ -1,0 +1,95 @@
+@if (activeView() === 'main') {
+  <div class="profile-top-nav">
+    <app-upload container="content" (fileSelected)="onFileSelected($event)" />
+    {{ userService.currentUser()?.username }}
+    <div></div>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="profile-actions">
+        <div class="avatar-upload-wrapper">
+          <div class="avatar-upload-trigger" (click)="avatarUpload.triggerUpload()">
+            <app-profile-avatar [isOwnProfile]="true"
+                                [profilePictureURL]="userService.currentUser()?.profilePictureURL" />
+          </div>
+
+          <app-upload #avatarUpload container="profile-pictures" (fileSelected)="onFileSelected($event)"
+                      style="display: none;" />
+        </div>
+
+        <div class="user-info">
+          <h2 class="display-name">{{ userService.currentUser()?.displayName }}</h2>
+        </div>
+      </div>
+
+      <div class="profile-buttons">
+        <button class="btn-secondary" (click)="setView('edit')">{{ 'profile.edit' | translate }}</button>
+      </div>
+
+      <div class="description">
+        {{ userService.currentUser()?.description }}
+      </div>
+    </div>
+
+    <div class="gallery-section">
+      <div class="photo-grid">
+        @for (item of mediaList(); track item.id) {
+          <button type="button" class="photo-item"
+                  (click)="openMedia(item)"
+                  (pointerdown)="startLongPress(item, $event)"
+                  (pointerup)="cancelLongPress()"
+                  (pointercancel)="cancelLongPress()"
+                  (pointerleave)="cancelLongPress()">
+            @if (item.type === 'video') {
+              @if (item.thumbnailUrl) {
+                <img [src]="item.thumbnailUrl" alt="" />
+              } @else {
+                <div class="photo-item__video-placeholder"></div>
+              }
+              <app-icon name="play" class="photo-item__video-badge" />
+            } @else {
+              <img [src]="item.url" alt="" />
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+@if (activeView() === 'edit') {
+  <div class="menu-backdrop" (click)="setView('main')"></div>
+  <div class="slide-menu">
+    <app-edit-profile [user]="userService.currentUser()" (goBack)="setView('main')" (saveChanges)="saveProfile()" />
+  </div>
+}
+
+@if (previewUrl()) {
+  <app-preview-modal [previewUrlInput]="previewUrl()" [selectedFile]="selectedFile()" [container]="uploadContainer()"
+                     (closed)="cancelPreview()" />
+}
+
+@if (contentPendingDeletion()) {
+  <div class="menu-backdrop" (click)="cancelDelete()"></div>
+  <div class="confirmation-modal">
+    <h3>{{ 'profile.deleteMediaTitle' | translate }}</h3>
+    <p>{{ 'profile.deleteMediaDesc' | translate }}</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancelDelete()">{{ 'profile.cancel' | translate }}</button>
+      <button class="btn-delete" (click)="confirmDeleteContent()">{{ 'profile.delete' | translate }}</button>
+    </div>
+  </div>
+}
+
+@if (selectedMediaItem(); as item) {
+  <app-media-viewer-modal [media]="{
+      id: item.id ?? 'own-content',
+      type: item.type,
+      url: item.url,
+      thumbnailUrl: item.thumbnailUrl,
+      uid: userService.currentUser()?.uid ?? '',
+      username: userService.currentUser()?.username ?? '',
+      profilePictureURL: userService.currentUser()?.profilePictureURL ?? ''
+    }" (close)="closeMedia()" />
+}

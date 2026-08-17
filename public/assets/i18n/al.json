@@ -20,17 +20,31 @@
     "loadMore": "Ngarko më shumë",
     "seenAllFiles": "I keni parë të gjithë skedarët"
   },
+  "dashboard": {
+    "title": "Paneli",
+    "pendingEarnings": "Fitime në pritje",
+    "paidOut": "Të paguara",
+    "comingSoon": "Së shpejti",
+    "contentCount": "Përmbajtje",
+    "recentUnlocks": "Shkyçjet e fundit",
+    "noUnlocksYet": "Ende nuk ka shkyçje."
+  },
   "auth": {
     "welcome": "Mirë se vini",
     "shareWhatMatters": "Ndani atë që ka rëndësi",
     "communitySubtitle": "Postoni përditësime, zbuloni njerëz dhe qëndroni të lidhur me komunitetin tuaj.",
     "signingIn": "Duke u kyçur...",
     "logIn": "Kyçu",
-    "createAccount": "Krijo llogari të re"
+    "createAccount": "Krijo llogari të re",
+    "registerAs": "Regjistrohu si",
+    "roleBuyer": "Blerës",
+    "roleCreator": "Krijues"
   },
   "settings": {
     "verification": "Verifikimi i Identitetit",
     "verificationFlow": "Procesi i verifikimit nga palë të treta...",
+    "payoutDetails": "Detajet e Pagesës",
+    "payoutDetailsFlow": "Menaxho ku paguhen fitimet e tua...",
     "billingCards": "Kartat & Pagesat",
     "manageCards": "Menaxho kartat...",
     "cards": {
@@ -51,6 +65,7 @@
     "tokensFlow": "Bli tokenë dhe shiko historikun...",
     "tokensPurchase": {
       "tokensLabel": "tokenë",
+      "chooseCountry": "Zgjidh vendin tënd për të parë çmimet",
       "noPacks": "Nuk ka paketa tokenësh të disponueshme.",
       "newCard": "Kartë e re",
       "saveCard": "Ruaj këtë kartë për blerje të ardhshme",
@@ -120,6 +135,7 @@
       "verification": "Verifikimi i Identitetit",
       "billingCards": "Kartat & Pagesat",
       "tokens": "Bilanci i Tokenëve & Historiku",
+      "payoutDetails": "Detajet e Pagesës",
       "deleteAccount": "Fshi llogarinë"
     },
     "changeLanguage": {
